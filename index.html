@@ -1,1 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiver — Surf Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --navy: #0d2545;
+  --cream2: #ede7d6;
+  --sky: #2a6496;
+  --yellow: #d4a012;
+  --coral: #c94028;
+  --fog: rgba(13,37,69,0.55);
+  --muted: rgba(13,37,69,0.35);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--navy); font-family:'Instrument Sans', sans-serif; }
 
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.1; mix-blend-mode:multiply;
+}
+
+header {
+  background:var(--navy); padding:20px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo {
+  font-family:'Playfair Display', serif;
+  font-size:22px; font-weight:900; font-style:italic;
+  color:#f5f0e8; letter-spacing:2px;
+}
+.logo-tag {
+  font-family:'DM Mono', monospace;
+  font-size:8px; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(245,240,232,0.35); margin-top:2px;
+}
+
+.hero {
+  background:var(--navy); padding:48px 32px 56px;
+  text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:40px;
+  background:var(--bg); clip-path:ellipse(55% 100% at 50% 100%);
+}
+.break-name {
+  font-family:'Playfair Display', serif;
+  font-size:clamp(42px, 8vw, 80px);
+  font-weight:900; font-style:italic;
+  color:#f5f0e8; line-height:1;
+  margin-bottom:8px;
+}
+.break-location {
+  font-family:'DM Mono', monospace;
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(245,240,232,0.4);
+}
+
+.main { max-width:900px; margin:0 auto; padding:40px 24px 80px; }
+
+/* CURRENT CONDITIONS */
+.current-card {
+  background:var(--navy); border-radius:4px;
+  padding:32px; margin-bottom:24px; color:#f5f0e8;
+}
+.current-label {
+  font-family:'DM Mono', monospace;
+  font-size:8px; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(245,240,232,0.4); margin-bottom:16px;
+}
+.current-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+}
+.current-stat {}
+.current-val {
+  font-family:'Playfair Display', serif;
+  font-size:clamp(28px, 5vw, 42px);
+  font-weight:900; font-style:italic;
+  color:#f5f0e8; line-height:1;
+}
+.current-unit {
+  font-family:'DM Mono', monospace;
+  font-size:10px; letter-spacing:1px;
+  color:rgba(245,240,232,0.5);
+}
+.current-stat-label {
+  font-family:'DM Mono', monospace;
+  font-size:8px; letter-spacing:2px; text-transform:uppercase;
+  color:rgba(245,240,232,0.35); margin-top:4px;
+}
+
+/* RATING BADGE */
+.rating-badge {
+  display:inline-block;
+  font-family:'Playfair Display', serif;
+  font-size:14px; font-style:italic; font-weight:700;
+  padding:6px 16px; border-radius:2px; margin-bottom:24px;
+}
+.rating-epic   { background:#1a6b3c; color:#f5f0e8; }
+.rating-good   { background:var(--sky); color:#f5f0e8; }
+.rating-fair   { background:var(--yellow); color:#1a1a1a; }
+.rating-poor   { background:var(--coral); color:#f5f0e8; }
+.rating-flat   { background:rgba(13,37,69,0.15); color:var(--navy); }
+
+/* FORECAST STRIP */
+.forecast-label {
+  font-family:'DM Mono', monospace;
+  font-size:8px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:12px; margin-top:32px;
+  display:flex; align-items:center; gap:12px;
+}
+.forecast-label::before { content:''; width:20px; height:1px; background:var(--muted); }
+
+.forecast-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+  gap:3px;
+}
+.forecast-slot {
+  background:var(--cream2); padding:16px 14px;
+  text-align:center; position:relative;
+  border-top:2px solid transparent;
+  transition:background 0.15s;
+}
+.forecast-slot:hover { background:#e5deca; }
+.forecast-slot.best { border-top-color:var(--sky); }
+.slot-time {
+  font-family:'DM Mono', monospace;
+  font-size:9px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:8px;
+}
+.slot-height {
+  font-family:'Playfair Display', serif;
+  font-size:22px; font-weight:900; font-style:italic;
+  color:var(--navy); line-height:1;
+}
+.slot-unit {
+  font-family:'DM Mono', monospace;
+  font-size:8px; color:var(--muted);
+}
+.slot-wind {
+  font-family:'DM Mono', monospace;
+  font-size:8px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--muted); margin-top:6px;
+}
+.slot-period {
+  font-family:'DM Mono', monospace;
+  font-size:8px; color:var(--muted); margin-top:2px;
+}
+
+/* TIDE */
+.tide-section { margin-top:32px; }
+.tide-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:3px; }
+.tide-card {
+  background:var(--cream2); padding:16px 18px;
+  display:flex; align-items:center; gap:12px;
+}
+.tide-icon { font-size:20px; }
+.tide-type {
+  font-family:'DM Mono', monospace;
+  font-size:8px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted);
+}
+.tide-time {
+  font-family:'Playfair Display', serif;
+  font-size:18px; font-weight:700; font-style:italic;
+  color:var(--navy);
+}
+.tide-height {
+  font-family:'DM Mono', monospace;
+  font-size:9px; color:var(--muted); margin-top:1px;
+}
+
+/* LOADING / ERROR */
+.status {
+  text-align:center; padding:80px 24px;
+  font-family:'Playfair Display', serif;
+  font-size:24px; font-style:italic; color:var(--fog);
+}
+.error { color:var(--coral); }
+
+@media (max-width:600px) {
+  .current-grid { grid-template-columns:repeat(2,1fr); }
+  header { padding:16px 20px; }
+  .hero { padding:36px 20px 48px; }
+  .main { padding:32px 16px 60px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Quiver</div>
+    <div class="logo-tag">Surf Guide</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="break-name">Lahinch</div>
+  <div class="break-location">Co. Clare · Ireland · 52.9337° N, 9.3544° W</div>
+</div>
+
+<main class="main">
+  <div id="app"><div class="status">Loading forecast...</div></div>
+</main>
+
+<script>
+const LAT = 52.9337;
+const LNG = -9.3544;
+
+function getWindDir(deg) {
+  const dirs = ['N','NE','E','SE','S','SW','W','NW'];
+  return dirs[Math.round(deg / 45) % 8];
+}
+
+function getRating(waveHeight, windSpeed, swellPeriod) {
+  if (waveHeight < 0.3) return { label:'Flat', cls:'flat' };
+  if (waveHeight >= 1.5 && swellPeriod >= 12 && windSpeed < 5) return { label:'Epic', cls:'epic' };
+  if (waveHeight >= 0.8 && swellPeriod >= 9 && windSpeed < 10) return { label:'Good', cls:'good' };
+  if (waveHeight >= 0.5 && windSpeed < 15) return { label:'Fair', cls:'fair' };
+  return { label:'Poor', cls:'poor' };
+}
+
+function fmt(date) {
+  return date.toLocaleTimeString('en-IE', { hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+function fmtDay(date) {
+  const today = new Date();
+  const d = new Date(date);
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  return d.toLocaleDateString('en-IE', { weekday:'short', day:'numeric', month:'short' });
+}
+
+async function loadForecast() {
+  const app = document.getElementById('app');
+  try {
+    const res = await fetch('/api/forecast');
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+
+    const hours = data.hours;
+    if (!hours || hours.length === 0) throw new Error('No data returned');
+
+    // Current conditions — first hour
+    const now = hours[0];
+    const waveH = now.waveHeight?.noaa ?? now.waveHeight?.sg ?? 0;
+    const windS = now.windSpeed?.noaa ?? now.windSpeed?.sg ?? 0;
+    const windD = now.windDirection?.noaa ?? now.windDirection?.sg ?? 0;
+    const period = now.swellPeriod?.noaa ?? now.swellPeriod?.sg ?? 0;
+    const rating = getRating(waveH, windS, period);
+
+    // Next 24 hours grouped by 3hr slots
+    const slots = hours.slice(0, 24).filter((_, i) => i % 3 === 0);
+
+    // Tides from data
+    const tides = data.tides || [];
+
+    app.innerHTML = `
+      <span class="rating-badge rating-${rating.cls}">${rating.label} conditions</span>
+
+      <div class="current-card">
+        <div class="current-label">Current Conditions · ${new Date(now.time).toLocaleString('en-IE', { weekday:'long', hour:'2-digit', minute:'2-digit' })}</div>
+        <div class="current-grid">
+          <div class="current-stat">
+            <div class="current-val">${waveH.toFixed(1)}<span class="current-unit">m</span></div>
+            <div class="current-stat-label">Wave Height</div>
+          </div>
+          <div class="current-stat">
+            <div class="current-val">${period.toFixed(0)}<span class="current-unit">s</span></div>
+            <div class="current-stat-label">Swell Period</div>
+          </div>
+          <div class="current-stat">
+            <div class="current-val">${windS.toFixed(0)}<span class="current-unit">kn</span></div>
+            <div class="current-stat-label">Wind · ${getWindDir(windD)}</div>
+          </div>
+          <div class="current-stat">
+            <div class="current-val">${(waveH * 3.28).toFixed(1)}<span class="current-unit">ft</span></div>
+            <div class="current-stat-label">In Feet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="forecast-label">Next 24 Hours</div>
+      <div class="forecast-grid">
+        ${slots.map(h => {
+          const wh = h.waveHeight?.noaa ?? h.waveHeight?.sg ?? 0;
+          const ws = h.windSpeed?.noaa ?? h.windSpeed?.sg ?? 0;
+          const wd = h.windDirection?.noaa ?? h.windDirection?.sg ?? 0;
+          const sp = h.swellPeriod?.noaa ?? h.swellPeriod?.sg ?? 0;
+          const r = getRating(wh, ws, sp);
+          const isBest = r.cls === 'good' || r.cls === 'epic';
+          return `
+            <div class="forecast-slot ${isBest ? 'best' : ''}">
+              <div class="slot-time">${fmt(new Date(h.time))}</div>
+              <div class="slot-height">${wh.toFixed(1)}<span class="slot-unit">m</span></div>
+              <div class="slot-wind">${getWindDir(wd)} ${ws.toFixed(0)}kn</div>
+              <div class="slot-period">${sp.toFixed(0)}s period</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      ${tides.length > 0 ? `
+        <div class="tide-section">
+          <div class="forecast-label">Tides</div>
+          <div class="tide-grid">
+            ${tides.slice(0, 6).map(t => `
+              <div class="tide-card">
+                <div class="tide-icon">${t.type === 'high' ? '🔼' : '🔽'}</div>
+                <div>
+                  <div class="tide-type">${t.type === 'high' ? 'High' : 'Low'} Tide</div>
+                  <div class="tide-time">${fmt(new Date(t.time))}</div>
+                  <div class="tide-height">${t.height?.toFixed(1)}m</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+    `;
+  } catch (err) {
+    app.innerHTML = `<div class="status error">Couldn't load forecast — ${err.message}</div>`;
+  }
+}
+
+loadForecast();
+</script>
+</body>
+</html>

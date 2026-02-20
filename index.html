@@ -38,20 +38,20 @@ header { padding:18px 28px; display:flex; align-items:center; justify-content:sp
 .badge-poor  { color:var(--poor); border-color:var(--poor); }
 .badge-flat  { color:var(--muted); border-color:var(--muted); }
 .current-card { background:var(--surface); padding:28px; margin-bottom:4px; }
-.card-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:22px; }
+.card-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:22px; }
 .current-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
 .c-val { font-size:clamp(30px,5vw,48px); letter-spacing:-1px; line-height:1; }
 .c-unit { font-size:0.42em; opacity:0.4; letter-spacing:0; }
-.c-lbl { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-top:7px; }
-.sec-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin:28px 0 8px; display:flex; align-items:center; gap:10px; }
-.sec-label::before { content:''; width:16px; height:1px; background:var(--muted); }
+.c-lbl { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-top:9px; }
+.sec-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.65); margin:28px 0 8px; display:flex; align-items:center; gap:10px; }
+.sec-label::before { content:''; width:16px; height:1px; background:rgba(255,255,255,0.4); }
 .forecast-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:3px; }
 .slot { background:var(--surface); padding:16px 12px; text-align:center; border-top:2px solid transparent; transition:background 0.15s; }
 .slot:hover { background:var(--surface2); }
 .slot-time { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
 .slot-height { font-size:24px; letter-spacing:-1px; line-height:1; }
 .slot-unit { font-size:11px; opacity:0.4; letter-spacing:0; }
-.slot-detail { font-family:'DM Mono',monospace; font-size:8px; text-transform:uppercase; color:var(--muted); margin-top:7px; line-height:1.7; }
+.slot-detail { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-top:7px; line-height:1.7; }
 .slot.epic, .slot.good { border-top-color:var(--good); } .slot.epic .slot-height, .slot.good .slot-height { color:var(--good); }
 .slot.fair { border-top-color:var(--fair); } .slot.fair .slot-height { color:var(--fair); }
 .slot.poor { border-top-color:var(--poor); } .slot.poor .slot-height { color:var(--poor); }

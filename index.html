@@ -3,304 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiver — Surf Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>Quiver — Spanish Point</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f5f0e8;
-  --navy: #0d2545;
-  --cream2: #ede7d6;
-  --sky: #2a6496;
-  --yellow: #d4a012;
-  --coral: #c94028;
-  --green: #1a6b3c;
-  --fog: rgba(13,37,69,0.55);
-  --muted: rgba(13,37,69,0.4);
+  --bg:      #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2:#222222;
+  --white:   #ffffff;
+  --muted:   rgba(255,255,255,0.35);
+  --faint:   rgba(255,255,255,0.1);
+  --good:    #22c55e;
+  --fair:    #f5c800;
+  --poor:    #ef4444;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--navy); font-family:'Inter', sans-serif; }
-
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--white); font-family:'Archivo Black', sans-serif; overflow-x:hidden; }
 body::after {
   content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity:0.1; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.07; mix-blend-mode:overlay;
 }
-
-header {
-  background:var(--navy); padding:18px 32px;
-  display:flex; align-items:center; justify-content:space-between;
-}
-.logo {
-  font-family:'Playfair Display', serif;
-  font-size:20px; font-weight:900; font-style:italic;
-  color:#f5f0e8; letter-spacing:2px;
-}
-.logo-tag {
-  font-family:'DM Mono', monospace;
-  font-size:8px; letter-spacing:3px; text-transform:uppercase;
-  color:rgba(245,240,232,0.35); margin-top:2px;
-}
-
-.hero {
-  background:var(--navy); padding:48px 32px 56px;
-  text-align:center; position:relative; overflow:hidden;
-}
-.hero::before {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:40px;
-  background:var(--bg); clip-path:ellipse(55% 100% at 50% 100%);
-}
-.break-name {
-  font-family:'Playfair Display', serif;
-  font-size:clamp(48px, 9vw, 88px);
-  font-weight:900; font-style:italic;
-  color:#f5f0e8; line-height:1; margin-bottom:10px;
-}
-.break-location {
-  font-family:'DM Mono', monospace;
-  font-size:10px; letter-spacing:3px; text-transform:uppercase;
-  color:rgba(245,240,232,0.4);
-}
-
-.main { max-width:900px; margin:0 auto; padding:40px 24px 80px; }
-
-/* RATING */
-.rating-badge {
-  display:inline-block;
-  font-family:'Inter', sans-serif;
-  font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase;
-  padding:6px 16px; margin-bottom:20px;
-}
-.rating-epic   { background:var(--green); color:#f5f0e8; }
-.rating-good   { background:var(--sky); color:#f5f0e8; }
-.rating-fair   { background:var(--yellow); color:#1a1a1a; }
-.rating-poor   { background:var(--coral); color:#f5f0e8; }
-.rating-flat   { background:var(--cream2); color:var(--navy); }
-
-/* CURRENT */
-.current-card {
-  background:var(--navy); padding:28px 32px; margin-bottom:24px; color:#f5f0e8;
-}
-.card-label {
-  font-family:'DM Mono', monospace;
-  font-size:9px; letter-spacing:3px; text-transform:uppercase;
-  color:rgba(245,240,232,0.35); margin-bottom:20px;
-}
-.current-grid {
-  display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
-}
-.current-val {
-  font-family:'Playfair Display', serif;
-  font-size:clamp(32px, 5vw, 48px);
-  font-weight:900; font-style:italic;
-  color:#f5f0e8; line-height:1;
-}
-.current-unit {
-  font-size:14px; font-weight:400; font-style:normal;
-  opacity:0.5; margin-left:2px;
-}
-.current-stat-label {
-  font-family:'DM Mono', monospace;
-  font-size:9px; letter-spacing:2px; text-transform:uppercase;
-  color:rgba(245,240,232,0.35); margin-top:6px;
-}
-
-/* FORECAST */
-.section-label {
-  font-family:'DM Mono', monospace;
-  font-size:9px; letter-spacing:3px; text-transform:uppercase;
-  color:var(--muted); margin-bottom:10px; margin-top:32px;
-  display:flex; align-items:center; gap:12px;
-}
-.section-label::before { content:''; width:20px; height:1px; background:var(--muted); }
-
-.forecast-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(105px, 1fr));
-  gap:2px;
-}
-.forecast-slot {
-  background:var(--cream2); padding:16px 12px; text-align:center;
-  border-top:2px solid transparent; transition:background 0.15s;
-}
-.forecast-slot:hover { background:#e5deca; }
-.forecast-slot.best { border-top-color:var(--sky); }
-.slot-time {
-  font-family:'DM Mono', monospace;
-  font-size:9px; letter-spacing:1px;
-  color:var(--muted); margin-bottom:10px;
-}
-.slot-height {
-  font-family:'Playfair Display', serif;
-  font-size:24px; font-weight:900; font-style:italic;
-  color:var(--navy); line-height:1;
-}
-.slot-unit { font-size:11px; font-style:normal; opacity:0.5; }
-.slot-detail {
-  font-family:'DM Mono', monospace;
-  font-size:8px; letter-spacing:0.5px; text-transform:uppercase;
-  color:var(--muted); margin-top:6px; line-height:1.6;
-}
-
-/* TIDES */
-.tide-grid {
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:2px;
-}
-.tide-card {
-  background:var(--cream2); padding:16px 18px;
-  display:flex; align-items:center; gap:14px;
-}
-.tide-arrow { font-size:18px; }
-.tide-type {
-  font-family:'DM Mono', monospace;
-  font-size:8px; letter-spacing:2px; text-transform:uppercase;
-  color:var(--muted); margin-bottom:2px;
-}
-.tide-time {
-  font-family:'Inter', sans-serif;
-  font-size:18px; font-weight:600; color:var(--navy);
-}
-.tide-height {
-  font-family:'DM Mono', monospace;
-  font-size:9px; color:var(--muted); margin-top:2px;
-}
-
-.status {
-  text-align:center; padding:80px 24px;
-  font-family:'Inter', sans-serif;
-  font-size:16px; color:var(--fog);
-}
-.error { color:var(--coral); }
-
+header { padding:18px 28px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--faint); }
+.logo { font-size:18px; letter-spacing:2px; }
+.logo-tag { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+.hero { padding:52px 28px 48px; text-align:center; border-bottom:1px solid var(--faint); }
+.break-name { font-size:clamp(52px,13vw,120px); letter-spacing:-2px; line-height:0.9; }
+.break-loc { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-top:14px; }
+.main { max-width:900px; margin:0 auto; padding:36px 24px 80px; }
+.badge { display:inline-block; margin-bottom:24px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; padding:7px 18px; border:1.5px solid; }
+.badge-epic, .badge-good { color:var(--good); border-color:var(--good); }
+.badge-fair  { color:var(--fair); border-color:var(--fair); }
+.badge-poor  { color:var(--poor); border-color:var(--poor); }
+.badge-flat  { color:var(--muted); border-color:var(--muted); }
+.current-card { background:var(--surface); padding:28px; margin-bottom:4px; }
+.card-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:22px; }
+.current-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.c-val { font-size:clamp(30px,5vw,48px); letter-spacing:-1px; line-height:1; }
+.c-unit { font-size:0.42em; opacity:0.4; letter-spacing:0; }
+.c-lbl { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-top:7px; }
+.sec-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin:28px 0 8px; display:flex; align-items:center; gap:10px; }
+.sec-label::before { content:''; width:16px; height:1px; background:var(--muted); }
+.forecast-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:3px; }
+.slot { background:var(--surface); padding:16px 12px; text-align:center; border-top:2px solid transparent; transition:background 0.15s; }
+.slot:hover { background:var(--surface2); }
+.slot-time { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+.slot-height { font-size:24px; letter-spacing:-1px; line-height:1; }
+.slot-unit { font-size:11px; opacity:0.4; letter-spacing:0; }
+.slot-detail { font-family:'DM Mono',monospace; font-size:8px; text-transform:uppercase; color:var(--muted); margin-top:7px; line-height:1.7; }
+.slot.epic, .slot.good { border-top-color:var(--good); } .slot.epic .slot-height, .slot.good .slot-height { color:var(--good); }
+.slot.fair { border-top-color:var(--fair); } .slot.fair .slot-height { color:var(--fair); }
+.slot.poor { border-top-color:var(--poor); } .slot.poor .slot-height { color:var(--poor); }
+.tide-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:3px; }
+.tide-card { background:var(--surface); padding:16px 18px; }
+.tide-type { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.tide-time { font-size:22px; letter-spacing:-0.5px; }
+.tide-ht { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-top:3px; }
+.seven-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:3px; }
+.day-card { background:var(--surface); padding:16px 14px; text-align:center; border-top:2px solid transparent; }
+.day-card.epic, .day-card.good { border-top-color:var(--good); }
+.day-card.fair { border-top-color:var(--fair); }
+.day-card.poor { border-top-color:var(--poor); }
+.day-name { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.day-height { font-size:26px; letter-spacing:-1px; }
+.day-card.epic .day-height, .day-card.good .day-height { color:var(--good); }
+.day-card.fair .day-height { color:var(--fair); }
+.day-card.poor .day-height { color:var(--poor); }
+.day-detail { font-family:'DM Mono',monospace; font-size:8px; color:var(--muted); margin-top:5px; line-height:1.6; text-transform:uppercase; }
+.status { text-align:center; padding:80px 24px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+.status.error { color:var(--poor); }
 @media (max-width:600px) {
   .current-grid { grid-template-columns:repeat(2,1fr); }
-  header { padding:16px 20px; }
-  .hero { padding:36px 20px 48px; }
-  .main { padding:28px 16px 60px; }
-  .current-card { padding:22px 20px; }
+  header { padding:14px 18px; } .hero { padding:36px 18px 36px; }
+  .main { padding:24px 16px 60px; } .current-card { padding:20px; }
 }
 </style>
 </head>
 <body>
-
 <header>
-  <div>
-    <div class="logo">Quiver</div>
-    <div class="logo-tag">Surf Guide</div>
-  </div>
+  <div><div class="logo">QUIVER</div><div class="logo-tag">Surf Guide</div></div>
 </header>
-
 <div class="hero">
-  <div class="break-name">Spanish Point</div>
-  <div class="break-location">Co. Clare · Ireland · 52.8441° N, 9.4747° W</div>
+  <div class="break-name">SPANISH<br>POINT</div>
+  <div class="break-loc">Co. Clare · Ireland · 52.8441° N, 9.4747° W</div>
 </div>
-
 <main class="main">
   <div id="app"><div class="status">Loading forecast...</div></div>
 </main>
-
 <script>
-const LAT = 52.8441;
-const LNG = -9.4747;
-
-function getWindDir(deg) {
-  const dirs = ['N','NE','E','SE','S','SW','W','NW'];
-  return dirs[Math.round(deg / 45) % 8];
+const LAT = 52.8441, LNG = -9.4747;
+function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
+function rate(h,w,p){
+  if(h<0.3) return 'flat';
+  if(h>=1.5&&p>=12&&w<5) return 'epic';
+  if(h>=0.8&&p>=9&&w<10) return 'good';
+  if(h>=0.5&&w<15) return 'fair';
+  return 'poor';
 }
-
-function getRating(waveHeight, windSpeed, swellPeriod) {
-  if (waveHeight < 0.3) return { label:'Flat', cls:'flat' };
-  if (waveHeight >= 1.5 && swellPeriod >= 12 && windSpeed < 5) return { label:'Epic', cls:'epic' };
-  if (waveHeight >= 0.8 && swellPeriod >= 9 && windSpeed < 10) return { label:'Good', cls:'good' };
-  if (waveHeight >= 0.5 && windSpeed < 15) return { label:'Fair', cls:'fair' };
-  return { label:'Poor', cls:'poor' };
+function rateLabel(r){return{epic:'Epic',good:'Good conditions',fair:'Fair conditions',poor:'Poor conditions',flat:'Flat'}[r];}
+function fmtT(iso){return new Date(iso).toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});}
+function fmtDay(iso){
+  const d=new Date(iso),t=new Date(),tm=new Date();tm.setDate(tm.getDate()+1);
+  if(d.toDateString()===t.toDateString()) return 'Today';
+  if(d.toDateString()===tm.toDateString()) return 'Tmrw';
+  return d.toLocaleDateString('en-IE',{weekday:'short'});
 }
-
-function fmt(date) {
-  return new Date(date).toLocaleTimeString('en-IE', { hour:'2-digit', minute:'2-digit', hour12:false });
-}
-
-async function loadForecast() {
-  const app = document.getElementById('app');
-  try {
-    const res = await fetch('/api/forecast');
-    if (!res.ok) throw new Error('API error ' + res.status);
-    const data = await res.json();
-    const hours = data.hours;
-    if (!hours || hours.length === 0) throw new Error('No data returned');
-
-    const now = hours[0];
-    const waveH  = now.waveHeight?.noaa   ?? now.waveHeight?.sg   ?? 0;
-    const windS  = now.windSpeed?.noaa    ?? now.windSpeed?.sg    ?? 0;
-    const windD  = now.windDirection?.noaa ?? now.windDirection?.sg ?? 0;
-    const period = now.swellPeriod?.noaa  ?? now.swellPeriod?.sg  ?? 0;
-    const rating = getRating(waveH, windS, period);
-
-    const slots = hours.slice(0, 24).filter((_, i) => i % 3 === 0);
-    const tides = data.tides || [];
-
-    app.innerHTML = `
-      <span class="rating-badge rating-${rating.cls}">${rating.label} conditions</span>
-
+async function load(){
+  const app=document.getElementById('app');
+  try{
+    const [mr,wr]=await Promise.all([
+      fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LNG}&hourly=wave_height,wave_period,swell_wave_height,swell_wave_period&daily=wave_height_max,wave_period_max,swell_wave_height_max&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=7`),
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=7`)
+    ]);
+    if(!mr.ok) throw new Error('Marine API '+mr.status);
+    if(!wr.ok) throw new Error('Wind API '+wr.status);
+    const m=await mr.json(), w=await wr.json();
+    const times=m.hourly.time,wH=m.hourly.wave_height,wP=m.hourly.wave_period;
+    const wS=w.hourly.wind_speed_10m,wD=w.hourly.wind_direction_10m;
+    const daily=m.daily;
+    const now=new Date();
+    const ns=now.toISOString().slice(0,13);
+    let ci=times.findIndex(t=>t.startsWith(ns));if(ci<0)ci=0;
+    const cH=wH[ci]??0,cP=wP[ci]??0,cWS=wS[ci]??0,cWD=wD[ci]??0;
+    const r=rate(cH,cWS,cP);
+    const slots=[];
+    for(let i=ci;i<ci+24&&i<times.length;i+=3) slots.push({time:times[i],h:wH[i]??0,p:wP[i]??0,ws:wS[i]??0,wd:wD[i]??0});
+    const days=daily.time.map((t,i)=>({time:t,h:daily.wave_height_max[i]??0,p:daily.wave_period_max[i]??0}));
+    app.innerHTML=`
+      <span class="badge badge-${r}">${rateLabel(r)}</span>
       <div class="current-card">
-        <div class="card-label">Current Conditions · ${new Date(now.time).toLocaleString('en-IE', { weekday:'long', hour:'2-digit', minute:'2-digit' })}</div>
+        <div class="card-label">Now · ${now.toLocaleDateString('en-IE',{weekday:'long'})} ${fmtT(now.toISOString())}</div>
         <div class="current-grid">
-          <div>
-            <div class="current-val">${waveH.toFixed(1)}<span class="current-unit">m</span></div>
-            <div class="current-stat-label">Wave Height</div>
-          </div>
-          <div>
-            <div class="current-val">${period.toFixed(0)}<span class="current-unit">s</span></div>
-            <div class="current-stat-label">Swell Period</div>
-          </div>
-          <div>
-            <div class="current-val">${windS.toFixed(0)}<span class="current-unit">kn</span></div>
-            <div class="current-stat-label">Wind · ${getWindDir(windD)}</div>
-          </div>
-          <div>
-            <div class="current-val">${(waveH * 3.28).toFixed(1)}<span class="current-unit">ft</span></div>
-            <div class="current-stat-label">In Feet</div>
-          </div>
+          <div><div class="c-val">${cH.toFixed(1)}<span class="c-unit">m</span></div><div class="c-lbl">Wave Height</div></div>
+          <div><div class="c-val">${cP.toFixed(0)}<span class="c-unit">s</span></div><div class="c-lbl">Period</div></div>
+          <div><div class="c-val">${cWS.toFixed(0)}<span class="c-unit">kn</span></div><div class="c-lbl">Wind · ${windDir(cWD)}</div></div>
+          <div><div class="c-val">${(cH*3.281).toFixed(1)}<span class="c-unit">ft</span></div><div class="c-lbl">In Feet</div></div>
         </div>
       </div>
-
-      <div class="section-label">Next 24 Hours</div>
+      <div class="sec-label">Next 24 Hours</div>
       <div class="forecast-grid">
-        ${slots.map(h => {
-          const wh = h.waveHeight?.noaa ?? h.waveHeight?.sg ?? 0;
-          const ws = h.windSpeed?.noaa  ?? h.windSpeed?.sg  ?? 0;
-          const wd = h.windDirection?.noaa ?? h.windDirection?.sg ?? 0;
-          const sp = h.swellPeriod?.noaa ?? h.swellPeriod?.sg ?? 0;
-          const r  = getRating(wh, ws, sp);
-          const best = r.cls === 'good' || r.cls === 'epic';
-          return `
-            <div class="forecast-slot ${best ? 'best' : ''}">
-              <div class="slot-time">${fmt(h.time)}</div>
-              <div class="slot-height">${wh.toFixed(1)}<span class="slot-unit">m</span></div>
-              <div class="slot-detail">${getWindDir(wd)} ${ws.toFixed(0)}kn<br>${sp.toFixed(0)}s</div>
-            </div>`;
-        }).join('')}
+        ${slots.map(s=>{const sr=rate(s.h,s.ws,s.p);return`
+          <div class="slot ${sr}">
+            <div class="slot-time">${fmtT(s.time)}</div>
+            <div class="slot-height">${s.h.toFixed(1)}<span class="slot-unit">m</span></div>
+            <div class="slot-detail">${windDir(s.wd)} ${s.ws.toFixed(0)}kn<br>${s.p.toFixed(0)}s</div>
+          </div>`;}).join('')}
       </div>
-
-      ${tides.length > 0 ? `
-        <div class="section-label" style="margin-top:32px">Tides</div>
-        <div class="tide-grid">
-          ${tides.slice(0, 6).map(t => `
-            <div class="tide-card">
-              <div class="tide-arrow">${t.type === 'high' ? '↑' : '↓'}</div>
-              <div>
-                <div class="tide-type">${t.type === 'high' ? 'High' : 'Low'} Tide</div>
-                <div class="tide-time">${fmt(t.time)}</div>
-                <div class="tide-height">${t.height?.toFixed(1)}m</div>
-              </div>
-            </div>`).join('')}
-        </div>` : ''}
-    `;
-  } catch(err) {
-    app.innerHTML = `<div class="status error">Couldn't load forecast — ${err.message}</div>`;
-  }
+      <div class="sec-label">7 Day Outlook</div>
+      <div class="seven-grid">
+        ${days.map(d=>{const dr=rate(d.h,10,d.p);return`
+          <div class="day-card ${dr}">
+            <div class="day-name">${fmtDay(d.time)}</div>
+            <div class="day-height">${d.h.toFixed(1)}<span style="font-size:11px;opacity:0.4;letter-spacing:0">m</span></div>
+            <div class="day-detail">${d.p.toFixed(0)}s period</div>
+          </div>`;}).join('')}
+      </div>`;
+  }catch(e){app.innerHTML=`<div class="status error">Couldn't load — ${e.message}</div>`;}
 }
-
-loadForecast();
+load();
 </script>
 </body>
 </html>

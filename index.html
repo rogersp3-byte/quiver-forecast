@@ -6,10 +6,10 @@
 <title>Quiver — Spanish Point</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0f0f0f; --surface:#1a1a1a; --surface2:#222;
-  --white:#fff; --muted:rgba(255,255,255,0.35); --faint:rgba(255,255,255,0.1);
-  --good:#22c55e; --fair:#f5c800; --poor:#ef4444;
+:root{
+  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;
+  --white:#fff;--muted:rgba(255,255,255,0.35);--faint:rgba(255,255,255,0.1);
+  --good:#22c55e;--fair:#f5c800;--poor:#ef4444;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -34,14 +34,39 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 header{padding:18px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--faint);}
 .logo{font-size:18px;letter-spacing:2px;}
 .logo-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.header-right{display:flex;gap:10px;align-items:center;}
 .profile-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid rgba(255,255,255,0.15);padding:7px 14px;cursor:pointer;}
 .profile-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
 
 /* HERO */
-.hero{padding:52px 28px 48px;text-align:center;border-bottom:1px solid var(--faint);}
-.break-name{font-size:clamp(52px,13vw,120px);letter-spacing:-2px;line-height:0.9;}
-.break-loc{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:14px;}
+.hero{padding:40px 28px 0;text-align:center;border-bottom:1px solid var(--faint);}
+.area-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.break-name{font-size:clamp(42px,11vw,100px);letter-spacing:-2px;line-height:0.9;}
+.break-loc{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:12px;}
+
+/* SPOT SELECTOR */
+.spot-selector{display:flex;gap:0;margin-top:28px;border-top:1px solid var(--faint);}
+.spot-btn{flex:1;padding:14px 8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:none;border-right:1px solid var(--faint);color:var(--muted);cursor:pointer;transition:all 0.15s;text-align:center;position:relative;}
+.spot-btn:last-child{border-right:none;}
+.spot-btn:hover{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.03);}
+.spot-btn.active{color:var(--white);background:rgba(255,255,255,0.05);}
+.spot-btn.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--white);}
+.spot-btn .spot-badge{display:block;width:8px;height:8px;border-radius:50%;margin:0 auto 6px;background:var(--muted);}
+.spot-btn.active .spot-badge,.spot-btn:hover .spot-badge{background:var(--white);}
+.spot-badge.good-dot{background:var(--good)!important;}
+.spot-badge.fair-dot{background:var(--fair)!important;}
+.spot-badge.poor-dot{background:var(--poor)!important;}
+
 .main{max-width:900px;margin:0 auto;padding:36px 24px 80px;}
+
+/* SPOT INFO BAR */
+.spot-info{background:var(--surface);padding:16px 20px;margin-bottom:20px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;border-left:3px solid rgba(255,255,255,0.15);}
+.spot-info-item{min-width:100px;}
+.spot-info-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.spot-info-val{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.8);line-height:1.5;}
+
+/* SWELL WINDOW WARNING */
+.swell-warning{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.5px;color:rgba(255,165,0,0.85);background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.2);padding:10px 14px;margin-bottom:16px;font-style:italic;}
 
 /* WINDOW ALERT */
 .window-alert{border:1px solid rgba(255,255,255,0.12);padding:20px 24px;margin-bottom:28px;position:relative;overflow:hidden;}
@@ -83,7 +108,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .sec-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.65);margin:28px 0 8px;display:flex;align-items:center;gap:10px;}
 .sec-label::before{content:'';width:16px;height:1px;background:rgba(255,255,255,0.4);}
 
-/* SWELL GRAPH */
+/* GRAPH */
 .graph-wrap{background:var(--surface);padding:24px 20px 16px;margin-bottom:4px;overflow:hidden;}
 .graph-canvas{width:100%;height:140px;display:block;}
 
@@ -136,10 +161,11 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 @media(max-width:640px){
   .current-grid,.current-grid-bottom{grid-template-columns:repeat(2,1fr);}
-  header{padding:14px 18px;} .hero{padding:36px 18px 36px;}
-  .main{padding:24px 16px 60px;} .current-card{padding:20px;}
+  header{padding:14px 18px;}.hero{padding:28px 18px 0;}
+  .main{padding:24px 16px 60px;}.current-card{padding:20px;}
   .badge-row{flex-direction:column;gap:12px;}
   .forecast-table th:nth-child(6),.forecast-table td:nth-child(6){display:none;}
+  .spot-btn{font-size:8px;padding:12px 4px;}
 }
 </style>
 </head>
@@ -174,12 +200,16 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 <header>
   <div><div class="logo">QUIVER</div><div class="logo-tag">Surf Guide</div></div>
-  <button class="profile-btn" onclick="document.getElementById('modal').style.display='flex'">Edit Profile</button>
+  <div class="header-right">
+    <button class="profile-btn" onclick="document.getElementById('modal').style.display='flex'">Edit Profile</button>
+  </div>
 </header>
 
 <div class="hero">
-  <div class="break-name">SPANISH<br>POINT</div>
-  <div class="break-loc">Co. Clare · Ireland · 52.8441° N, 9.4747° W</div>
+  <div class="area-name">Co. Clare · Ireland</div>
+  <div class="break-name" id="heroName">SPANISH<br>POINT</div>
+  <div class="break-loc" id="heroLoc"></div>
+  <div class="spot-selector" id="spotSelector"></div>
 </div>
 
 <main class="main">
@@ -187,8 +217,49 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 </main>
 
 <script>
-const LAT=52.8441, LNG=-9.4747, BEACH_FACING=285;
+// ── SPOTS ──
+const SPOTS = [
+  {
+    id: 'beach',
+    name: 'Beach',
+    fullName: 'SPANISH\nPOINT BEACH',
+    lat: 52.841486, lng: -9.435728,
+    beachFacing: 270, // W
+    swellWindow: [247, 315], // WSW to NW
+    tideNote: 'Best mid tide on the push',
+    level: 'Beginner to intermediate',
+    waveType: 'Beach break — tendency to be messy. Can get rippy on bigger swells.',
+    tideBias: 'mid-push',
+  },
+  {
+    id: 'inner',
+    name: 'Inner Reef',
+    fullName: 'SPANISH POINT\nINNER REEF',
+    lat: 52.844650, lng: -9.443633,
+    beachFacing: 225, // SW
+    swellWindow: [202, 292], // SSW to WNW
+    tideNote: 'Best at mid tide',
+    level: 'Intermediate and above',
+    waveType: 'A-frame reef — short left, longer right. Mid tide.',
+    tideBias: 'mid',
+  },
+  {
+    id: 'middle',
+    name: 'Middle Reef',
+    fullName: 'SPANISH POINT\nMIDDLE REEF',
+    lat: 52.845419, lng: -9.449256,
+    beachFacing: 225, // SW
+    swellWindow: [202, 292],
+    tideNote: 'Best low to mid tide',
+    level: 'Intermediate and above',
+    waveType: 'Right hander — long wave, long paddle. Mid length friendly. Low to mid tide.',
+    tideBias: 'low-mid',
+  },
+];
 
+let currentSpot = SPOTS[0];
+
+// ── PROFILE ──
 function getProfile(){try{return JSON.parse(localStorage.getItem('quiver_profile'));}catch(e){return null;}}
 function saveProfile(){
   const name=document.getElementById('p-name').value.trim()||'Surfer';
@@ -200,24 +271,40 @@ function saveProfile(){
 }
 if(getProfile()) document.getElementById('modal').style.display='none';
 
+// ── HELPERS ──
 function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
-function arrowChar(d){return['↑','↗','→','↘','↓','↙','←','↖'][Math.round(d/45)%8];}
+// Arrows show direction of travel (flipped from meteorological convention)
+function arrowChar(d){return['↓','↙','←','↖','↑','↗','→','↘'][Math.round(d/45)%8];}
 function dirArrowSVG(deg,color){
-  return `<div class="dir-arrow"><svg viewBox="0 0 24 24" style="transform:rotate(${deg}deg)" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></div>`;
+  return `<div class="dir-arrow"><svg viewBox="0 0 24 24" style="transform:rotate(${deg+180}deg)" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></div>`;
 }
 function waveEnergy(h,t){return Math.round(0.5*h*h*t);}
 
-function isOnshore(wd){const d=((wd-BEACH_FACING)+360)%360;return d<=90||d>=270;}
-function isOffshore(wd){const d=((wd-BEACH_FACING)+360)%360;return d>90&&d<270;}
+function isOnshore(wd,spot){
+  const bf=spot.beachFacing;
+  const d=((wd-bf)+360)%360;
+  return d<=90||d>=270;
+}
+function isOffshore(wd,spot){
+  const bf=spot.beachFacing;
+  const d=((wd-bf)+360)%360;
+  return d>90&&d<270;
+}
 
-// Skill thresholds — affects colour coding
+// Check if swell direction is in the spot's optimal window
+function swellInWindow(swellDeg, spot){
+  const [lo,hi]=spot.swellWindow;
+  if(lo<=hi) return swellDeg>=lo&&swellDeg<=hi;
+  return swellDeg>=lo||swellDeg<=hi; // wraps around 0
+}
+
 function skillThresholds(skill){
-  return {
-    beginner:   {minH:0.3, maxH:1.0, minP:5,  col:'good'},
-    intermediate:{minH:0.5, maxH:1.8, minP:7,  col:'good'},
-    advanced:   {minH:0.8, maxH:3.5, minP:9,  col:'good'},
-    expert:     {minH:1.2, maxH:99,  minP:10, col:'good'},
-  }[skill] || {minH:0.5,maxH:99,minP:7};
+  return{
+    beginner:   {minH:0.3,maxH:1.0,minP:5},
+    intermediate:{minH:0.5,maxH:1.8,minP:7},
+    advanced:   {minH:0.8,maxH:3.5,minP:9},
+    expert:     {minH:1.2,maxH:99, minP:10},
+  }[skill]||{minH:0.5,maxH:99,minP:7};
 }
 
 function rate(h,w,p,skill){
@@ -228,13 +315,13 @@ function rate(h,w,p,skill){
   if(sizeOk&&periodOk&&w<5)  return 'epic';
   if(sizeOk&&periodOk&&w<10) return 'good';
   if(sizeOk&&w<15)            return 'fair';
-  if(!sizeOk||w>=15)          return 'poor';
-  return 'fair';
+  return 'poor';
 }
 function rateLabel(r){return{epic:'Epic',good:'Good conditions',fair:'Fair conditions',poor:'Poor conditions',flat:'Flat'}[r];}
 
-function conditionsRead(h,ws,wd,swP,swD,wD){
+function conditionsRead(h,ws,wd,swP,swD,wD,spot){
   const wDir=windDir(wd);
+  const bf=spot.beachFacing;
   const parts=[];
   if(h<0.3) return "Waves too small to surf.";
   const ft=(h*3.281).toFixed(0);
@@ -244,63 +331,73 @@ function conditionsRead(h,ws,wd,swP,swD,wD){
   if(swP>=14) parts.push("very long period — likely to have good shape");
   else if(swP>=10) parts.push("decent period on the swell");
   else if(swP<7) parts.push("short period — likely to be choppy");
+
+  // Wind read with cross-shore categories
+  const diff=((wd-bf)+360)%360;
   if(ws<5) parts.push("virtually no wind");
-  else if(isOffshore(wd)&&ws<15) parts.push(`${wDir} offshore wind — could clean up the faces`);
-  else if(isOffshore(wd)&&ws>=15) parts.push(`strong ${wDir} offshore — may be blown out`);
-  else if(isOnshore(wd)&&ws>=15) parts.push(`strong ${wDir} onshore — likely messy`);
-  else if(isOnshore(wd)&&ws>=8) parts.push(`${wDir} onshore — expect some chop on the face`);
-  else if(isOnshore(wd)) parts.push(`light ${wDir} onshore`);
-  else parts.push(`${wDir} sideshore at ${ws.toFixed(0)}kn`);
+  else if(diff>90&&diff<270&&ws<15) parts.push(`${wDir} offshore — could clean up the faces`);
+  else if(diff>90&&diff<270&&ws>=15) parts.push(`strong ${wDir} offshore — may be too much`);
+  else if((diff<=90||diff>=270)&&ws>=15) parts.push(`strong ${wDir} onshore — likely messy`);
+  else if((diff<=90||diff>=270)&&ws>=8) parts.push(`${wDir} onshore — expect some chop on the face`);
+  else if((diff<=90||diff>=270)&&ws<8) parts.push(`light ${wDir} onshore`);
+  else{
+    const isCrossOff=(diff>90&&diff<=135)||(diff>=225&&diff<270);
+    const isCrossOn=(diff>45&&diff<=90)||(diff>=270&&diff<315);
+    if(isCrossOff&&ws<12) parts.push(`${wDir} cross-offshore — light texture, probably manageable`);
+    else if(isCrossOff&&ws>=12) parts.push(`${wDir} cross-offshore — getting strong, likely choppy on one side`);
+    else if(isCrossOn&&ws<12) parts.push(`${wDir} cross-onshore — light but may ruffle the faces`);
+    else if(isCrossOn&&ws>=12) parts.push(`${wDir} cross-onshore — expect messy conditions`);
+    else parts.push(`${wDir} sideshore at ${ws.toFixed(0)}kn`);
+  }
   return parts.join(". ")+".";
 }
 
 function getSunTimes(lat,lng,date){
   const rad=Math.PI/180;
-  const dayOfYear=Math.floor((date-new Date(date.getFullYear(),0,0))/86400000);
-  const B=(360/365)*(dayOfYear-81)*rad;
+  const doy=Math.floor((date-new Date(date.getFullYear(),0,0))/86400000);
+  const B=(360/365)*(doy-81)*rad;
   const eqTime=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);
   const decl=23.45*Math.sin(B)*rad;
   const HA=Math.acos(-Math.tan(lat*rad)*Math.tan(decl))/rad;
   const noon=12-(lng/15)-(eqTime/60);
-  const sunrise=noon-HA/15, sunset=noon+HA/15;
+  const sr=noon-HA/15,ss=noon+HA/15;
   const isDST=date.getMonth()>=2&&date.getMonth()<=9;
-  const offset=isDST?1:0;
-  const toHHMM=h=>{const hh=Math.floor(h+offset)%24,mm=Math.round((h+offset-Math.floor(h+offset))*60);return`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;};
-  return{sunrise:sunrise+offset,sunset:sunset+offset,sunriseStr:toHHMM(sunrise),sunsetStr:toHHMM(sunset)};
+  const off=isDST?1:0;
+  const fmt=h=>{const hh=Math.floor(h+off)%24,mm=Math.round((h+off-Math.floor(h+off))*60);return`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;};
+  return{sunrise:sr+off,sunset:ss+off,sunriseStr:fmt(sr),sunsetStr:fmt(ss)};
 }
 
-function buildWindowAlert(slots,profile,sun){
+function buildWindowAlert(slots,profile,sun,spot){
   if(!profile) return '';
   const{name,skill,work}=profile;
   const t=skillThresholds(skill);
   const now=new Date();
   const isFlexible=work==='flexible'||work==='retired';
   const scored=slots.map(s=>{
-    const slotDate=new Date(s.time);
-    const hour=slotDate.getHours();
-    const dow=slotDate.getDay();
+    const sd=new Date(s.time);
+    const hour=sd.getHours(),dow=sd.getDay();
     const isAvail=isFlexible||[0,6].includes(dow)||hour<8||hour>18;
     const r=rate(s.h,s.ws,s.p,skill);
-    const offshore=isOffshore(s.wd);
+    const offshore=isOffshore(s.wd,spot);
     const goodWind=offshore||s.ws<8;
     const goodSize=s.h>=t.minH&&s.h<=t.maxH;
     const goodPeriod=s.p>=t.minP;
     const daylight=hour>=Math.floor(sun.sunrise)&&hour<=Math.floor(sun.sunset);
+    const swellOk=swellInWindow(s.swDir??s.waveDir,spot);
     let score=0;
-    if(goodSize) score+=3; if(goodPeriod) score+=2; if(goodWind) score+=2;
-    if(offshore) score+=1; if(isAvail) score+=2; if(daylight) score+=1;
-    return{...s,score,isAvail,r,goodWind,goodSize,goodPeriod,daylight,slotDate,hour,dow};
+    if(goodSize) score+=3;if(goodPeriod) score+=2;if(goodWind) score+=2;
+    if(offshore) score+=1;if(isAvail) score+=2;if(daylight) score+=1;if(swellOk) score+=1;
+    return{...s,score,isAvail,r,goodWind,goodSize,goodPeriod,daylight,slotDate:sd,hour,dow};
   });
   const best=scored.filter(s=>s.score>=5&&s.goodSize).sort((a,b)=>b.score-a.score)[0];
   if(!best){
     const next=scored.filter(s=>s.goodSize).sort((a,b)=>b.score-a.score)[0];
     if(!next) return `<div class="window-alert poor-window"><div class="window-eyebrow">Surf Window · ${name}</div><div class="window-text">Nothing great in the next 24 hours. Check back as conditions develop.</div></div>`;
-    const dn=best?.slotDate.toDateString()===now.toDateString()?'today':best?.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
     return `<div class="window-alert fair-window"><div class="window-eyebrow">Surf Window · ${name}</div><div class="window-text">Best of a quieter spell around ${fmtT(next.time)}. ${next.h.toFixed(1)}m, ${next.p.toFixed(0)}s — one to keep an eye on.</div></div>`;
   }
   const dn=best.slotDate.toDateString()===now.toDateString()?'today':best.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
   const unavNote=!best.isAvail&&work==='9to5'?' — falls during work hours':'';
-  const windNote=isOffshore(best.wd)?`${windDir(best.wd)} offshore wind`:`light ${windDir(best.wd)} wind`;
+  const windNote=isOffshore(best.wd,spot)?`${windDir(best.wd)} offshore wind`:`light ${windDir(best.wd)} wind`;
   const qw=best.r==='epic'?'an epic':best.r==='good'?'a good':'a fair';
   let msg=`Looks like ${qw} window around ${fmtT(best.time)} ${dn}${unavNote}. `;
   msg+=`${best.h.toFixed(1)}m at ${best.p.toFixed(0)}s with ${windNote}.`;
@@ -310,7 +407,7 @@ function buildWindowAlert(slots,profile,sun){
   else if(skill==='expert'&&best.h<1.0) msg+=` On the smaller side for the time being.`;
   else if(skill==='advanced'&&best.h<0.9) msg+=` A quieter spell — smaller than ideal.`;
   const ac=best.r==='good'||best.r==='epic'?'good-window':'fair-window';
-  return `<div class="window-alert ${ac}"><div class="window-eyebrow">Surf Window · ${name}</div><div class="window-text">${msg}</div></div>`;
+  return `<div class="window-alert ${ac}"><div class="window-eyebrow">Surf Window · ${name} · ${spot.name}</div><div class="window-text">${msg}</div></div>`;
 }
 
 function fmtT(iso){return new Date(iso).toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});}
@@ -321,19 +418,18 @@ function fmtDay(iso){
   return d.toLocaleDateString('en-IE',{weekday:'short'});
 }
 
-// Extract tide highs/lows from sea level height array
-function extractTides(times, levels){
+function extractTides(times,levels){
   const tides=[];
+  const today=new Date();
   for(let i=1;i<levels.length-1;i++){
     if(levels[i]==null) continue;
-    const isHigh=levels[i]>levels[i-1]&&levels[i]>levels[i+1];
-    const isLow=levels[i]<levels[i-1]&&levels[i]<levels[i+1];
-    if(isHigh||isLow){
+    const isH=levels[i]>levels[i-1]&&levels[i]>levels[i+1];
+    const isL=levels[i]<levels[i-1]&&levels[i]<levels[i+1];
+    if(isH||isL){
       const d=new Date(times[i]);
-      const today=new Date();
       if(d.toDateString()===today.toDateString()||
         (d>today&&tides.length<6)){
-        tides.push({type:isHigh?'high':'low',time:times[i],height:levels[i]});
+        tides.push({type:isH?'high':'low',time:times[i],height:levels[i]});
       }
     }
     if(tides.length>=6) break;
@@ -341,91 +437,105 @@ function extractTides(times, levels){
   return tides;
 }
 
-// Draw swell arrival graph on canvas
-function drawGraph(canvas, times, heights, periods, skill){
+function drawGraph(canvas,times,heights,periods,skill){
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth,H=140;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.height=H+'px';
   const ctx=canvas.getContext('2d');
-  const W=canvas.width=canvas.offsetWidth*window.devicePixelRatio||canvas.offsetWidth;
-  const H=canvas.height=140*window.devicePixelRatio||140;
-  canvas.style.height='140px';
-  ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
-  const w=canvas.offsetWidth, h=140;
-  ctx.clearRect(0,0,w,h);
+  ctx.scale(dpr,dpr);
   const t=skillThresholds(skill||'advanced');
   const maxH=Math.max(...heights.filter(Boolean),2)*1.15;
   const pad={l:36,r:12,t:16,b:28};
-  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const gw=W-pad.l-pad.r,gh=H-pad.t-pad.b;
   const toX=i=>(i/(heights.length-1))*gw+pad.l;
   const toY=v=>gh-(v/maxH)*gh+pad.t;
-
-  // Good zone band
-  const goodY1=toY(Math.min(t.maxH,maxH));
-  const goodY2=toY(t.minH);
+  // Good zone
   ctx.fillStyle='rgba(34,197,94,0.06)';
-  ctx.fillRect(pad.l,goodY1,gw,goodY2-goodY1);
-
-  // Grid lines
-  ctx.strokeStyle='rgba(255,255,255,0.06)';
-  ctx.lineWidth=1;
+  ctx.fillRect(pad.l,toY(Math.min(t.maxH,maxH)),gw,toY(t.minH)-toY(Math.min(t.maxH,maxH)));
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
   for(let v=0.5;v<=maxH;v+=0.5){
-    const y=toY(v);
-    if(y<pad.t||y>h-pad.b) continue;
-    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
-    if(v%1===0){
-      ctx.fillStyle='rgba(255,255,255,0.25)';
-      ctx.font=`${10*1}px "DM Mono", monospace`;
-      ctx.fillText(v+'m',2,y+4);
-    }
+    const y=toY(v);if(y<pad.t||y>H-pad.b) continue;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    if(v%1===0){ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='10px "DM Mono",monospace';ctx.fillText(v+'m',2,y+4);}
   }
-
-  // Day separators + labels
+  // Day separators
   let lastDay='';
   times.forEach((t,i)=>{
-    const d=new Date(t);
-    const dayStr=d.toLocaleDateString('en-IE',{weekday:'short'});
-    if(dayStr!==lastDay){
+    const d=new Date(t),ds=d.toLocaleDateString('en-IE',{weekday:'short'});
+    if(ds!==lastDay){
       const x=toX(i);
       ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke();
-      ctx.fillStyle='rgba(255,255,255,0.3)';
-      ctx.font=`${9}px "DM Mono", monospace`;
-      ctx.fillText(dayStr,x+3,h-pad.b+14);
-      lastDay=dayStr;
+      ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='9px "DM Mono",monospace';
+      ctx.fillText(ds,x+3,H-pad.b+14);lastDay=ds;
     }
   });
-
-  // Fill under curve
+  // Fill
   ctx.beginPath();
   heights.forEach((v,i)=>{if(v==null)return;const x=toX(i),y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.lineTo(toX(heights.length-1),h-pad.b);
-  ctx.lineTo(pad.l,h-pad.b);ctx.closePath();
-  const grad=ctx.createLinearGradient(0,pad.t,0,h-pad.b);
-  grad.addColorStop(0,'rgba(255,255,255,0.12)');
-  grad.addColorStop(1,'rgba(255,255,255,0.01)');
-  ctx.fillStyle=grad;ctx.fill();
-
-  // Line — colour segments by rating
+  ctx.lineTo(toX(heights.length-1),H-pad.b);ctx.lineTo(pad.l,H-pad.b);ctx.closePath();
+  const gr=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  gr.addColorStop(0,'rgba(255,255,255,0.12)');gr.addColorStop(1,'rgba(255,255,255,0.01)');
+  ctx.fillStyle=gr;ctx.fill();
+  // Line
   for(let i=1;i<heights.length;i++){
-    if(heights[i]==null||heights[i-1]==null) continue;
+    if(!heights[i]||!heights[i-1]) continue;
     const r=rate(heights[i],10,periods[i]||8,skill);
     ctx.strokeStyle=r==='good'||r==='epic'?'rgba(34,197,94,0.9)':r==='fair'?'rgba(245,200,0,0.9)':'rgba(239,68,68,0.7)';
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(toX(i-1),toY(heights[i-1]));
-    ctx.lineTo(toX(i),toY(heights[i]));
-    ctx.stroke();
+    ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(toX(i-1),toY(heights[i-1]));ctx.lineTo(toX(i),toY(heights[i]));ctx.stroke();
   }
-
   // Now marker
   const now=new Date();
-  const nowIdx=times.findIndex(t=>new Date(t)>=now);
-  if(nowIdx>0){
-    const x=toX(nowIdx);
+  const ni=times.findIndex(t=>new Date(t)>=now);
+  if(ni>0){
+    const x=toX(ni);
     ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
-    ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font=`8px "DM Mono",monospace`;
-    ctx.fillText('now',x+3,pad.t+10);
+    ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='8px "DM Mono",monospace';ctx.fillText('now',x+3,pad.t+10);
   }
+}
+
+// Build the spot selector tabs with live condition dots
+function buildSelector(dotRatings){
+  const sel=document.getElementById('spotSelector');
+  sel.innerHTML=SPOTS.map((s,i)=>{
+    const r=dotRatings[i]||'';
+    const dotClass=r==='good'||r==='epic'?'good-dot':r==='fair'?'fair-dot':r==='poor'?'poor-dot':'';
+    return`<button class="spot-btn${s.id===currentSpot.id?' active':''}" onclick="switchSpot('${s.id}')">
+      <span class="spot-badge ${dotClass}"></span>${s.name}
+    </button>`;
+  }).join('');
+}
+
+function switchSpot(id){
+  currentSpot=SPOTS.find(s=>s.id===id)||SPOTS[0];
+  // Update hero name
+  const lines=currentSpot.fullName.split('\n');
+  document.getElementById('heroName').innerHTML=lines.join('<br>');
+  document.getElementById('heroLoc').textContent=`${currentSpot.lat.toFixed(4)}° N, ${Math.abs(currentSpot.lng).toFixed(4)}° W`;
+  load();
+}
+
+// Quick-fetch rating for each spot (for the dots)
+async function fetchDotRatings(){
+  const now=new Date();
+  const ns=now.toISOString().slice(0,13);
+  const ratings=await Promise.all(SPOTS.map(async s=>{
+    try{
+      const[mr,wr]=await Promise.all([
+        fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${s.lat}&longitude=${s.lng}&hourly=wave_height,wave_period&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=1`),
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lng}&hourly=wind_speed_10m&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=1`)
+      ]);
+      const m=await mr.json(),w=await wr.json();
+      const ci=m.hourly.time.findIndex(t=>t.startsWith(ns));
+      const h=m.hourly.wave_height[ci]??0,p=m.hourly.wave_period[ci]??0,ws=w.hourly.wind_speed_10m[ci]??0;
+      const profile=getProfile();
+      return rate(h,ws,p,profile?.skill);
+    }catch(e){return 'poor';}
+  }));
+  return ratings;
 }
 
 async function load(){
@@ -433,31 +543,38 @@ async function load(){
   const profile=getProfile();
   if(!profile) return;
   const skill=profile.skill||'advanced';
+  const spot=currentSpot;
+
+  // Update hero
+  const lines=spot.fullName.split('\n');
+  document.getElementById('heroName').innerHTML=lines.join('<br>');
+  document.getElementById('heroLoc').textContent=`${spot.lat.toFixed(4)}° N, ${Math.abs(spot.lng).toFixed(4)}° W`;
+
+  app.innerHTML='<div class="status">Loading forecast...</div>';
 
   try{
-    const[mr,wr,tideR]=await Promise.all([
-      fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LNG}`
+    const[mr,wr,tideR,dots]=await Promise.all([
+      fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${spot.lat}&longitude=${spot.lng}`
         +`&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature`
         +`&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max`
         +`&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=7`),
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}`
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${spot.lat}&longitude=${spot.lng}`
         +`&hourly=wind_speed_10m,wind_direction_10m`
         +`&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=7`),
-      // INTGN Galway Port — nearest tide gauge, real observed levels
-      fetch(`https://erddap.marine.ie/erddap/tabledap/IrishNationalTideGaugeNetwork.json?time,Water_Level_LAT&time>=${new Date(Date.now()-3600000*2).toISOString().slice(0,19)}Z&time<=${new Date(Date.now()+86400000*2).toISOString().slice(0,19)}Z&station_id=%22Galway%20Port%22&orderBy(%22time%22)`)
-        .catch(()=>null)
+      fetch(`https://erddap.marine.ie/erddap/tabledap/IrishNationalTideGaugeNetwork.json?time,Water_Level_LAT&time>=${new Date(Date.now()-7200000).toISOString().slice(0,19)}Z&time<=${new Date(Date.now()+172800000).toISOString().slice(0,19)}Z&station_id=%22Galway%20Port%22&orderBy(%22time%22)`).catch(()=>null),
+      fetchDotRatings()
     ]);
 
     if(!mr.ok) throw new Error('Marine API '+mr.status);
     if(!wr.ok) throw new Error('Wind API '+wr.status);
 
-    const m=await mr.json(), w=await wr.json();
+    const m=await mr.json(),w=await wr.json();
     const times=m.hourly.time;
-    const wH=m.hourly.wave_height, wDir=m.hourly.wave_direction, wP=m.hourly.wave_period;
-    const swH=m.hourly.swell_wave_height, swD=m.hourly.swell_wave_direction, swP=m.hourly.swell_wave_period;
-    const sw2H=m.hourly.secondary_swell_wave_height, sw2D=m.hourly.secondary_swell_wave_direction, sw2P=m.hourly.secondary_swell_wave_period;
+    const wH=m.hourly.wave_height,wDir=m.hourly.wave_direction,wP=m.hourly.wave_period;
+    const swH=m.hourly.swell_wave_height,swD=m.hourly.swell_wave_direction,swP=m.hourly.swell_wave_period;
+    const sw2H=m.hourly.secondary_swell_wave_height,sw2D=m.hourly.secondary_swell_wave_direction,sw2P=m.hourly.secondary_swell_wave_period;
     const sst=m.hourly.sea_surface_temperature;
-    const wndS=w.hourly.wind_speed_10m, wndD=w.hourly.wind_direction_10m;
+    const wndS=w.hourly.wind_speed_10m,wndD=w.hourly.wind_direction_10m;
     const daily=m.daily;
 
     const now=new Date();
@@ -466,42 +583,44 @@ async function load(){
 
     const cH=wH[ci]??0,cD=wDir[ci]??0,cP=wP[ci]??0;
     const cSwD=swD[ci]??cD,cSwP=swP[ci]??cP;
-    const cSw2H=sw2H[ci]??0,cSw2D=sw2D[ci]??0,cSw2P=sw2P[ci]??0;
-    const cSST=sst[ci]??null;
+    const cSw2H=sw2H?.[ci]??0,cSw2D=sw2D?.[ci]??0,cSw2P=sw2P?.[ci]??0;
+    const cSST=sst?.[ci]??null;
     const cWS=wndS[ci]??0,cWD=wndD[ci]??0;
     const r=rate(cH,cWS,cP,skill);
     const energy=waveEnergy(cH,cP);
-    const read=conditionsRead(cH,cWS,cWD,cSwP,cSwD,cD);
+    const read=conditionsRead(cH,cWS,cWD,cSwP,cSwD,cD,spot);
     const rColor=r==='good'||r==='epic'?'var(--good)':r==='fair'?'var(--fair)':r==='poor'?'var(--poor)':'var(--muted)';
+    const sun=getSunTimes(spot.lat,spot.lng,now);
 
-    const sun=getSunTimes(LAT,LNG,now);
+    // Swell window check
+    const swellGood=swellInWindow(cSwD||cD,spot);
+    const swellWarnHTML=!swellGood&&cH>=0.3?`<div class="swell-warning">⚠ Swell direction (${windDir(cSwD||cD)}) may not be optimal for this break — ${spot.name} works best on ${windDir(spot.swellWindow[0])}–${windDir(spot.swellWindow[1])} swell.</div>`:'';
 
-    // Slots 24hr
+    // Slots
     const slots=[];
     for(let i=ci;i<ci+24&&i<times.length;i+=3){
       slots.push({time:times[i],h:wH[i]??0,p:wP[i]??0,waveDir:wDir[i]??0,swDir:swD[i]??null,swP:swP[i]??0,ws:wndS[i]??0,wd:wndD[i]??0});
     }
 
-    // Tides — try INTGN first, fall back to Open-Meteo sea level
+    // Tides
     let tides=[];
     if(tideR&&tideR.ok){
-      try{
-        const tj=await tideR.json();
-        const rows=tj.table?.rows||[];
-        const tideTimes=rows.map(r=>r[0]);
-        const tideLevels=rows.map(r=>r[1]);
-        tides=extractTides(tideTimes,tideLevels);
-      }catch(e){}
+      try{const tj=await tideR.json();const rows=tj.table?.rows||[];tides=extractTides(rows.map(r=>r[0]),rows.map(r=>r[1]));}catch(e){}
     }
 
-
-    // 7 day
     const days=daily.time.map((t,i)=>({time:t,h:daily.wave_height_max[i]??0,p:daily.wave_period_max[i]??0,dir:daily.wave_direction_dominant[i]??0}));
+    const windowHTML=buildWindowAlert(slots,profile,sun,spot);
 
-    // Window alert
-    const windowHTML=buildWindowAlert(slots,profile,sun);
+    buildSelector(dots);
 
     app.innerHTML=`
+      <div class="spot-info">
+        <div class="spot-info-item"><div class="spot-info-label">Wave Type</div><div class="spot-info-val">${spot.waveType}</div></div>
+        <div class="spot-info-item"><div class="spot-info-label">Best Tide</div><div class="spot-info-val">${spot.tideNote}</div></div>
+        <div class="spot-info-item"><div class="spot-info-label">Level</div><div class="spot-info-val">${spot.level}</div></div>
+      </div>
+
+      ${swellWarnHTML}
       ${windowHTML}
 
       <div class="badge-row">
@@ -537,22 +656,19 @@ async function load(){
         </div>
       </div>
 
-      ${cSw2H>0.2?`
-      <div class="swell-secondary">
+      ${cSw2H>0.2?`<div class="swell-secondary">
         <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-right:8px;">Secondary Swell</div>
         <div class="swell-sec-item"><div class="swell-sec-label">Height</div><div class="swell-sec-val">${cSw2H.toFixed(1)}<span style="font-size:11px;opacity:0.4">m</span></div></div>
         <div class="swell-sec-item"><div class="swell-sec-label">Period</div><div class="swell-sec-val">${cSw2P.toFixed(0)}<span style="font-size:11px;opacity:0.4">s</span></div></div>
         <div class="swell-sec-item"><div class="swell-sec-label">Direction</div><div class="swell-sec-val">${arrowChar(cSw2D)} ${windDir(cSw2D)}</div></div>
-      </div>`:``}
+      </div>`:''}
 
       <div class="sec-label">7 Day Swell Arrival</div>
       <div class="graph-wrap"><canvas class="graph-canvas" id="swellGraph"></canvas></div>
 
       <div class="sec-label">Next 24 Hours</div>
       <table class="forecast-table">
-        <thead><tr>
-          <th>Time</th><th>Height</th><th>Swell</th><th>Wind</th><th>Period</th><th>Energy</th>
-        </tr></thead>
+        <thead><tr><th>Time</th><th>Height</th><th>Swell</th><th>Wind</th><th>Period</th><th>Energy</th></tr></thead>
         <tbody>
           ${slots.map(s=>{
             const sr=rate(s.h,s.ws,s.p,skill);
@@ -561,7 +677,6 @@ async function load(){
             const isDawn=Math.abs(slotH-Math.floor(sun.sunrise))<=1;
             const isDusk=Math.abs(slotH-Math.floor(sun.sunset))<=1;
             const isWork=profile.work==='9to5'&&![0,6].includes(new Date(s.time).getDay())&&slotH>=9&&slotH<=17;
-            const en=waveEnergy(s.h,s.p);
             const tag=isDawn?'<span class="row-tag dawn">First Light</span>':isDusk?'<span class="row-tag dusk">Last Light</span>':isWork?'<span class="row-tag work">Work hours</span>':'';
             return`<tr class="forecast-row ${sr}">
               <td><div class="row-time">${fmtT(s.time)}${tag?'<br>'+tag:''}</div></td>
@@ -569,36 +684,28 @@ async function load(){
               <td><div class="row-dir">${arrowChar(dir)} ${windDir(dir)}<br><span style="font-size:9px;opacity:0.5">${(s.swP||s.p).toFixed(0)}s</span></div></td>
               <td><div class="row-wind">${arrowChar(s.wd)} ${windDir(s.wd)}<br><span style="font-size:9px;opacity:0.5">${s.ws.toFixed(0)}kn</span></div></td>
               <td><div class="row-period">${s.p.toFixed(0)}s</div></td>
-              <td><div class="row-energy">${en}</div></td>
+              <td><div class="row-energy">${waveEnergy(s.h,s.p)}</div></td>
             </tr>`;
           }).join('')}
         </tbody>
       </table>
 
-      ${tides.length>0?`
-      <div class="sec-label">Tides · Today</div>
+      ${tides.length>0?`<div class="sec-label">Tides · Today</div>
       <div class="tide-grid">
-        ${tides.map(t=>`
-          <div class="tide-card">
-            <div class="tide-icon">${t.type==='high'?'↑':'↓'}</div>
-            <div>
-              <div class="tide-type">${t.type==='high'?'High':'Low'} Tide</div>
-              <div class="tide-time">${fmtT(t.time)}</div>
-              <div class="tide-ht">${t.height!=null?t.height.toFixed(2)+'m':''}</div>
-            </div>
-          </div>`).join('')}
+        ${tides.map(t=>`<div class="tide-card">
+          <div class="tide-icon">${t.type==='high'?'↑':'↓'}</div>
+          <div><div class="tide-type">${t.type==='high'?'High':'Low'} Tide</div>
+          <div class="tide-time">${fmtT(t.time)}</div>
+          <div class="tide-ht">${t.height!=null?t.height.toFixed(2)+'m':''}</div></div>
+        </div>`).join('')}
       </div>`:''}
 
       <div class="sec-label">First &amp; Last Light</div>
       <div class="tide-grid">
-        <div class="tide-card">
-          <div class="tide-icon" style="color:rgba(100,180,255,0.8)">☀</div>
-          <div><div class="tide-type">First Light</div><div class="tide-time">${sun.sunriseStr}</div><div class="tide-ht">Sunrise</div></div>
-        </div>
-        <div class="tide-card">
-          <div class="tide-icon" style="color:rgba(255,160,60,0.8)">☀</div>
-          <div><div class="tide-type">Last Light</div><div class="tide-time">${sun.sunsetStr}</div><div class="tide-ht">Sunset</div></div>
-        </div>
+        <div class="tide-card"><div class="tide-icon" style="color:rgba(100,180,255,0.8)">☀</div>
+          <div><div class="tide-type">First Light</div><div class="tide-time">${sun.sunriseStr}</div><div class="tide-ht">Sunrise</div></div></div>
+        <div class="tide-card"><div class="tide-icon" style="color:rgba(255,160,60,0.8)">☀</div>
+          <div><div class="tide-type">Last Light</div><div class="tide-time">${sun.sunsetStr}</div><div class="tide-ht">Sunset</div></div></div>
       </div>
 
       <div class="sec-label">7 Day Outlook</div>
@@ -612,7 +719,6 @@ async function load(){
       </div>
     `;
 
-    // Draw graph after DOM rendered
     requestAnimationFrame(()=>{
       const canvas=document.getElementById('swellGraph');
       if(canvas) drawGraph(canvas,times,wH,wP,skill);
@@ -623,6 +729,8 @@ async function load(){
   }
 }
 
+// Init
+buildSelector([]);
 load();
 </script>
 </body>

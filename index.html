@@ -373,16 +373,18 @@ function buildWindowAlert(slots, profile, sun, tides) {
   }
 
   const dayName = best.slotDate.toDateString() === now.toDateString() ? 'today' : best.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
-  const unavailableNote = !best.isAvailable && work === '9to5' ? ' — you\'ll need to duck out early or make it a lunch paddle' : '';
+  const unavailableNote = !best.isAvailable && work === '9to5' ? ' — falls during work hours' : '';
   const windNote = isOffshore(best.wd) ? `${windDir(best.wd)} offshore wind` : `light ${windDir(best.wd)} wind`;
   const qualityWord = best.r === 'epic' ? 'an epic' : best.r === 'good' ? 'a good' : 'a fair';
 
   let msg = `Looks like ${qualityWord} window around ${fmtT(best.time)} ${dayName}${unavailableNote}. `;
   msg += `${best.h.toFixed(1)}m at ${best.p.toFixed(0)}s with ${windNote}.`;
 
-  if (skill === 'beginner' && best.h < 1.0) msg += ` Good size for building confidence.`;
-  else if (skill === 'expert' && best.h >= 2.0) msg += ` Sizeable — should be worth the paddle.`;
-  else if (skill === 'advanced' && best.h < 0.9) msg += ` A bit small but could be fun on a log.`;
+  if (skill === 'beginner' && best.h < 1.0) msg += ` A manageable size for developing surfers.`;
+  else if (skill === 'beginner' && best.h >= 1.0) msg += ` Slightly bigger than ideal for beginners — one to watch.`;
+  else if (skill === 'expert' && best.h >= 2.0) msg += ` Sizeable swell on the way.`;
+  else if (skill === 'expert' && best.h < 1.0) msg += ` On the smaller side for the time being.`;
+  else if (skill === 'advanced' && best.h < 0.9) msg += ` A quieter spell — smaller than ideal.`;
 
   const alertClass = best.r === 'good' || best.r === 'epic' ? 'good-window' : 'fair-window';
   return `<div class="window-alert ${alertClass}"><div class="window-eyebrow">Surf Window · ${name}</div><div class="window-text">${msg}</div></div>`;

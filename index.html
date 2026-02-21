@@ -258,12 +258,15 @@ function arrowChar(deg) {
 function waveEnergy(h, t) { return Math.round(0.5 * h * h * t); }
 
 function isOnshore(windDeg) {
-  const diff = Math.abs(((windDeg - BEACH_FACING) + 360) % 360);
-  return diff < 90 || diff > 270;
+  // Onshore = wind blowing FROM the sea (from the W/WNW direction the beach faces).
+  // Spanish Point faces WNW (~285°), so onshore wind comes from roughly W through NW.
+  const diff = ((windDeg - BEACH_FACING) + 360) % 360;
+  return diff <= 90 || diff >= 270;
 }
 function isOffshore(windDeg) {
-  const diff = Math.abs(((windDeg - BEACH_FACING) + 360) % 360);
-  return diff >= 90 && diff <= 270;
+  // Offshore = wind blowing FROM land out to sea = coming from the E/SE side (~105°).
+  const diff = ((windDeg - BEACH_FACING) + 360) % 360;
+  return diff > 90 && diff < 270;
 }
 
 function rate(h, w, p) {

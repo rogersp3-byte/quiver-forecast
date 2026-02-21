@@ -163,6 +163,37 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 .status{text-align:center;padding:80px 24px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .status.error{color:var(--poor);}
+/* MOBILE BOTTOM NAV */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(10,10,10,0.97);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  z-index: 500;
+  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+  backdrop-filter: blur(12px);
+}
+.bottom-nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  transition: color 0.15s;
+  padding: 4px 0;
+}
+.bottom-nav-item svg { width: 20px; height: 20px; }
+.bottom-nav-item:hover,
+.bottom-nav-item.active { color: #ffffff; }
+.bottom-nav-item.active svg { stroke: #f5c800; }
+@media (max-width: 640px) {
+  .bottom-nav { display: flex; }
+  .main-nav { display: none !important; }
+  body { padding-bottom: 72px; }
+}
+
 
 /* TWO COL TOP */
 .top-two-col{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:20px;}
@@ -767,5 +798,20 @@ async function load(){
 buildSelector([]);
 load();
 </script>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item active" id="bn-forecast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/><circle cx="12" cy="12" r="5"/><path d="M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <span>Forecast</span>
+  </a>
+  <a href="workshop.html" class="bottom-nav-item" id="bn-workshop">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <span>Workshop</span>
+  </a>
+  <a href="trip.html" class="bottom-nav-item" id="bn-trip">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+    <span>Trip</span>
+  </a>
+</nav>
 </body>
 </html>

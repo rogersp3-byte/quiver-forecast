@@ -275,16 +275,18 @@ const SPOTS = [
 let currentSpot = SPOTS[0];
 
 // ── PROFILE ──
-function getProfile(){try{return JSON.parse(localStorage.getItem('quiver_profile'));}catch(e){return null;}}
+function getProfile(){try{const p=JSON.parse(localStorage.getItem('quiver_profile'));return p&&p.skill?p:null;}catch(e){return null;}}
 function saveProfile(){
-  const name=document.getElementById('p-name').value.trim()||'Surfer';
-  const skill=document.getElementById('p-skill').value;
-  const work=document.getElementById('p-work').value;
-  localStorage.setItem('quiver_profile',JSON.stringify({name,skill,work}));
+  try{
+    const name=document.getElementById('p-name').value.trim()||'Surfer';
+    const skill=document.getElementById('p-skill').value;
+    const work=document.getElementById('p-work').value;
+    localStorage.setItem('quiver_profile',JSON.stringify({name,skill,work}));
+  }catch(e){}
   document.getElementById('modal').style.display='none';
   load();
 }
-if(getProfile()) document.getElementById('modal').style.display='none';
+try{if(getProfile()) document.getElementById('modal').style.display='none';}catch(e){}
 
 // ── HELPERS ──
 function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}

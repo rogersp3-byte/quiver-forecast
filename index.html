@@ -437,7 +437,7 @@ async function load(){
   try{
     const[mr,wr,tideR]=await Promise.all([
       fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LNG}`
-        +`&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature,sea_level_height`
+        +`&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature`
         +`&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max`
         +`&wind_speed_unit=kn&timezone=Europe%2FDublin&forecast_days=7`),
       fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}`
@@ -457,7 +457,6 @@ async function load(){
     const swH=m.hourly.swell_wave_height, swD=m.hourly.swell_wave_direction, swP=m.hourly.swell_wave_period;
     const sw2H=m.hourly.secondary_swell_wave_height, sw2D=m.hourly.secondary_swell_wave_direction, sw2P=m.hourly.secondary_swell_wave_period;
     const sst=m.hourly.sea_surface_temperature;
-    const seaLevel=m.hourly.sea_level_height;
     const wndS=w.hourly.wind_speed_10m, wndD=w.hourly.wind_direction_10m;
     const daily=m.daily;
 
@@ -494,9 +493,7 @@ async function load(){
         tides=extractTides(tideTimes,tideLevels);
       }catch(e){}
     }
-    if(tides.length===0&&seaLevel){
-      tides=extractTides(times,seaLevel);
-    }
+
 
     // 7 day
     const days=daily.time.map((t,i)=>({time:t,h:daily.wave_height_max[i]??0,p:daily.wave_period_max[i]??0,dir:daily.wave_direction_dominant[i]??0}));

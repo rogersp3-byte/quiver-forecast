@@ -159,6 +159,20 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .status{text-align:center;padding:80px 24px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .status.error{color:var(--poor);}
 
+/* TWO COL TOP */
+.top-two-col{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:20px;}
+.top-col{background:var(--surface);padding:22px 20px;}
+.top-col-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.top-col .badge{margin-bottom:12px;display:inline-block;}
+.top-col .conditions-read{border-left:none;padding-left:0;margin-top:8px;font-size:10px;}
+.top-col .window-alert{margin-bottom:0;border:none;padding:0;background:none;}
+.top-col .window-alert::before{display:none;}
+.top-col .window-eyebrow{margin-bottom:10px;}
+.top-col .window-text{font-size:11px;}
+
+/* DISCLAIMER */
+.disclaimer{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.5px;color:rgba(255,255,255,0.25);text-align:center;padding:24px 20px;border-top:1px solid var(--faint);margin-top:28px;line-height:1.8;font-style:italic;}
+
 @media(max-width:640px){
   .current-grid,.current-grid-bottom{grid-template-columns:repeat(2,1fr);}
   header{padding:14px 18px;}.hero{padding:28px 18px 0;}
@@ -166,6 +180,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   .badge-row{flex-direction:column;gap:12px;}
   .forecast-table th:nth-child(6),.forecast-table td:nth-child(6){display:none;}
   .spot-btn{font-size:8px;padding:12px 4px;}
+  .top-two-col{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -226,10 +241,10 @@ const SPOTS = [
     lat: 52.841486, lng: -9.435728,
     beachFacing: 270, // W
     swellWindow: [247, 315], // WSW to NW
-    tideNote: 'Best mid tide on the push',
+    
     level: 'Beginner to intermediate',
-    waveType: 'Beach break — tendency to be messy. Can get rippy on bigger swells.',
-    tideBias: 'mid-push',
+    waveType: 'Beach break',
+    
   },
   {
     id: 'inner',
@@ -238,10 +253,10 @@ const SPOTS = [
     lat: 52.844650, lng: -9.443633,
     beachFacing: 225, // SW
     swellWindow: [202, 292], // SSW to WNW
-    tideNote: 'Best at mid tide',
+    
     level: 'Intermediate and above',
-    waveType: 'A-frame reef — short left, longer right. Mid tide.',
-    tideBias: 'mid',
+    waveType: 'A-frame',
+    
   },
   {
     id: 'middle',
@@ -250,10 +265,10 @@ const SPOTS = [
     lat: 52.845419, lng: -9.449256,
     beachFacing: 225, // SW
     swellWindow: [202, 292],
-    tideNote: 'Best low to mid tide',
+    
     level: 'Intermediate and above',
-    waveType: 'Right hander — long wave, long paddle. Mid length friendly. Low to mid tide.',
-    tideBias: 'low-mid',
+    waveType: 'Right hander',
+    
   },
 ];
 
@@ -614,18 +629,17 @@ async function load(){
     buildSelector(dots);
 
     app.innerHTML=`
-      <div class="spot-info">
-        <div class="spot-info-item"><div class="spot-info-label">Wave Type</div><div class="spot-info-val">${spot.waveType}</div></div>
-        <div class="spot-info-item"><div class="spot-info-label">Best Tide</div><div class="spot-info-val">${spot.tideNote}</div></div>
-        <div class="spot-info-item"><div class="spot-info-label">Level</div><div class="spot-info-val">${spot.level}</div></div>
-      </div>
-
       ${swellWarnHTML}
-      ${windowHTML}
 
-      <div class="badge-row">
-        <span class="badge badge-${r}">${rateLabel(r)}</span>
-        <div class="conditions-read">${read}</div>
+      <div class="top-two-col">
+        <div class="top-col">
+          <div class="top-col-label">Live</div>
+          <span class="badge badge-${r}">${rateLabel(r)}</span>
+          <div class="conditions-read">${read}</div>
+        </div>
+        <div class="top-col">
+          ${windowHTML}
+        </div>
       </div>
 
       <div class="current-card">
@@ -717,7 +731,16 @@ async function load(){
             <div class="day-detail">${arrowChar(d.dir)} ${windDir(d.dir)}<br>${d.p.toFixed(0)}s period</div>
           </div>`;}).join('')}
       </div>
-    `;
+
+      <div class="sec-label">About This Break</div>
+      <div class="spot-info">
+        <div class="spot-info-item"><div class="spot-info-label">Wave Type</div><div class="spot-info-val">${spot.waveType}</div></div>
+        <div class="spot-info-item"><div class="spot-info-label">Level</div><div class="spot-info-val">${spot.level}</div></div>
+        <div class="spot-info-item"><div class="spot-info-label">Optimal Swell</div><div class="spot-info-val">${windDir(spot.swellWindow[0])}–${windDir(spot.swellWindow[1])}</div></div>
+      </div>
+
+      <div class="disclaimer">In forecasting we don't deal in definites. Quiver Surf Forecast should be used in tandem with your own local knowledge of this wave.</div>
+    \`;
 
     requestAnimationFrame(()=>{
       const canvas=document.getElementById('swellGraph');

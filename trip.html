@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiver — Trip Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0f0f;--surface:#1a1a1a;--white:#fff;--muted:rgba(255,255,255,0.35);--faint:rgba(255,255,255,0.1);--good:#22c55e;--fair:#f5c800;--poor:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--white);font-family:'Archivo Black',sans-serif;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.07;mix-blend-mode:overlay;}
+header{padding:18px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--faint);}
+.logo{font-size:18px;letter-spacing:2px;}
+.logo-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.main-nav{display:flex;gap:0;border:1px solid rgba(255,255,255,0.12);}
+.nav-link{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;color:var(--muted);text-decoration:none;border-right:1px solid rgba(255,255,255,0.12);transition:all 0.15s;}
+.nav-link:last-child{border-right:none;}
+.nav-link:hover{color:var(--white);background:rgba(255,255,255,0.06);}
+.nav-link.active{color:var(--white);background:rgba(255,255,255,0.08);}
+.coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 65px);text-align:center;padding:40px 24px;}
+.cs-title{font-size:clamp(48px,12vw,110px);letter-spacing:-2px;line-height:0.9;opacity:0.15;}
+.cs-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-top:28px;}
+.cs-features{margin-top:48px;display:flex;flex-direction:column;gap:12px;max-width:360px;}
+.cs-item{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);padding:12px 18px;border:1px solid rgba(255,255,255,0.06);text-align:left;}
+.cs-item::before{content:'— ';color:rgba(255,255,255,0.15);}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="logo">QUIVER</div><div class="logo-tag">Surf Guide</div></div>
+  <nav class="main-nav">
+    <a href="index.html" class="nav-link">Forecast</a>
+    <a href="workshop.html" class="nav-link">Workshop</a>
+    <a href="trip.html" class="nav-link active">Trip</a>
+  </nav>
+</header>
+<div class="coming-soon">
+  <div class="cs-title">TRIP<br>PLANNER</div>
+  <div class="cs-sub">Coming soon</div>
+  <div class="cs-features">
+    <div class="cs-item">Find overlapping availability in your group</div>
+    <div class="cs-item">Vote on destinations — Indonesia, Morocco, Sri Lanka</div>
+    <div class="cs-item">AI surf guide for your chosen destination</div>
+    <div class="cs-item">Share via link — no accounts needed</div>
+  </div>
+</div>
+</body>
+</html>

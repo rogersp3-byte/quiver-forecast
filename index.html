@@ -35,6 +35,11 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .logo{font-size:18px;letter-spacing:2px;}
 .logo-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
 .header-right{display:flex;gap:10px;align-items:center;}
+.main-nav{display:flex;gap:0;border:1px solid rgba(255,255,255,0.12);}
+.nav-link{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;color:var(--muted);text-decoration:none;border-right:1px solid rgba(255,255,255,0.12);transition:all 0.15s;}
+.nav-link:last-child{border-right:none;}
+.nav-link:hover{color:var(--white);background:rgba(255,255,255,0.06);}
+.nav-link.active{color:var(--white);background:rgba(255,255,255,0.08);}
 .profile-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid rgba(255,255,255,0.15);padding:7px 14px;cursor:pointer;}
 .profile-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
 
@@ -174,6 +179,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .disclaimer{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.5px;color:rgba(255,255,255,0.25);text-align:center;padding:24px 20px;border-top:1px solid var(--faint);margin-top:28px;line-height:1.8;font-style:italic;}
 
 @media(max-width:640px){
+  .main-nav{display:none;}
   .current-grid,.current-grid-bottom{grid-template-columns:repeat(2,1fr);}
   header{padding:14px 18px;}.hero{padding:28px 18px 0;}
   .main{padding:24px 16px 60px;}.current-card{padding:20px;}
@@ -215,9 +221,12 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 <header>
   <div><div class="logo">QUIVER</div><div class="logo-tag">Surf Guide</div></div>
-  <div class="header-right">
-    <button class="profile-btn" onclick="document.getElementById('modal').style.display='flex'">Edit Profile</button>
-  </div>
+  <nav class="main-nav">
+    <a href="index.html" class="nav-link active">Forecast</a>
+    <a href="workshop.html" class="nav-link">Workshop</a>
+    <a href="trip.html" class="nav-link">Trip</a>
+  </nav>
+  <button class="profile-btn" onclick="document.getElementById('modal').style.display='flex'">Edit Profile</button>
 </header>
 
 <div class="hero">

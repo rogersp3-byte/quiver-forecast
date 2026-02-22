@@ -47,7 +47,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 #searchPage{min-height:calc(100vh - 65px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;}
 #searchPage.hidden{display:none;}
 .search-title{font-family:'Archivo Black',sans-serif;font-size:clamp(28px,6vw,52px);letter-spacing:-1px;text-align:center;margin-bottom:44px;color:var(--white);}
-.globe-wrap{position:relative;width:200px;height:200px;margin:0 auto 44px;}
+.globe-wrap{width:200px;height:200px;margin:0 auto 44px;}
 .globe-canvas{width:200px;height:200px;display:block;}
 .search-box-wrap{width:100%;max-width:520px;position:relative;}
 .search-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.18);color:var(--white);font-family:'DM Mono',monospace;font-size:14px;padding:18px 22px;outline:none;letter-spacing:1px;transition:border-color 0.2s;}
@@ -172,7 +172,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .row-height.poor{color:var(--poor);}
 .row-unit{font-size:10px;opacity:0.4;}
 .row-dir,.row-wind{font-family:'DM Mono',monospace;font-size:10px;text-align:center;color:rgba(255,255,255,0.7);line-height:1.6;}
-.row-period,.row-energy{font-family:'DM Mono',monospace;font-size:11px;text-align:center;color:rgba(255,255,255,0.6);}
+.row-period{font-family:'DM Mono',monospace;font-size:11px;text-align:center;color:rgba(255,255,255,0.6);}
 .row-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;margin-top:2px;}
 .row-tag.dawn{background:rgba(100,150,255,0.15);color:rgba(100,180,255,0.8);}
 .row-tag.dusk{background:rgba(255,160,60,0.15);color:rgba(255,180,80,0.8);}
@@ -181,7 +181,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 /* TIDES */
 .tide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:3px;}
 .tide-card{background:var(--surface);padding:16px 18px;display:flex;align-items:center;gap:14px;}
-.tide-icon{font-size:20px;flex-shrink:0;}
+.tide-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .tide-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
 .tide-time{font-size:20px;letter-spacing:-0.5px;}
 .tide-ht{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
@@ -220,11 +220,10 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   .hero{padding:20px 18px 0;}
   .main{padding:24px 16px 60px;}
   .current-card{padding:20px;}
-  .forecast-table th:nth-child(5),.forecast-table td:nth-child(5),
-  .forecast-table th:nth-child(6),.forecast-table td:nth-child(6){display:none;}
+  .forecast-table th:nth-child(4),.forecast-table td:nth-child(4),
+  .forecast-table th:nth-child(5),.forecast-table td:nth-child(5){display:none;}
   .spot-btn{font-size:8px;padding:10px 3px;}
   .top-two-col{grid-template-columns:1fr;}
-  .hero-inner{text-align:center;}
   #searchPage{padding:28px 18px;}
   .globe-wrap{width:140px;height:140px;margin-bottom:32px;}
   .globe-canvas{width:140px;height:140px;}
@@ -301,78 +300,16 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 </div>
 
 <script>
-// ── REAL COASTLINE SVGs ──
-// Generated from actual lat/lon coordinates of the Irish coastline
-// Clare: traces Cliffs of Moher → Hag's Head → Liscannor Bay → Lahinch → Spanish Point
-// Donegal: traces Mullaghmore → Tullan Strand → Bundoran → Donegal Bay
-// Dublin: traces Howth → Dun Laoghaire → Dalkey → White Rock → Killiney → Bray Head
-
-const COASTLINE = {
-  // Spanish Point — pin at Spanish Point headland
-  clare: `<svg viewBox="0 0 130 95" width="130" height="95" xmlns="http://www.w3.org/2000/svg">
-  <path d="M52.9,28.5 L38.6,32.7 L38.3,35.7 L31.0,39.1 L31.3,41.8 L37.3,45.0 L46.9,47.0 L54.4,48.7 L57.5,49.5 L60.1,48.7 L61.3,51.2 L60.0,54.9 L41.4,71.0 L40.6,71.2 L43.5,72.2 L46.9,74.7 L51.8,79.1 L59.0,84.5 L65.0,85.8" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M36.2,78.1 L33.7,77.4 L33.2,76.4 L34.7,75.4 L37.2,76.4 L36.2,78.1" stroke="rgba(255,255,255,0.28)" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="42.7" cy="71.9" r="4" fill="none" stroke="#f5c800" stroke-width="1.5"/>
-  <circle cx="42.7" cy="71.9" r="1.8" fill="#f5c800"/>
-  <line x1="42.7" y1="67.9" x2="42.7" y2="59.9" stroke="#f5c800" stroke-width="1.2"/>
-</svg>`,
-
-  // Lahinch — same coastline, pin at Lahinch
-  lahinch: `<svg viewBox="0 0 130 95" width="130" height="95" xmlns="http://www.w3.org/2000/svg">
-  <path d="M52.9,28.5 L38.6,32.7 L38.3,35.7 L31.0,39.1 L31.3,41.8 L37.3,45.0 L46.9,47.0 L54.4,48.7 L57.5,49.5 L60.1,48.7 L61.3,51.2 L60.0,54.9 L41.4,71.0 L40.6,71.2 L43.5,72.2 L46.9,74.7 L51.8,79.1 L59.0,84.5 L65.0,85.8" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M36.2,78.1 L33.7,77.4 L33.2,76.4 L34.7,75.4 L37.2,76.4 L36.2,78.1" stroke="rgba(255,255,255,0.28)" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="57.5" cy="49.5" r="4" fill="none" stroke="#f5c800" stroke-width="1.5"/>
-  <circle cx="57.5" cy="49.5" r="1.8" fill="#f5c800"/>
-  <line x1="57.5" y1="45.5" x2="57.5" y2="37.5" stroke="#f5c800" stroke-width="1.2"/>
-  <circle cx="42.7" cy="71.9" r="3" fill="none" stroke="rgba(245,200,0,0.35)" stroke-width="1"/>
-  <circle cx="42.7" cy="71.9" r="1.2" fill="rgba(245,200,0,0.35)"/>
-</svg>`,
-
-  // Bundoran — Mullaghmore → Tullan → Bundoran → Donegal Bay
-  donegal: `<svg viewBox="0 0 130 95" width="130" height="95" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12.6,53.1 L16.6,51.7 L36.8,49.3 L37.2,50.9 L39.2,53.1 L49.3,48.9 L53.7,48.1 L58.4,50.5 L61.2,50.7 L61.4,51.2 L60.7,52.3 L57.2,54.3 L59.3,57.4 L74.5,60.5 L78.7,61.9 L92.1,68.0 L109.2,74.3 L117.7,78.5 L120.6,82.1" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="61.2" cy="50.7" r="4" fill="none" stroke="#f5c800" stroke-width="1.5"/>
-  <circle cx="61.2" cy="50.7" r="1.8" fill="#f5c800"/>
-  <line x1="61.2" y1="46.7" x2="61.2" y2="38.7" stroke="#f5c800" stroke-width="1.2"/>
-</svg>`,
-
-  // Dublin White Rock — Howth → Dun Laoghaire → Dalkey → White Rock (primary) → Killiney → Bray Head
-  whiterock: `<svg viewBox="0 0 130 95" width="130" height="95" xmlns="http://www.w3.org/2000/svg">
-  <path d="M77.7,19.1 L87.2,19.9 L91.9,16.4 L84.0,15.9 L65.6,29.1 L56.8,39.1 L54.6,40.9 L60.9,42.8 L65.6,45.4 L69.8,47.0 L72.6,46.4 L62.8,48.8 L61.2,51.2 L60.2,52.8 L62.5,57.0 L65.3,62.2 L68.5,67.0 L65.0,69.6 L62.5,71.7" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M72.6,46.4 L75.1,47.0 L76.1,45.9 L73.5,45.1 L72.6,46.4" stroke="rgba(255,255,255,0.28)" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="62.8" cy="48.8" r="4" fill="none" stroke="#f5c800" stroke-width="1.5"/>
-  <circle cx="62.8" cy="48.8" r="1.8" fill="#f5c800"/>
-  <line x1="62.8" y1="44.8" x2="62.8" y2="36.8" stroke="#f5c800" stroke-width="1.2"/>
-  <circle cx="61.2" cy="51.2" r="3" fill="none" stroke="rgba(245,200,0,0.4)" stroke-width="1.2"/>
-  <circle cx="61.2" cy="51.2" r="1.2" fill="rgba(245,200,0,0.4)"/>
-</svg>`,
-
-  // Dublin Killiney — same coastline, Killiney primary
-  killiney: `<svg viewBox="0 0 130 95" width="130" height="95" xmlns="http://www.w3.org/2000/svg">
-  <path d="M77.7,19.1 L87.2,19.9 L91.9,16.4 L84.0,15.9 L65.6,29.1 L56.8,39.1 L54.6,40.9 L60.9,42.8 L65.6,45.4 L69.8,47.0 L72.6,46.4 L62.8,48.8 L61.2,51.2 L60.2,52.8 L62.5,57.0 L65.3,62.2 L68.5,67.0 L65.0,69.6 L62.5,71.7" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M72.6,46.4 L75.1,47.0 L76.1,45.9 L73.5,45.1 L72.6,46.4" stroke="rgba(255,255,255,0.28)" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="62.8" cy="48.8" r="3" fill="none" stroke="rgba(245,200,0,0.4)" stroke-width="1.2"/>
-  <circle cx="62.8" cy="48.8" r="1.2" fill="rgba(245,200,0,0.4)"/>
-  <circle cx="61.2" cy="51.2" r="4" fill="none" stroke="#f5c800" stroke-width="1.5"/>
-  <circle cx="61.2" cy="51.2" r="1.8" fill="#f5c800"/>
-  <line x1="61.2" y1="47.2" x2="61.2" y2="39.2" stroke="#f5c800" stroke-width="1.2"/>
-</svg>`
-};
-
 // ── ALL SPOTS ──
 const ALL_SPOTS = [
-  {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Co. Clare',   country:'Ireland', group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  coastline:'clare',    useBuoy:false, tideNote:null},
-  {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Co. Clare',   country:'Ireland', group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      coastline:'clare',    useBuoy:false, tideNote:null},
-  {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Co. Clare',   country:'Ireland', group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', coastline:'clare',    useBuoy:false, tideNote:null},
-  {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Co. Clare',   country:'Ireland', group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  coastline:'lahinch',  useBuoy:false, tideNote:null},
-  {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Co. Donegal', country:'Ireland', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   coastline:'donegal',  useBuoy:false, tideNote:null},
-  {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Co. Dublin',  country:'Ireland', group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  coastline:'whiterock',useBuoy:true,  tideNote:'Works for roughly one hour either side of dead low tide only. Needs a strong southerly swell of at least 2m reaching up through the channel.'},
-  {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Co. Dublin',  country:'Ireland', group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  coastline:'killiney', useBuoy:true,  tideNote:'Works at low tide. Needs a strong NE swell wrapping south through the channel.'},
+  {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, lowTideOnly:false},
+  {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      useBuoy:false, lowTideOnly:false},
+  {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', useBuoy:false, lowTideOnly:false},
+  {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, lowTideOnly:false},
+  {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Co. Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, lowTideOnly:false},
+  {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  lowTideOnly:true},
+  {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  lowTideOnly:true},
 ];
-
-// M2 Buoy: station_id="M2" on erddap.marine.ie IWBNetwork
-// Position: 53.48°N 5.425°W (Irish Sea, ~37km east of Dublin)
-const M2_BUOY_URL = `https://erddap.marine.ie/erddap/tabledap/IWBNetwork.json?time,WaveHeight,WavePeriod,WindSpeed,WindDirection&station_id=%22M2%22&time>=${encodeURIComponent(new Date(Date.now()-3*3600000).toISOString().slice(0,19)+'Z')}&orderByLast(%22time%22)`;
 
 function getSpotsInGroup(g){return ALL_SPOTS.filter(s=>s.group===g);}
 
@@ -380,10 +317,13 @@ let currentSpot = ALL_SPOTS[0];
 let currentGroup = getSpotsInGroup('spanish-point');
 let globeInterval = null;
 let globeAngle = 0;
-const GLOBE_SPEED = 0.004; // constant slow spin
+const GLOBE_SPEED = 0.004;
 
 // ── PROFILE ──
-function getProfile(){try{const p=JSON.parse(localStorage.getItem('quiver_profile'));return p&&p.skill?p:null;}catch(e){return null;}}
+function getProfile(){
+  try{const p=JSON.parse(localStorage.getItem('quiver_profile'));return p&&p.skill?p:null;}
+  catch(e){return null;}
+}
 function saveProfile(){
   try{
     const name=document.getElementById('p-name').value.trim()||'Surfer';
@@ -407,46 +347,35 @@ function openModal(){
 }
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
 
-// ── GLOBE — 2D flat cartoony style ──
-// Simple flat circle with thick longitude + latitude grid lines, amber tint
+// ── GLOBE: 2D flat cartoony ──
 function initGlobe(){
   const canvas=document.getElementById('globeCanvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const dpr=window.devicePixelRatio||1;
   const S=canvas.offsetWidth||200;
-  canvas.width=S*dpr;canvas.height=S*dpr;
+  canvas.width=S*dpr; canvas.height=S*dpr;
   ctx.scale(dpr,dpr);
-  const cx=S/2,cy=S/2,R=S/2-4;
+  const cx=S/2, cy=S/2, R=S/2-4;
 
   function draw(angle){
     ctx.clearRect(0,0,S,S);
-
-    // Globe disc fill
-    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.fillStyle='#0e0c04';ctx.fill();
-
-    // Clip to circle for all lines
+    // Fill disc
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.fillStyle='#0e0c04'; ctx.fill();
+    // Clip to circle
     ctx.save();
-    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.clip();
-
-    // Latitude lines — 5 lines: equator + 30N/S + 60N/S
-    // On a flat projection these are horizontal straight lines
-    const latLines=[0,30,-30,60,-60];
-    latLines.forEach(lat=>{
-      const y=cy - (lat/90)*R;
-      const lineW=lat===0?2.5:1.8; // equator thicker
-      ctx.beginPath();ctx.moveTo(cx-R,y);ctx.lineTo(cx+R,y);
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.clip();
+    // Latitude lines
+    [0,30,-30,60,-60].forEach(lat=>{
+      const y=cy-(lat/90)*R;
+      ctx.beginPath(); ctx.moveTo(cx-R,y); ctx.lineTo(cx+R,y);
       ctx.strokeStyle=lat===0?'rgba(245,200,0,0.45)':'rgba(245,200,0,0.2)';
-      ctx.lineWidth=lineW;ctx.stroke();
+      ctx.lineWidth=lat===0?2.5:1.8; ctx.stroke();
     });
-
-    // Longitude lines — 12 meridians (every 30°), drawn as sinusoidal curves on flat map
-    // x offset = R * sin(lon + angle), drawn as vertical-ish wavy lines
+    // Longitude lines — 12 meridians
     for(let lon=0;lon<360;lon+=30){
       const a=(lon*Math.PI/180)+angle;
-      const xOff=cx+R*Math.sin(a); // centre x of this meridian
-      // Draw as a smooth curve: at equator x=xOff, tapers at poles
       ctx.beginPath();
       for(let lat=-90;lat<=90;lat+=4){
         const y=cy-(lat/90)*R;
@@ -455,21 +384,16 @@ function initGlobe(){
       }
       const isPrimary=lon%90===0;
       ctx.strokeStyle=isPrimary?'rgba(245,200,0,0.35)':'rgba(245,200,0,0.15)';
-      ctx.lineWidth=isPrimary?2.2:1.4;ctx.stroke();
+      ctx.lineWidth=isPrimary?2.2:1.4; ctx.stroke();
     }
-
     ctx.restore();
-
-    // Globe border — thick amber ring
-    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.strokeStyle='rgba(245,200,0,0.5)';ctx.lineWidth=2.5;ctx.stroke();
+    // Border ring
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.strokeStyle='rgba(245,200,0,0.5)'; ctx.lineWidth=2.5; ctx.stroke();
   }
 
   if(globeInterval)clearInterval(globeInterval);
-  globeInterval=setInterval(()=>{
-    globeAngle+=GLOBE_SPEED;
-    draw(globeAngle);
-  },16);
+  globeInterval=setInterval(()=>{ globeAngle+=GLOBE_SPEED; draw(globeAngle); },16);
 }
 
 // ── SEARCH ──
@@ -487,11 +411,11 @@ function onSearch(val){
   }else{
     res.innerHTML=matches.map(s=>{
       const gs=getSpotsInGroup(s.group);
-      const sub=gs.length>1?`${gs.length} breaks · `:'';
-      return`<div class="search-result-item" onmousedown="selectSpot('${s.id}')">
-        <div class="sri-name">${s.groupName}</div>
-        <div class="sri-region">${sub}${s.region} · ${s.country}</div>
-      </div>`;
+      const sub=gs.length>1?gs.length+' breaks · ':'';
+      return '<div class="search-result-item" onmousedown="selectSpot(\''+s.id+'\')">'
+        +'<div class="sri-name">'+s.groupName+'</div>'
+        +'<div class="sri-region">'+sub+s.region+' · Ireland</div>'
+        +'</div>';
     }).join('');
   }
   res.classList.add('show');
@@ -509,7 +433,7 @@ function selectSpot(id){
 function showForecast(){
   document.getElementById('searchPage').classList.add('hidden');
   document.getElementById('forecastPage').classList.add('show');
-  updateHero();buildSelector([]);load();
+  updateHero(); buildSelector([]); load();
 }
 function showSearch(){
   document.getElementById('forecastPage').classList.remove('show');
@@ -521,37 +445,49 @@ function updateHero(){
   const s=currentSpot;
   const words=s.groupName.toUpperCase().split(' ');
   const mid=Math.ceil(words.length/2);
-  document.getElementById('heroName').innerHTML=words.length>1?`${words.slice(0,mid).join(' ')}<br>${words.slice(mid).join(' ')}`:words[0];
-  document.getElementById('heroRegion').textContent=`${s.region} · Ireland`;
-  document.getElementById('heroLoc').textContent=`${s.lat.toFixed(4)}° N, ${Math.abs(s.lng).toFixed(4)}° W`;
+  document.getElementById('heroName').innerHTML=words.length>1?words.slice(0,mid).join(' ')+'<br>'+words.slice(mid).join(' '):words[0];
+  document.getElementById('heroRegion').textContent=s.region+' · Ireland';
+  document.getElementById('heroLoc').textContent=s.lat.toFixed(4)+'° N, '+Math.abs(s.lng).toFixed(4)+'° W';
 }
 
 function switchSpot(id){
   currentSpot=ALL_SPOTS.find(s=>s.id===id)||currentSpot;
-  updateHero();load();
+  updateHero(); load();
 }
 
 function buildSelector(dotRatings){
   const sel=document.getElementById('spotSelector');
-  sel.innerHTML=currentGroup.map((s,i)=>{
+  sel.innerHTML=currentGroup.map(function(s,i){
     const r=dotRatings[i]||'';
     const dc=r==='good'||r==='epic'?'good-dot':r==='fair'?'fair-dot':r==='poor'?'poor-dot':'';
-    return`<button class="spot-btn${s.id===currentSpot.id?' active':''}" onclick="switchSpot('${s.id}')"><span class="spot-badge ${dc}"></span>${s.shortName}</button>`;
+    return '<button class="spot-btn'+(s.id===currentSpot.id?' active':'')+'" onclick="switchSpot(\''+s.id+'\')">'
+      +'<span class="spot-badge '+dc+'"></span>'+s.shortName+'</button>';
   }).join('');
 }
 
 // ── HELPERS ──
 function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
 function arrowChar(d){return['↓','↙','←','↖','↑','↗','→','↘'][Math.round(d/45)%8];}
-function dirArrowSVG(deg,color){return`<div class="dir-arrow"><svg viewBox="0 0 24 24" style="transform:rotate(${deg+180}deg)" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></div>`;}
+function dirArrowSVG(deg,color){
+  return '<div class="dir-arrow"><svg viewBox="0 0 24 24" style="transform:rotate('+(deg+180)+'deg)" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></div>';
+}
 function waveEnergy(h,t){return Math.round(0.5*h*h*t);}
 function isOffshore(wd,spot){const d=((wd-spot.beachFacing)+360)%360;return d>90&&d<270;}
-function swellInWindow(sd,spot){const[lo,hi]=spot.swellWindow;return lo<=hi?sd>=lo&&sd<=hi:sd>=lo||sd<=hi;}
-function skillThresholds(skill){return{beginner:{minH:0.3,maxH:1.0,minP:5},intermediate:{minH:0.5,maxH:1.8,minP:7},advanced:{minH:0.8,maxH:3.5,minP:9},expert:{minH:1.2,maxH:99,minP:10}}[skill]||{minH:0.5,maxH:99,minP:7};}
-function rate(h,w,p,skill){const t=skillThresholds(skill||'advanced');if(h<0.3)return'flat';const sOk=h>=t.minH&&h<=t.maxH,pOk=p>=t.minP;if(sOk&&pOk&&w<6)return'epic';if(sOk&&pOk&&w<12)return'good';if(sOk&&w<17)return'fair';return'poor';}
+function swellInWindow(sd,spot){const lo=spot.swellWindow[0],hi=spot.swellWindow[1];return lo<=hi?sd>=lo&&sd<=hi:sd>=lo||sd<=hi;}
+function skillThresholds(skill){
+  return{beginner:{minH:0.3,maxH:1.0,minP:5},intermediate:{minH:0.5,maxH:1.8,minP:7},advanced:{minH:0.8,maxH:3.5,minP:9},expert:{minH:1.2,maxH:99,minP:10}}[skill]||{minH:0.5,maxH:99,minP:7};
+}
+function rate(h,w,p,skill){
+  const t=skillThresholds(skill||'advanced');
+  if(h<0.3)return'flat';
+  const sOk=h>=t.minH&&h<=t.maxH,pOk=p>=t.minP;
+  if(sOk&&pOk&&w<6)return'epic';
+  if(sOk&&pOk&&w<12)return'good';
+  if(sOk&&w<17)return'fair';
+  return'poor';
+}
 function rateLabel(r){return{epic:'Epic',good:'Good conditions',fair:'Fair conditions',poor:'Poor conditions',flat:'Flat'}[r];}
 
-// Wind description — Beaufort-aligned, no value judgements on offshore
 function windDesc(ws,wd,spot){
   const diff=((wd-spot.beachFacing)+360)%360;
   const wDir=windDir(wd);
@@ -559,40 +495,39 @@ function windDesc(ws,wd,spot){
   const isOn=diff<=90||diff>=270;
   const co=(diff>90&&diff<=135)||(diff>=225&&diff<270);
   const cn=(diff>45&&diff<=90)||(diff>=270&&diff<315);
-
-  if(ws<6) return'virtually no wind';
+  if(ws<6)return'virtually no wind';
   if(isOff){
-    if(ws<12)  return`light ${wDir} offshore`;
-    if(ws<18)  return`moderate ${wDir} offshore`;
-    if(ws<25)  return`fresh ${wDir} offshore — may get feathery`;
-    return      `strong ${wDir} offshore — could be too much`;
+    if(ws<12)return'light '+wDir+' offshore';
+    if(ws<18)return'moderate '+wDir+' offshore';
+    if(ws<25)return'fresh '+wDir+' offshore — may get feathery';
+    return'strong '+wDir+' offshore — could be too much';
   }
   if(isOn){
-    if(ws<12)  return`light ${wDir} onshore — minimal impact on surface`;
-    if(ws<18)  return`moderate ${wDir} onshore — expect some chop`;
-    if(ws<25)  return`fresh ${wDir} onshore — likely messy`;
-    return      `strong ${wDir} onshore — very messy, probably unsurfable`;
+    if(ws<12)return'light '+wDir+' onshore — minimal impact on surface';
+    if(ws<18)return'moderate '+wDir+' onshore — expect some chop';
+    if(ws<25)return'fresh '+wDir+' onshore — likely messy';
+    return'strong '+wDir+' onshore — very messy, probably unsurfable';
   }
   if(co){
-    if(ws<12)  return`${wDir} cross-offshore — light texture`;
-    return      `${wDir} cross-offshore — choppy on one side`;
+    if(ws<12)return wDir+' cross-offshore — light texture';
+    return wDir+' cross-offshore — choppy on one side';
   }
   if(cn){
-    if(ws<12)  return`${wDir} cross-onshore — light`;
-    return      `${wDir} cross-onshore — expect choppy faces`;
+    if(ws<12)return wDir+' cross-onshore — light';
+    return wDir+' cross-onshore — expect choppy faces';
   }
-  return`${wDir} sideshore`;
+  return wDir+' sideshore';
 }
 
 function conditionsRead(h,ws,wd,swP,spot){
-  if(h<0.3) return'Waves too small to surf.';
+  if(h<0.3)return'Waves too small to surf.';
   const parts=[];
-  if(h>=2.5)       parts.push(`solid ${h.toFixed(1)}m`);
-  else if(h>=1.2)  parts.push(`${h.toFixed(1)}m`);
-  else              parts.push(`small ${h.toFixed(1)}m`);
-  if(swP>=14)      parts.push('very long period — likely good shape');
-  else if(swP>=10) parts.push(`${swP.toFixed(0)}s period`);
-  else if(swP<7)   parts.push('short period — likely choppy');
+  if(h>=2.5)parts.push('solid '+h.toFixed(1)+'m');
+  else if(h>=1.2)parts.push(h.toFixed(1)+'m');
+  else parts.push('small '+h.toFixed(1)+'m');
+  if(swP>=14)parts.push('very long period — likely good shape');
+  else if(swP>=10)parts.push(swP.toFixed(0)+'s period');
+  else if(swP<7)parts.push('short period — likely choppy');
   parts.push(windDesc(ws,wd,spot));
   return parts.join('. ')+'.';
 }
@@ -603,50 +538,44 @@ function getSunTimes(lat,lng,date){
   const decl=23.45*Math.sin(B)*rad,HA=Math.acos(-Math.tan(lat*rad)*Math.tan(decl))/rad;
   const noon=12-(lng/15)-(eq/60),sr=noon-HA/15,ss=noon+HA/15;
   const off=(date.getMonth()>=2&&date.getMonth()<=9)?1:0;
-  const fmt=h=>{const hh=Math.floor(h+off)%24,mm=Math.round((h+off-Math.floor(h+off))*60);return`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;};
+  function fmt(h){const hh=Math.floor(h+off)%24,mm=Math.round((h+off-Math.floor(h+off))*60);return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');}
   return{sunrise:sr+off,sunset:ss+off,sunriseStr:fmt(sr),sunsetStr:fmt(ss)};
 }
 
 function buildWindowAlert(slots,profile,sun,spot){
   if(!profile)return'';
-  const{name,skill,work}=profile,t=skillThresholds(skill),now=new Date(),flex=work==='flexible'||work==='retired';
-  // Require at least 1 hour of daylight remaining (slot hour <= sunset - 1)
+  const name=profile.name,skill=profile.skill,work=profile.work;
+  const t=skillThresholds(skill),now=new Date(),flex=work==='flexible'||work==='retired';
   const sunsetCutoff=sun.sunset-2;
-  const scored=slots.map(s=>{
+  const scored=slots.map(function(s){
     const sd=new Date(s.time),hour=sd.getHours(),dow=sd.getDay();
     const avail=flex||[0,6].includes(dow)||hour<8||hour>18;
     const offshore=isOffshore(s.wd,spot),gW=offshore||s.ws<9;
     const gS=s.h>=t.minH&&s.h<=t.maxH,gP=s.p>=t.minP;
     const daylight=hour>=Math.floor(sun.sunrise)&&hour<=Math.floor(sunsetCutoff);
-    const swOk=swellInWindow(s.swDir??s.waveDir,spot);
-    // For Dublin spots: apply tide and swell direction penalties
-    let tideOk=true;
-    if(spot.lowTideOnly){
-      // Without live tide data, we can't perfectly score this — flag uncertainty
-      tideOk=true; // neutral; note is surfaced elsewhere
-    }
+    const swOk=swellInWindow(s.swDir!=null?s.swDir:s.waveDir,spot);
     let sc=0;if(gS)sc+=3;if(gP)sc+=2;if(gW)sc+=2;if(offshore)sc+=1;if(avail)sc+=2;if(daylight)sc+=1;if(swOk)sc+=1;
-    return{...s,sc,avail,gS,r:rate(s.h,s.ws,s.p,skill),slotDate:sd,hour};
+    return Object.assign({},s,{sc:sc,avail:avail,gS:gS,r:rate(s.h,s.ws,s.p,skill),slotDate:sd,hour:hour});
   });
-  const best=scored.filter(s=>s.sc>=5&&s.gS).sort((a,b)=>b.sc-a.sc)[0];
+  const best=scored.filter(function(s){return s.sc>=5&&s.gS;}).sort(function(a,b){return b.sc-a.sc;})[0];
   if(!best){
-    const next=scored.filter(s=>s.gS).sort((a,b)=>b.sc-a.sc)[0];
-    if(!next)return`<div class="window-alert poor-window"><div class="window-eyebrow">Surf Window · ${name}</div><div class="window-text">Nothing great in the next 24 hours. Check back as conditions develop.</div></div>`;
-    return`<div class="window-alert fair-window"><div class="window-eyebrow">Surf Window · ${name}</div><div class="window-text">Best of a quieter spell around ${fmtT(next.time)}. ${next.h.toFixed(1)}m at ${next.p.toFixed(0)}s — one to keep an eye on.</div></div>`;
+    const next=scored.filter(function(s){return s.gS;}).sort(function(a,b){return b.sc-a.sc;})[0];
+    if(!next)return'<div class="window-alert poor-window"><div class="window-eyebrow">Surf Window · '+name+'</div><div class="window-text">Nothing great in the next 24 hours. Check back as conditions develop.</div></div>';
+    return'<div class="window-alert fair-window"><div class="window-eyebrow">Surf Window · '+name+'</div><div class="window-text">Best of a quieter spell around '+fmtT(next.time)+'. '+next.h.toFixed(1)+'m at '+next.p.toFixed(0)+'s — one to keep an eye on.</div></div>';
   }
   const dn=best.slotDate.toDateString()===now.toDateString()?'today':best.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
   const unavNote=!best.avail&&work==='9to5'?' — falls during work hours':'';
-  const windNote=isOffshore(best.wd,spot)?`${windDir(best.wd)} offshore`:`${windDir(best.wd)} wind`;
+  const windNote=isOffshore(best.wd,spot)?windDir(best.wd)+' offshore':windDir(best.wd)+' wind';
   const qw=best.r==='epic'?'an epic':best.r==='good'?'a good':'a fair';
-  let msg=`Looks like ${qw} window around ${fmtT(best.time)} ${dn}${unavNote}. `;
-  msg+=`${best.h.toFixed(1)}m at ${best.p.toFixed(0)}s, ${windNote}.`;
-  if(skill==='beginner'&&best.h<1.0)       msg+=` A manageable size for developing surfers.`;
-  else if(skill==='beginner'&&best.h>=1.0)  msg+=` Slightly bigger than ideal for beginners — one to watch.`;
-  else if(skill==='expert'&&best.h>=2.0)    msg+=` Sizeable swell on the way.`;
-  else if(skill==='expert'&&best.h<1.0)     msg+=` On the smaller side for the time being.`;
-  else if(skill==='advanced'&&best.h<0.9)   msg+=` A quieter spell — smaller than ideal.`;
+  let msg='Looks like '+qw+' window around '+fmtT(best.time)+' '+dn+unavNote+'. ';
+  msg+=best.h.toFixed(1)+'m at '+best.p.toFixed(0)+'s, '+windNote+'.';
+  if(skill==='beginner'&&best.h<1.0)msg+=' A manageable size for developing surfers.';
+  else if(skill==='beginner'&&best.h>=1.0)msg+=' Slightly bigger than ideal for beginners — one to watch.';
+  else if(skill==='expert'&&best.h>=2.0)msg+=' Sizeable swell on the way.';
+  else if(skill==='expert'&&best.h<1.0)msg+=' On the smaller side for the time being.';
+  else if(skill==='advanced'&&best.h<0.9)msg+=' A quieter spell — smaller than ideal.';
   const ac=best.r==='good'||best.r==='epic'?'good-window':'fair-window';
-  return`<div class="window-alert ${ac}"><div class="window-eyebrow">Surf Window · ${name} · ${spot.shortName}</div><div class="window-text">${msg}</div></div>`;
+  return'<div class="window-alert '+ac+'"><div class="window-eyebrow">Surf Window · '+name+' · '+spot.shortName+'</div><div class="window-text">'+msg+'</div></div>';
 }
 
 function fmtT(iso){return new Date(iso).toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});}
@@ -669,69 +598,88 @@ function drawGraph(canvas,times,heights,periods,skill){
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
   const t=skillThresholds(skill||'advanced'),maxH=Math.max(...heights.filter(Boolean),2)*1.15;
   const pad={l:36,r:12,t:16,b:28},gw=W-pad.l-pad.r,gh=H-pad.t-pad.b;
-  const toX=i=>(i/(heights.length-1))*gw+pad.l,toY=v=>gh-(v/maxH)*gh+pad.t;
+  const toX=function(i){return(i/(heights.length-1))*gw+pad.l;};
+  const toY=function(v){return gh-(v/maxH)*gh+pad.t;};
   ctx.fillStyle='rgba(34,197,94,0.06)';ctx.fillRect(pad.l,toY(Math.min(t.maxH,maxH)),gw,toY(t.minH)-toY(Math.min(t.maxH,maxH)));
   ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
-  for(let v=0.5;v<=maxH;v+=0.5){const y=toY(v);if(y<pad.t||y>H-pad.b)continue;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();if(v%1===0){ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='10px "DM Mono",monospace';ctx.fillText(v+'m',2,y+4);}}
+  for(let v=0.5;v<=maxH;v+=0.5){
+    const y=toY(v);if(y<pad.t||y>H-pad.b)continue;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    if(v%1===0){ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='10px "DM Mono",monospace';ctx.fillText(v+'m',2,y+4);}
+  }
   let lastDay='';
-  times.forEach((tm,i)=>{const d=new Date(tm),ds=d.toLocaleDateString('en-IE',{weekday:'short'});if(ds!==lastDay){const x=toX(i);ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='9px "DM Mono",monospace';ctx.fillText(ds,x+3,H-pad.b+14);lastDay=ds;}});
-  ctx.beginPath();heights.forEach((v,i)=>{if(v==null)return;const x=toX(i),y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  times.forEach(function(tm,i){
+    const d=new Date(tm),ds=d.toLocaleDateString('en-IE',{weekday:'short'});
+    if(ds!==lastDay){
+      const x=toX(i);ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='9px "DM Mono",monospace';ctx.fillText(ds,x+3,H-pad.b+14);
+      lastDay=ds;
+    }
+  });
+  ctx.beginPath();heights.forEach(function(v,i){if(v==null)return;const x=toX(i),y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.lineTo(toX(heights.length-1),H-pad.b);ctx.lineTo(pad.l,H-pad.b);ctx.closePath();
   const gr=ctx.createLinearGradient(0,pad.t,0,H-pad.b);gr.addColorStop(0,'rgba(255,255,255,0.12)');gr.addColorStop(1,'rgba(255,255,255,0.01)');ctx.fillStyle=gr;ctx.fill();
-  for(let i=1;i<heights.length;i++){if(!heights[i]||!heights[i-1])continue;const r=rate(heights[i],10,periods[i]||8,skill);ctx.strokeStyle=r==='good'||r==='epic'?'rgba(34,197,94,0.9)':r==='fair'?'rgba(245,200,0,0.9)':'rgba(239,68,68,0.7)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(toX(i-1),toY(heights[i-1]));ctx.lineTo(toX(i),toY(heights[i]));ctx.stroke();}
-  const now=new Date(),ni=times.findIndex(tm=>new Date(tm)>=now);
-  if(ni>0){const x=toX(ni);ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='8px "DM Mono",monospace';ctx.fillText('now',x+3,pad.t+10);}
+  for(let i=1;i<heights.length;i++){
+    if(!heights[i]||!heights[i-1])continue;
+    const r=rate(heights[i],10,periods[i]||8,skill);
+    ctx.strokeStyle=r==='good'||r==='epic'?'rgba(34,197,94,0.9)':r==='fair'?'rgba(245,200,0,0.9)':'rgba(239,68,68,0.7)';
+    ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(toX(i-1),toY(heights[i-1]));ctx.lineTo(toX(i),toY(heights[i]));ctx.stroke();
+  }
+  const ni=times.findIndex(function(tm){return new Date(tm)>=new Date();});
+  if(ni>0){
+    const x=toX(ni);ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='8px "DM Mono",monospace';ctx.fillText('now',x+3,pad.t+10);
+  }
 }
+
+// ── SVG ICONS ──
+function svgSunrise(){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 16 12 12 16 16"/></svg>';}
+function svgSunset(){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,160,60,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 12 12 16 16 12"/></svg>';}
+function svgTideHigh(){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg>';}
+function svgTideLow(){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>';}
 
 // ── M2 BUOY FETCH ──
 async function fetchM2Buoy(){
   try{
-    const now=new Date();
-    const from=new Date(now.getTime()-3*3600000).toISOString().slice(0,19)+'Z';
-    const url=`https://erddap.marine.ie/erddap/tabledap/IWBNetwork.json?time,WaveHeight,WavePeriod,WindSpeed,WindDirection&station_id=%22M2%22&time>=${encodeURIComponent(from)}&orderByLast(%22time%22)`;
+    const from=new Date(Date.now()-3*3600000).toISOString().slice(0,19)+'Z';
+    const url='https://erddap.marine.ie/erddap/tabledap/IWBNetwork.json?time,WaveHeight,WavePeriod,WindSpeed,WindDirection&station_id=%22M2%22&time>='+encodeURIComponent(from)+'&orderByLast(%22time%22)';
     const r=await fetch(url);
-    if(!r.ok) return null;
+    if(!r.ok)return null;
     const j=await r.json();
-    const rows=j.table?.rows;
-    if(!rows||!rows.length) return null;
+    const rows=j.table&&j.table.rows;
+    if(!rows||!rows.length)return null;
     const last=rows[rows.length-1];
-    // columns: time, WaveHeight(m), WavePeriod(s), WindSpeed(knots), WindDirection
-    return{
-      time:last[0],
-      waveHeight:last[1]!=-999?last[1]:null,
-      wavePeriod:last[2]!=-999?last[2]:null,
-      windSpeed:last[3]!=-999?(last[3]*1.151):null, // knots → mph
-      windDirection:last[4]!=-999?last[4]:null,
-    };
+    return{time:last[0],waveHeight:last[1]!=-999?last[1]:null,wavePeriod:last[2]!=-999?last[2]:null,windSpeed:last[3]!=-999?(last[3]*1.151):null,windDirection:last[4]!=-999?last[4]:null};
   }catch(e){return null;}
 }
 
 async function fetchDotRatings(){
-  const now=new Date(),ns=now.toISOString().slice(0,13);
-  return Promise.all(currentGroup.map(async s=>{
+  const ns=new Date().toISOString().slice(0,13);
+  return Promise.all(currentGroup.map(async function(s){
     try{
       const[mr,wr]=await Promise.all([
-        fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${s.lat}&longitude=${s.lng}&hourly=wave_height,wave_period&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=1`),
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lng}&hourly=wind_speed_10m&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=1`)
+        fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+s.lat+'&longitude='+s.lng+'&hourly=wave_height,wave_period&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=1'),
+        fetch('https://api.open-meteo.com/v1/forecast?latitude='+s.lat+'&longitude='+s.lng+'&hourly=wind_speed_10m&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=1')
       ]);
       const m=await mr.json(),w=await wr.json();
-      const ci=m.hourly.time.findIndex(t=>t.startsWith(ns));
-      return rate(m.hourly.wave_height[ci]??0,w.hourly.wind_speed_10m[ci]??0,m.hourly.wave_period[ci]??0,getProfile()?.skill);
+      const ci=m.hourly.time.findIndex(function(t){return t.startsWith(ns);});
+      return rate(m.hourly.wave_height[ci]||0,w.hourly.wind_speed_10m[ci]||0,m.hourly.wave_period[ci]||0,getProfile()&&getProfile().skill);
     }catch(e){return'poor';}
   }));
 }
 
+// ── MAIN LOAD ──
 async function load(){
-  const app=document.getElementById('app'),profile=getProfile(),skill=profile?.skill||'advanced',spot=currentSpot;
+  const app=document.getElementById('app'),profile=getProfile(),skill=(profile&&profile.skill)||'advanced',spot=currentSpot;
   app.innerHTML='<div class="status">Loading forecast...</div>';
   try{
-    // For Dublin spots: also fetch M2 buoy data
     const isDublin=spot.useBuoy;
-
     const[mr,wr,tideR,dots,buoy]=await Promise.all([
-      fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${spot.lat}&longitude=${spot.lng}&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7`),
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${spot.lat}&longitude=${spot.lng}&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7`),
-      fetch(`https://erddap.marine.ie/erddap/tabledap/IrishNationalTideGaugeNetwork.json?time,Water_Level_LAT&time>=${new Date(Date.now()-7200000).toISOString().slice(0,19)}Z&time<=${new Date(Date.now()+172800000).toISOString().slice(0,19)}Z&station_id=%22Galway%20Port%22&orderBy(%22time%22)`).catch(()=>null),
+      fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
+      fetch('https://api.open-meteo.com/v1/forecast?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
+      fetch('https://erddap.marine.ie/erddap/tabledap/IrishNationalTideGaugeNetwork.json?time,Water_Level_LAT&time>='+new Date(Date.now()-7200000).toISOString().slice(0,19)+'Z&time<='+new Date(Date.now()+172800000).toISOString().slice(0,19)+'Z&station_id=%22Galway%20Port%22&orderBy(%22time%22)').catch(function(){return null;}),
       fetchDotRatings(),
       isDublin?fetchM2Buoy():Promise.resolve(null)
     ]);
@@ -744,129 +692,143 @@ async function load(){
     const sw2H=m.hourly.secondary_swell_wave_height,sw2D=m.hourly.secondary_swell_wave_direction,sw2P=m.hourly.secondary_swell_wave_period;
     const sst=m.hourly.sea_surface_temperature,wndS=w.hourly.wind_speed_10m,wndD=w.hourly.wind_direction_10m,daily=m.daily;
     const now=new Date(),ns=now.toISOString().slice(0,13);
-    let ci=times.findIndex(t=>t.startsWith(ns));if(ci<0)ci=0;
+    let ci=times.findIndex(function(t){return t.startsWith(ns);});if(ci<0)ci=0;
 
-    // Use M2 buoy data for current conditions on Dublin spots if available
     let cH,cD,cP,cWS,cWD,buoyActive=false;
     if(isDublin&&buoy&&buoy.waveHeight!==null){
-      cH=buoy.waveHeight;
-      cP=buoy.wavePeriod??wP[ci]??0;
-      cD=wDir[ci]??0; // buoy doesn't give wave direction, fall back to model
-      cWS=buoy.windSpeed??wndS[ci]??0;
-      cWD=buoy.windDirection??wndD[ci]??0;
-      buoyActive=true;
+      cH=buoy.waveHeight;cP=buoy.wavePeriod||wP[ci]||0;cD=wDir[ci]||0;cWS=buoy.windSpeed||wndS[ci]||0;cWD=buoy.windDirection||wndD[ci]||0;buoyActive=true;
     }else{
-      cH=wH[ci]??0;cD=wDir[ci]??0;cP=wP[ci]??0;cWS=wndS[ci]??0;cWD=wndD[ci]??0;
+      cH=wH[ci]||0;cD=wDir[ci]||0;cP=wP[ci]||0;cWS=wndS[ci]||0;cWD=wndD[ci]||0;
     }
-    const cSwD=swD[ci]??cD,cSwP=swP[ci]??cP;
-    const cSw2H=sw2H?.[ci]??0,cSw2D=sw2D?.[ci]??0,cSw2P=sw2P?.[ci]??0,cSST=sst?.[ci]??null;
+    const cSwD=swD[ci]||cD,cSwP=swP[ci]||cP;
+    const cSw2H=sw2H&&sw2H[ci]||0,cSw2D=sw2D&&sw2D[ci]||0,cSw2P=sw2P&&sw2P[ci]||0,cSST=sst&&sst[ci]!=null?sst[ci]:null;
     const r=rate(cH,cWS,cP,skill),energy=waveEnergy(cH,cP);
     const read=conditionsRead(cH,cWS,cWD,cSwP,spot);
     const rColor=r==='good'||r==='epic'?'var(--good)':r==='fair'?'var(--fair)':r==='poor'?'var(--poor)':'var(--muted)';
     const sun=getSunTimes(spot.lat,spot.lng,now);
     const swellGood=swellInWindow(cSwD||cD,spot);
-    const swellWarnHTML=!swellGood&&cH>=0.3?`<div class="swell-warning">Swell direction (${windDir(cSwD||cD)}) may not be optimal for this break.</div>`:'';
+    const swellWarnHTML=(!swellGood&&cH>=0.3)?'<div class="swell-warning">Swell direction ('+windDir(cSwD||cD)+') may not be optimal for this break.</div>':'';
 
     const slots=[];
-    for(let i=ci;i<ci+24&&i<times.length;i+=3)slots.push({time:times[i],h:wH[i]??0,p:wP[i]??0,waveDir:wDir[i]??0,swDir:swD[i]??null,swP:swP[i]??0,ws:wndS[i]??0,wd:wndD[i]??0});
+    for(let i=ci;i<ci+24&&i<times.length;i+=3){
+      slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
+    }
     let tides=[];
-    if(tideR&&tideR.ok){try{const tj=await tideR.json();const rows=tj.table?.rows||[];tides=extractTides(rows.map(r=>r[0]),rows.map(r=>r[1]));}catch(e){}}
-    const days=daily.time.map((t,i)=>({time:t,h:daily.wave_height_max[i]??0,p:daily.wave_period_max[i]??0,dir:daily.wave_direction_dominant[i]??0}));
+    if(tideR&&tideR.ok){try{const tj=await tideR.json();const rows=tj.table&&tj.table.rows||[];tides=extractTides(rows.map(function(r){return r[0];}),rows.map(function(r){return r[1];}));}catch(e){}}
+    const days=daily.time.map(function(t,i){return{time:t,h:daily.wave_height_max[i]||0,p:daily.wave_period_max[i]||0,dir:daily.wave_direction_dominant[i]||0};});
     const windowHTML=buildWindowAlert(slots,profile,sun,spot);
     buildSelector(dots);
 
-    app.innerHTML=`
-      ${swellWarnHTML}
-      <div class="top-two-col">
-        <div class="top-col">
-          <div class="top-col-label">Live${buoyActive?'&nbsp;<span class="buoy-tag">M2 Buoy</span>':''}</div>
-          <span class="badge badge-${r}">${rateLabel(r)}</span>
-          <div class="conditions-read">${read}</div>
-        </div>
-        <div class="top-col">${windowHTML}</div>
-      </div>
+    // Build table rows
+    const tableRows=slots.map(function(s){
+      const sr=rate(s.h,s.ws,s.p,skill),dir=s.swDir!=null?s.swDir:s.waveDir,slotH=new Date(s.time).getHours();
+      const isDawn=Math.abs(slotH-Math.floor(sun.sunrise))<=1,isDusk=Math.abs(slotH-Math.floor(sun.sunset))<=1;
+      const isWork=profile&&profile.work==='9to5'&&![0,6].includes(new Date(s.time).getDay())&&slotH>=9&&slotH<=17;
+      const tag=isDawn?'<span class="row-tag dawn">First Light</span>':isDusk?'<span class="row-tag dusk">Last Light</span>':isWork?'<span class="row-tag work">Work hours</span>':'';
+      return '<tr class="forecast-row '+sr+'">'
+        +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
+        +'<td><div class="row-height '+sr+'">'+s.h.toFixed(1)+'<span class="row-unit">m</span></div></td>'
+        +'<td><div class="row-dir">'+arrowChar(dir)+' '+windDir(dir)+'<br><span style="font-size:9px;opacity:0.5">'+(s.swP||s.p).toFixed(0)+'s</span></div></td>'
+        +'<td><div class="row-wind">'+arrowChar(s.wd)+' '+windDir(s.wd)+'<br><span style="font-size:9px;opacity:0.5">'+s.ws.toFixed(0)+'mph</span></div></td>'
+        +'<td><div class="row-period">'+s.p.toFixed(0)+'s</div></td>'
+        +'</tr>';
+    }).join('');
 
-      <div class="current-card">
-        <div class="card-label">Now · ${now.toLocaleDateString('en-IE',{weekday:'long'})} ${fmtT(now.toISOString())}${buoyActive?' · M2 Buoy data':''}</div>
-        <div class="current-grid">
-          <div>
-            <div class="c-val">${cH.toFixed(1)}<span class="c-unit">m</span></div>
-            <div class="c-lbl">Wave Height</div>
-            <div class="c-sub">Significant height (Hs)</div>
-          </div>
-          <div><div class="c-val">${cP.toFixed(0)}<span class="c-unit">s</span></div><div class="c-lbl">Period</div></div>
-          <div><div class="c-val" style="color:${rColor}">${energy}<span class="c-unit">kJ/m</span></div><div class="c-lbl">Wave Energy</div></div>
-          <div><div class="dir-display">${dirArrowSVG(cSwD,'var(--fair)')}<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">${windDir(cSwD)}</div><div class="c-lbl">Swell Dir</div></div></div></div>
-        </div>
-        <div class="current-grid-bottom">
-          <div><div class="dir-display">${dirArrowSVG(cWD,'rgba(255,255,255,0.6)')}<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">${cWS.toFixed(0)}<span class="c-unit">mph</span> ${windDir(cWD)}</div><div class="c-lbl">Wind</div></div></div></div>
-          <div><div class="c-val" style="font-size:clamp(14px,2.2vw,20px);color:rgba(255,255,255,0.7)">${cSwP.toFixed(0)}<span class="c-unit">s</span></div><div class="c-lbl">Swell Period</div></div>
-          ${cSST!==null?`<div><div class="c-val" style="font-size:clamp(14px,2.2vw,20px);color:rgba(255,255,255,0.7)">${cSST.toFixed(1)}<span class="c-unit">°C</span></div><div class="c-lbl">Water Temp</div></div>`:''}
-        </div>
-      </div>
+    // Build tide cards
+    const tideCards=tides.map(function(t){
+      return '<div class="tide-card"><div class="tide-icon">'+(t.type==='high'?svgTideHigh():svgTideLow())+'</div>'
+        +'<div><div class="tide-type">'+(t.type==='high'?'High':'Low')+' Tide</div>'
+        +'<div class="tide-time">'+fmtT(t.time)+'</div>'
+        +'<div class="tide-ht">'+(t.height!=null?t.height.toFixed(2)+'m':'')+'</div></div></div>';
+    }).join('');
 
-      ${cSw2H>0.2?`<div class="swell-secondary"><div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-right:8px;">Secondary Swell</div><div class="swell-sec-item"><div class="swell-sec-label">Height</div><div class="swell-sec-val">${cSw2H.toFixed(1)}<span style="font-size:11px;opacity:0.4">m</span></div></div><div class="swell-sec-item"><div class="swell-sec-label">Period</div><div class="swell-sec-val">${cSw2P.toFixed(0)}<span style="font-size:11px;opacity:0.4">s</span></div></div><div class="swell-sec-item"><div class="swell-sec-label">Direction</div><div class="swell-sec-val">${arrowChar(cSw2D)} ${windDir(cSw2D)}</div></div></div>':''}
+    // Build 7-day cards
+    const dayCards=days.map(function(d){
+      const dr=rate(d.h,10,d.p,skill);
+      return '<div class="day-card '+dr+'"><div class="day-name">'+fmtDay(d.time)+'</div>'
+        +'<div class="day-height">'+d.h.toFixed(1)+'<span style="font-size:11px;opacity:0.4;letter-spacing:0">m</span></div>'
+        +'<div class="day-detail">'+arrowChar(d.dir)+' '+windDir(d.dir)+'<br>'+d.p.toFixed(0)+'s period</div></div>';
+    }).join('');
 
-      <div class="sec-label">7 Day Swell Arrival</div>
-      <div class="graph-wrap"><canvas class="graph-canvas" id="swellGraph"></canvas></div>
+    // Build secondary swell block
+    const sw2Block=cSw2H>0.2
+      ?'<div class="swell-secondary">'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-right:8px;">Secondary Swell</div>'
+        +'<div class="swell-sec-item"><div class="swell-sec-label">Height</div><div class="swell-sec-val">'+cSw2H.toFixed(1)+'<span style="font-size:11px;opacity:0.4">m</span></div></div>'
+        +'<div class="swell-sec-item"><div class="swell-sec-label">Period</div><div class="swell-sec-val">'+cSw2P.toFixed(0)+'<span style="font-size:11px;opacity:0.4">s</span></div></div>'
+        +'<div class="swell-sec-item"><div class="swell-sec-label">Direction</div><div class="swell-sec-val">'+arrowChar(cSw2D)+' '+windDir(cSw2D)+'</div></div>'
+        +'</div>'
+      :'';
 
-      <div class="sec-label">Next 24 Hours</div>
-      <table class="forecast-table">
-        <thead><tr><th>Time</th><th>Hs</th><th>Swell</th><th>Wind</th><th>Period</th></tr></thead>
-        <tbody>${slots.map(s=>{
-          const sr=rate(s.h,s.ws,s.p,skill),dir=s.swDir??s.waveDir,slotH=new Date(s.time).getHours();
-          const isDawn=Math.abs(slotH-Math.floor(sun.sunrise))<=1,isDusk=Math.abs(slotH-Math.floor(sun.sunset))<=1;
-          const isWork=profile?.work==='9to5'&&![0,6].includes(new Date(s.time).getDay())&&slotH>=9&&slotH<=17;
-          const tag=isDawn?'<span class="row-tag dawn">First Light</span>':isDusk?'<span class="row-tag dusk">Last Light</span>':isWork?'<span class="row-tag work">Work hours</span>':'';          return`<tr class="forecast-row ${sr}">
-            <td><div class="row-time">${fmtT(s.time)}${tag?'<br>'+tag:''}</div></td>
-            <td><div class="row-height ${sr}">${s.h.toFixed(1)}<span class="row-unit">m</span></div></td>
-            <td><div class="row-dir">${arrowChar(dir)} ${windDir(dir)}<br><span style="font-size:9px;opacity:0.5">${(s.swP||s.p).toFixed(0)}s</span></div></td>
-            <td><div class="row-wind">${arrowChar(s.wd)} ${windDir(s.wd)}<br><span style="font-size:9px;opacity:0.5">${s.ws.toFixed(0)}mph</span></div></td>
-            <td><div class="row-period">${s.p.toFixed(0)}s</div></td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table>
+    const buoyBadge=buoyActive?'&nbsp;<span class="buoy-tag">M2 Buoy</span>':'';
+    const sstBlock=cSST!==null
+      ?'<div><div class="c-val" style="font-size:clamp(14px,2.2vw,20px);color:rgba(255,255,255,0.7)">'+cSST.toFixed(1)+'<span class="c-unit">°C</span></div><div class="c-lbl">Water Temp</div></div>'
+      :'';
+    const buoyDataNote=buoyActive?' · M2 Buoy data':'';
+    const buoyInfoItem=spot.useBuoy?'<div class="spot-info-item"><div class="spot-info-label">Live Data</div><div class="spot-info-val">M2 Buoy · Irish Sea</div></div>':'';
 
-      ${tides.length>0?`<div class="sec-label">Tides · Today</div><div class="tide-grid">${tides.map(t=>`<div class="tide-card"><div class="tide-icon">${t.type==='high'?svgTideHigh():svgTideLow()}</div><div><div class="tide-type">${t.type==='high'?'High':'Low'} Tide</div><div class="tide-time">${fmtT(t.time)}</div><div class="tide-ht">${t.height!=null?t.height.toFixed(2)+'m':''}</div></div></div>`).join('')}</div>`:''}
+    app.innerHTML=
+      swellWarnHTML
+      +'<div class="top-two-col">'
+        +'<div class="top-col">'
+          +'<div class="top-col-label">Live'+buoyBadge+'</div>'
+          +'<span class="badge badge-'+r+'">'+rateLabel(r)+'</span>'
+          +'<div class="conditions-read">'+read+'</div>'
+        +'</div>'
+        +'<div class="top-col">'+windowHTML+'</div>'
+      +'</div>'
 
-      <div class="sec-label">First &amp; Last Light</div>
-      <div class="tide-grid">
-        <div class="tide-card"><div class="tide-icon">${svgSunrise()}</div><div><div class="tide-type">First Light</div><div class="tide-time">${sun.sunriseStr}</div><div class="tide-ht">Sunrise</div></div></div>
-        <div class="tide-card"><div class="tide-icon">${svgSunset()}</div><div><div class="tide-type">Last Light</div><div class="tide-time">${sun.sunsetStr}</div><div class="tide-ht">Sunset</div></div></div>
-      </div>
+      +'<div class="current-card">'
+        +'<div class="card-label">Now · '+now.toLocaleDateString('en-IE',{weekday:'long'})+' '+fmtT(now.toISOString())+buoyDataNote+'</div>'
+        +'<div class="current-grid">'
+          +'<div><div class="c-val">'+cH.toFixed(1)+'<span class="c-unit">m</span></div><div class="c-lbl">Wave Height</div><div class="c-sub">Significant height (Hs)</div></div>'
+          +'<div><div class="c-val">'+cP.toFixed(0)+'<span class="c-unit">s</span></div><div class="c-lbl">Period</div></div>'
+          +'<div><div class="c-val" style="color:'+rColor+'">'+energy+'<span class="c-unit">kJ/m</span></div><div class="c-lbl">Wave Energy</div></div>'
+          +'<div><div class="dir-display">'+dirArrowSVG(cSwD,'var(--fair)')+'<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">'+windDir(cSwD)+'</div><div class="c-lbl">Swell Dir</div></div></div></div>'
+        +'</div>'
+        +'<div class="current-grid-bottom">'
+          +'<div><div class="dir-display">'+dirArrowSVG(cWD,'rgba(255,255,255,0.6)')+'<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">'+cWS.toFixed(0)+'<span class="c-unit">mph</span> '+windDir(cWD)+'</div><div class="c-lbl">Wind</div></div></div></div>'
+          +'<div><div class="c-val" style="font-size:clamp(14px,2.2vw,20px);color:rgba(255,255,255,0.7)">'+cSwP.toFixed(0)+'<span class="c-unit">s</span></div><div class="c-lbl">Swell Period</div></div>'
+          +sstBlock
+        +'</div>'
+      +'</div>'
 
-      <div class="sec-label">7 Day Outlook</div>
-      <div class="seven-grid">${days.map(d=>{const dr=rate(d.h,10,d.p,skill);return`<div class="day-card ${dr}"><div class="day-name">${fmtDay(d.time)}</div><div class="day-height">${d.h.toFixed(1)}<span style="font-size:11px;opacity:0.4;letter-spacing:0">m</span></div><div class="day-detail">${arrowChar(d.dir)} ${windDir(d.dir)}<br>${d.p.toFixed(0)}s period</div></div>`;}).join('')}</div>
+      +sw2Block
 
-      <div class="sec-label">About This Break</div>
-      <div class="spot-info">
-        <div class="spot-info-item"><div class="spot-info-label">Wave Type</div><div class="spot-info-val">${spot.waveType}</div></div>
-        <div class="spot-info-item"><div class="spot-info-label">Level</div><div class="spot-info-val">${spot.level}</div></div>
-        ${spot.useBuoy?`<div class="spot-info-item"><div class="spot-info-label">Live Data</div><div class="spot-info-val">M2 Buoy · Irish Sea</div></div>`:''}
-        <div class="spot-info-item"><div class="spot-info-label"><button onclick="showSearch()" style="background:none;border:none;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);cursor:pointer;padding:0;transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">← Change spot</button></div></div>
-      </div>
+      +'<div class="sec-label">7 Day Swell Arrival</div>'
+      +'<div class="graph-wrap"><canvas class="graph-canvas" id="swellGraph"></canvas></div>'
 
-      <div class="disclaimer">In forecasting we don't deal in definites. Quiver Surf Forecast should be used in tandem with your own local knowledge of this wave.</div>
-    `;`;
+      +'<div class="sec-label">Next 24 Hours</div>'
+      +'<table class="forecast-table">'
+        +'<thead><tr><th>Time</th><th>Hs</th><th>Swell</th><th>Wind</th><th>Period</th></tr></thead>'
+        +'<tbody>'+tableRows+'</tbody>'
+      +'</table>'
 
-    requestAnimationFrame(()=>{const canvas=document.getElementById('swellGraph');if(canvas)drawGraph(canvas,times,wH,wP,skill);});
+      +(tides.length>0?'<div class="sec-label">Tides · Today</div><div class="tide-grid">'+tideCards+'</div>':'')
+
+      +'<div class="sec-label">First &amp; Last Light</div>'
+      +'<div class="tide-grid">'
+        +'<div class="tide-card"><div class="tide-icon">'+svgSunrise()+'</div><div><div class="tide-type">First Light</div><div class="tide-time">'+sun.sunriseStr+'</div><div class="tide-ht">Sunrise</div></div></div>'
+        +'<div class="tide-card"><div class="tide-icon">'+svgSunset()+'</div><div><div class="tide-type">Last Light</div><div class="tide-time">'+sun.sunsetStr+'</div><div class="tide-ht">Sunset</div></div></div>'
+      +'</div>'
+
+      +'<div class="sec-label">7 Day Outlook</div>'
+      +'<div class="seven-grid">'+dayCards+'</div>'
+
+      +'<div class="sec-label">About This Break</div>'
+      +'<div class="spot-info">'
+        +'<div class="spot-info-item"><div class="spot-info-label">Wave Type</div><div class="spot-info-val">'+spot.waveType+'</div></div>'
+        +'<div class="spot-info-item"><div class="spot-info-label">Level</div><div class="spot-info-val">'+spot.level+'</div></div>'
+        +buoyInfoItem
+        +'<div class="spot-info-item"><div class="spot-info-label"><button onclick="showSearch()" style="background:none;border:none;font-family:\'DM Mono\',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);cursor:pointer;padding:0;transition:color 0.15s;" onmouseover="this.style.color=\'rgba(255,255,255,0.7)\'" onmouseout="this.style.color=\'rgba(255,255,255,0.35)\'">← Change spot</button></div></div>'
+      +'</div>'
+
+      +'<div class="disclaimer">In forecasting we don\'t deal in definites. Quiver Surf Forecast should be used in tandem with your own local knowledge of this wave.</div>';
+
+    requestAnimationFrame(function(){const canvas=document.getElementById('swellGraph');if(canvas)drawGraph(canvas,times,wH,wP,skill);});
   }catch(e){
-    app.innerHTML=`<div class="status error">Couldn't load — ${e.message}</div>`;
+    app.innerHTML='<div class="status error">Couldn\'t load — '+e.message+'</div>';
   }
-}
-
-// ── SVG ICONS (replaces emojis) ──
-function svgSunrise(){
-  return`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M12 6v2M5 19h14"/><polyline points="8 16 12 12 16 16"/></svg>`;
-}
-function svgSunset(){
-  return`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,160,60,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 12 12 16 16 12"/></svg>`;
-}
-function svgTideHigh(){
-  return`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg>`;
-}
-function svgTideLow(){
-  return`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>`;
 }
 
 // ── INIT ──

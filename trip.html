@@ -15,8 +15,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 header{padding:18px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--faint);}
 .logo{font-size:18px;letter-spacing:2px;}
 .logo-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
-.main-nav{display:flex;gap:0;border:1px solid rgba(255,255,255,0.12);}
-.nav-link{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;color:var(--muted);text-decoration:none;border-right:1px solid rgba(255,255,255,0.12);transition:all 0.15s;}
+.main-nav{display:flex;gap:0;border:1px solid rgba(255,255,255,0.12);flex:1;margin:0 32px;}
+.nav-link{flex:1;text-align:center;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:11px 20px;color:var(--muted);text-decoration:none;border-right:1px solid rgba(255,255,255,0.12);transition:all 0.15s;}
 .nav-link:last-child{border-right:none;}
 .nav-link:hover{color:var(--white);background:rgba(255,255,255,0.06);}
 .nav-link.active{color:var(--white);background:rgba(255,255,255,0.08);}
@@ -75,7 +75,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   <div class="cs-features">
     <div class="cs-item">Find overlapping availability in your group</div>
     <div class="cs-item">Vote on destinations — Indonesia, Morocco, Sri Lanka</div>
-    <div class="cs-item">AI surf guide for your chosen destination</div>
+    <div class="cs-item">Surf guide for your chosen destination</div>
     <div class="cs-item">Share via link — no accounts needed</div>
   </div>
 </div>

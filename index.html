@@ -66,6 +66,12 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 #forecastPage{display:none;}
 #forecastPage.show{display:block;}
 
+/* UNIT TOGGLE */
+.unit-toggle{display:inline-flex;border:1px solid rgba(255,255,255,0.2);margin-top:14px;}
+.unit-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;background:none;border:none;color:var(--muted);cursor:pointer;transition:all 0.15s;}
+.unit-btn.active{background:rgba(255,255,255,0.1);color:var(--white);}
+.unit-btn:hover:not(.active){color:rgba(255,255,255,0.6);}
+
 /* HERO */
 .hero{padding:32px 28px 0;border-bottom:1px solid var(--faint);}
 .hero-inner{max-width:900px;margin:0 auto;text-align:center;}
@@ -220,8 +226,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   .hero{padding:20px 18px 0;}
   .main{padding:24px 16px 60px;}
   .current-card{padding:20px;}
-  .forecast-table th:nth-child(4),.forecast-table td:nth-child(4),
-  .forecast-table th:nth-child(5),.forecast-table td:nth-child(5){display:none;}
+  .forecast-table th:nth-child(3),.forecast-table td:nth-child(3),
+  .forecast-table th:nth-child(5),.forecast-table td:nth-child(5),
+  .forecast-table th:nth-child(6),.forecast-table td:nth-child(6){display:none;}
   .spot-btn{font-size:8px;padding:10px 3px;}
   .top-two-col{grid-template-columns:1fr;}
   #searchPage{padding:28px 18px;}
@@ -289,6 +296,10 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
       <div class="area-name" id="heroRegion">Ireland</div>
       <div class="break-name" id="heroName">—</div>
       <div class="break-loc" id="heroLoc"></div>
+      <div class="unit-toggle">
+        <button class="unit-btn active" id="btnFt" onclick="setUnit('ft')">ft</button>
+        <button class="unit-btn" id="btnM" onclick="setUnit('m')">m</button>
+      </div>
     </div>
     <div style="max-width:900px;margin:0 auto;">
       <div class="spot-selector" id="spotSelector"></div>
@@ -318,6 +329,24 @@ let currentGroup = getSpotsInGroup('spanish-point');
 let globeInterval = null;
 let globeAngle = 0;
 const GLOBE_SPEED = 0.004;
+let currentUnit = 'ft'; // 'ft' = face height in feet (Hs×0.7), 'm' = Hs in metres
+
+function setUnit(u){
+  currentUnit=u;
+  document.getElementById('btnFt').classList.toggle('active',u==='ft');
+  document.getElementById('btnM').classList.toggle('active',u==='m');
+  // Re-render if forecast is loaded
+  if(document.getElementById('forecastPage').classList.contains('show'))load();
+}
+
+// Convert height for display based on current unit
+// ft mode: Hs × 0.7 → feet (face height estimate)
+// m mode: Hs as-is in metres
+function displayH(hs){
+  if(currentUnit==='ft') return (hs*0.7*3.281).toFixed(1);
+  return hs.toFixed(1);
+}
+function displayUnit(){return currentUnit==='ft'?'ft':'m';}
 
 // ── PROFILE ──
 function getProfile(){
@@ -719,7 +748,7 @@ async function load(){
     const windowHTML=buildWindowAlert(slots,profile,sun,spot);
     buildSelector(dots);
 
-    // Build table rows
+    // Build table rows — Wave (displayH) + Hs columns
     const tableRows=slots.map(function(s){
       const sr=rate(s.h,s.ws,s.p,skill),dir=s.swDir!=null?s.swDir:s.waveDir,slotH=new Date(s.time).getHours();
       const isDawn=Math.abs(slotH-Math.floor(sun.sunrise))<=1,isDusk=Math.abs(slotH-Math.floor(sun.sunset))<=1;
@@ -727,7 +756,8 @@ async function load(){
       const tag=isDawn?'<span class="row-tag dawn">First Light</span>':isDusk?'<span class="row-tag dusk">Last Light</span>':isWork?'<span class="row-tag work">Work hours</span>':'';
       return '<tr class="forecast-row '+sr+'">'
         +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
-        +'<td><div class="row-height '+sr+'">'+s.h.toFixed(1)+'<span class="row-unit">m</span></div></td>'
+        +'<td><div class="row-height '+sr+'">'+displayH(s.h)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
+        +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.4)">'+s.h.toFixed(1)+'<span class="row-unit">m</span></div></td>'
         +'<td><div class="row-dir">'+arrowChar(dir)+' '+windDir(dir)+'<br><span style="font-size:9px;opacity:0.5">'+(s.swP||s.p).toFixed(0)+'s</span></div></td>'
         +'<td><div class="row-wind">'+arrowChar(s.wd)+' '+windDir(s.wd)+'<br><span style="font-size:9px;opacity:0.5">'+s.ws.toFixed(0)+'mph</span></div></td>'
         +'<td><div class="row-period">'+s.p.toFixed(0)+'s</div></td>'
@@ -746,7 +776,7 @@ async function load(){
     const dayCards=days.map(function(d){
       const dr=rate(d.h,10,d.p,skill);
       return '<div class="day-card '+dr+'"><div class="day-name">'+fmtDay(d.time)+'</div>'
-        +'<div class="day-height">'+d.h.toFixed(1)+'<span style="font-size:11px;opacity:0.4;letter-spacing:0">m</span></div>'
+        +'<div class="day-height">'+displayH(d.h)+'<span style="font-size:11px;opacity:0.4;letter-spacing:0">'+displayUnit()+'</span></div>'
         +'<div class="day-detail">'+arrowChar(d.dir)+' '+windDir(d.dir)+'<br>'+d.p.toFixed(0)+'s period</div></div>';
     }).join('');
 
@@ -767,6 +797,11 @@ async function load(){
     const buoyDataNote=buoyActive?' · M2 Buoy data':'';
     const buoyInfoItem=spot.useBuoy?'<div class="spot-info-item"><div class="spot-info-label">Live Data</div><div class="spot-info-val">M2 Buoy · Irish Sea</div></div>':'';
 
+    // Wave height display: ft mode shows Hs×0.7 in feet, m mode shows Hs
+    const waveDisplay=displayH(cH);
+    const waveU=displayUnit();
+    const waveSub=currentUnit==='ft'?'Est. face height':'Significant height (Hs)';
+
     app.innerHTML=
       swellWarnHTML
       +'<div class="top-two-col">'
@@ -781,12 +816,18 @@ async function load(){
       +'<div class="current-card">'
         +'<div class="card-label">Now · '+now.toLocaleDateString('en-IE',{weekday:'long'})+' '+fmtT(now.toISOString())+buoyDataNote+'</div>'
         +'<div class="current-grid">'
-          +'<div><div class="c-val">'+cH.toFixed(1)+'<span class="c-unit">m</span></div><div class="c-lbl">Wave Height</div><div class="c-sub">Significant height (Hs)</div></div>'
+          +'<div><div class="c-val">'+waveDisplay+'<span class="c-unit">'+waveU+'</span></div><div class="c-lbl">Wave Height</div><div class="c-sub">'+waveSub+'</div></div>'
+          +'<div><div class="c-val">'+cH.toFixed(1)+'<span class="c-unit">m</span></div><div class="c-lbl">Swell Height</div><div class="c-sub">Hs open ocean</div></div>'
           +'<div><div class="c-val">'+cP.toFixed(0)+'<span class="c-unit">s</span></div><div class="c-lbl">Period</div></div>'
           +'<div><div class="c-val" style="color:'+rColor+'">'+energy+'<span class="c-unit">kJ/m</span></div><div class="c-lbl">Wave Energy</div></div>'
-          +'<div><div class="dir-display">'+dirArrowSVG(cSwD,'var(--fair)')+'<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">'+windDir(cSwD)+'</div><div class="c-lbl">Swell Dir</div></div></div></div>'
         +'</div>'
         +'<div class="current-grid-bottom">'
+          +'<div><div class="dir-display">'+dirArrowSVG(cSwD,'var(--fair)')+'<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">'+windDir(cSwD)+'</div><div class="c-lbl">Swell Dir</div></div></div></div>'
+          +'<div><div class="dir-display">'+dirArrowSVG(cWD,'rgba(255,255,255,0.6)')+'<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">'+cWS.toFixed(0)+'<span class="c-unit">mph</span> '+windDir(cWD)+'</div><div class="c-lbl">Wind</div></div></div></div>'
+          +'<div><div class="c-val" style="font-size:clamp(14px,2.2vw,20px);color:rgba(255,255,255,0.7)">'+cSwP.toFixed(0)+'<span class="c-unit">s</span></div><div class="c-lbl">Swell Period</div></div>'
+          +sstBlock
+        +'</div>'
+      +'</div>'
           +'<div><div class="dir-display">'+dirArrowSVG(cWD,'rgba(255,255,255,0.6)')+'<div><div class="c-val" style="font-size:clamp(16px,2.5vw,22px)">'+cWS.toFixed(0)+'<span class="c-unit">mph</span> '+windDir(cWD)+'</div><div class="c-lbl">Wind</div></div></div></div>'
           +'<div><div class="c-val" style="font-size:clamp(14px,2.2vw,20px);color:rgba(255,255,255,0.7)">'+cSwP.toFixed(0)+'<span class="c-unit">s</span></div><div class="c-lbl">Swell Period</div></div>'
           +sstBlock
@@ -800,7 +841,7 @@ async function load(){
 
       +'<div class="sec-label">Next 24 Hours</div>'
       +'<table class="forecast-table">'
-        +'<thead><tr><th>Time</th><th>Hs</th><th>Swell</th><th>Wind</th><th>Period</th></tr></thead>'
+        +'<thead><tr><th>Time</th><th>Wave</th><th>Hs</th><th>Swell</th><th>Wind</th><th>Period</th></tr></thead>'
         +'<tbody>'+tableRows+'</tbody>'
       +'</table>'
 

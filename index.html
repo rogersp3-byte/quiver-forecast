@@ -798,6 +798,7 @@ function buildTideCards(tidePoints){
   }
   const now=Date.now();
   const cutoff=now+28*3600000;
+  console.log('[Quiver TideCards] Input:',tidePoints.length,'points, first:',tidePoints[0]);
 
   // If data already has HIGH/LOW type tags (from IMI predictions), use directly
   let events=[];
@@ -826,7 +827,9 @@ function buildTideCards(tidePoints){
     }
   }
 
+  console.log('[Quiver TideCards] Events found:',events.length, events);
   if(events.length===0){
+    console.warn('[Quiver TideCards] No events in window',new Date(now).toISOString(),'→',new Date(cutoff).toISOString());
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">No tides in window</div></div>';
   }
 
@@ -1092,6 +1095,7 @@ function svgSunset(){return '<svg width="22" height="22" viewBox="0 0 24 24" fil
 // Uses IMI_TidePrediction_HighLow: predicted high/low tides, 2 years ahead, always populated.
 // Falls back to synthetic harmonics if unavailable.
 async function fetchTidePredictions(stationID){
+  const LOG='[Quiver Tides]';
   try{
     const from=new Date(Date.now()-3*3600000).toISOString().slice(0,19)+'Z';
     const to=new Date(Date.now()+30*3600000).toISOString().slice(0,19)+'Z';
@@ -1101,16 +1105,50 @@ async function fetchTidePredictions(stationID){
       +'&time%3E='+encodeURIComponent(from)
       +'&time%3C='+encodeURIComponent(to)
       +'&orderBy(%22time%22)';
+    console.log(LOG,'Fetching:',stationID,'→',url);
     const r=await fetch(url);
-    if(!r.ok)return null;
+    if(!r.ok){
+      console.warn(LOG,'HTTP',r.status,'for station',stationID);
+      return null;
+    }
     const j=await r.json();
+    // Log raw column names so we can see the exact field values
+    console.log(LOG,'Column names:',j.table&&j.table.columnNames);
     const rows=(j.table&&j.table.rows)||[];
-    if(rows.length<2)return null;
-    // rows: [time_ISO, water_level_m, tide_time_category ("HIGH"|"LOW")]
-    return rows.map(function(row){
-      return{time:row[0], height:row[1], type:(row[2]||'').toUpperCase()};
-    }).filter(function(p){return p.height!=null&&p.height>-900;});
-  }catch(e){return null;}
+    console.log(LOG,'Row count:',rows.length);
+    if(rows.length>0) console.log(LOG,'First 3 rows:',rows.slice(0,3));
+    if(rows.length<1){
+      console.warn(LOG,'No rows returned for',stationID);
+      return null;
+    }
+    // Normalise type: handles "High Water", "LOW", "high", "HW", "LW" etc.
+    function normaliseType(raw){
+      if(!raw) return null;
+      const s=raw.toString().toUpperCase().trim();
+      if(s==='HIGH'||s==='HIGH WATER'||s==='HW'||s==='H') return 'HIGH';
+      if(s==='LOW' ||s==='LOW WATER' ||s==='LW'||s==='L') return 'LOW';
+      // Partial match fallback
+      if(s.startsWith('H')) return 'HIGH';
+      if(s.startsWith('L')) return 'LOW';
+      console.warn(LOG,'Unknown tide_time_category value:',JSON.stringify(raw));
+      return null;
+    }
+    const points=rows.map(function(row){
+      const type=normaliseType(row[2]);
+      return{time:row[0], height:row[1], type:type};
+    }).filter(function(p){
+      return p.height!=null&&p.height>-900&&p.type!==null;
+    });
+    console.log(LOG,'Parsed',points.length,'valid tide events:',points);
+    const types=points.map(p=>p.type);
+    const highs=types.filter(t=>t==='HIGH').length;
+    const lows=types.filter(t=>t==='LOW').length;
+    console.log(LOG,'HIGHs:',highs,'LOWs:',lows);
+    return points.length>=1?points:null;
+  }catch(e){
+    console.error('[Quiver Tides] fetchTidePredictions error:',e);
+    return null;
+  }
 }
 
 // ── M2 BUOY FETCH ──
@@ -1191,7 +1229,10 @@ async function load(){
     // Tide data — tideR is already processed [{time,height,type}] from fetchTidePredictions
     let tidePoints = tideR || [];
     if(tidePoints.length < 2){
+      console.warn('[Quiver Tides] Falling back to synthetic tides (got',tidePoints.length,'points from MI)');
       tidePoints = generateSyntheticTides(spot.lat, spot.lng);
+    } else {
+      console.log('[Quiver Tides] Using',tidePoints.length,'MI predicted tide events');
     }
 
     const days=daily.time.map(function(t,i){return{time:t,h:daily.wave_height_max[i]||0,p:daily.wave_period_max[i]||0,dir:daily.wave_direction_dominant[i]||0};});

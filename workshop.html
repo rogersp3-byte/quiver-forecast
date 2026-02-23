@@ -360,8 +360,6 @@ header{
 .bottom-nav-item svg{width:20px;height:20px;}
 .bottom-nav-item:hover,.bottom-nav-item.active{color:#fff;}
 .bottom-nav-item.active svg{stroke:#f5c800;}
-.cl-wave-mark{width:52px;height:36px;}
-.chat-hdr-avatar svg{display:block;}
 
 @media(max-width:640px){
   .bottom-nav{display:flex;}
@@ -381,15 +379,7 @@ header{
 .landing > *:nth-child(5){animation-delay:0.34s;}
 @keyframes fadeup{to{opacity:1;transform:none;}}
 
-/* ── WAVE TIDE LINE ── */
-.wave-line-wrap{
-  position:relative;height:28px;overflow:hidden;
-  margin-bottom:8px;pointer-events:none;
-}
-.wave-line-wrap canvas{
-  position:absolute;bottom:0;left:0;width:100%;height:100%;
-  display:block;
-}
+
 
 /* ── MESSAGE STAGGER-IN ── */
 @keyframes msg-appear{
@@ -537,9 +527,16 @@ function showLanding(){
           <div class="cl-avatar-pulse2"></div>
           <div class="cl-avatar-pulse"></div>
           <div class="cl-avatar">
-            <svg class="cl-wave-mark" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 24 C6 14, 10 8, 16 10 C20 11, 22 18, 26 18 C30 18, 32 10, 38 8 C42 7, 45 12, 46 16" stroke="#f5c800" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-              <path d="M2 28 C7 20, 12 16, 18 18 C22 19, 24 24, 28 24 C33 24, 36 18, 42 16" stroke="rgba(245,200,0,0.35)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" width="54" height="54">
+              <path d="M24 30 Q20 38 18 50 L42 50 Q40 38 36 30 Q33 26 30 26 Q27 26 24 30Z" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.05)" stroke-linejoin="round"/>
+              <ellipse cx="30" cy="22" rx="6" ry="7" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.05)"/>
+              <path d="M30 15 L24 22 L36 22 Z" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.08)" stroke-linejoin="round"/>
+              <line x1="24" y1="22" x2="36" y2="22" stroke="#f5c800" stroke-width="1.3"/>
+              <path d="M25 27 Q22 33 23 40 Q26 44 30 44 Q34 44 37 40 Q38 33 35 27" stroke="rgba(245,200,0,0.5)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+              <line x1="40" y1="18" x2="38" y2="50" stroke="#f5c800" stroke-width="1.3" stroke-linecap="round"/>
+              <circle cx="40.5" cy="17" r="2.5" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.2)"/>
+              <circle cx="28" cy="21" r="1" fill="#f5c800" opacity="0.8"/>
+              <circle cx="32" cy="21" r="1" fill="#f5c800" opacity="0.8"/>
             </svg>
             <div class="cl-status"></div>
           </div>
@@ -646,8 +643,6 @@ function startSession(){
   msgs=[];
 
   renderChat(ws);
-  setTimeout(initWave, 50);
-
   // Core Lord's opener — no API call, just sets the tone immediately
   const opener=buildOpener(ws);
   appendMsg('assistant',opener);
@@ -670,9 +665,16 @@ function renderChat(ws){
     <div class="chat-wrap">
       <div class="chat-hdr">
         <div class="chat-hdr-avatar">
-          <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:20px">
-            <path d="M2 24 C6 14, 10 8, 16 10 C20 11, 22 18, 26 18 C30 18, 32 10, 38 8 C42 7, 45 12, 46 16" stroke="#f5c800" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-            <path d="M2 28 C7 20, 12 16, 18 18 C22 19, 24 24, 28 24 C33 24, 36 18, 42 16" stroke="rgba(245,200,0,0.4)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px">
+            <path d="M24 30 Q20 38 18 50 L42 50 Q40 38 36 30 Q33 26 30 26 Q27 26 24 30Z" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.05)" stroke-linejoin="round"/>
+            <ellipse cx="30" cy="22" rx="6" ry="7" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.05)"/>
+            <path d="M30 15 L24 22 L36 22 Z" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.08)" stroke-linejoin="round"/>
+            <line x1="24" y1="22" x2="36" y2="22" stroke="#f5c800" stroke-width="1.3"/>
+            <path d="M25 27 Q22 33 23 40 Q26 44 30 44 Q34 44 37 40 Q38 33 35 27" stroke="rgba(245,200,0,0.5)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+            <line x1="40" y1="18" x2="38" y2="50" stroke="#f5c800" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="40.5" cy="17" r="2.5" stroke="#f5c800" stroke-width="1.3" fill="rgba(245,200,0,0.2)"/>
+            <circle cx="28" cy="21" r="1" fill="#f5c800" opacity="0.8"/>
+            <circle cx="32" cy="21" r="1" fill="#f5c800" opacity="0.8"/>
           </svg>
         </div>
         <div class="chat-hdr-info">
@@ -686,7 +688,6 @@ function renderChat(ws){
       <div class="chat-msgs" id="chatMsgs"></div>
 
       <div class="chat-input-area">
-        <div class="wave-line-wrap"><canvas id="waveCanvas"></canvas></div>
         <div class="sug-chips" id="sugChips">
           <div class="sug-chip" onclick="useSug(this)">What drills can I do on land?</div>
           <div class="sug-chip" onclick="useSug(this)">Is my board right for me?</div>
@@ -705,50 +706,7 @@ function renderChat(ws){
   `;
 }
 
-// ── WAVE ANIMATION ──
-function initWave(){
-  const canvas=document.getElementById('waveCanvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  let W,H,phase=0,animId;
 
-  function resize(){
-    W=canvas.offsetWidth;
-    H=canvas.offsetHeight;
-    canvas.width=W*window.devicePixelRatio;
-    canvas.height=H*window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
-  }
-  resize();
-  window.addEventListener('resize',resize);
-
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-
-    // Two layered waves — main + softer echo
-    const waves=[
-      {amp:4.5, freq:0.018, speed:0.022, y:H*0.55, alpha:0.55, width:1.5},
-      {amp:2.8, freq:0.026, speed:0.014, y:H*0.65, alpha:0.25, width:1.0},
-    ];
-
-    waves.forEach(w=>{
-      ctx.beginPath();
-      for(let x=0;x<=W;x+=2){
-        const y=w.y + Math.sin(x*w.freq + phase*w.speed*50)*w.amp
-                    + Math.sin(x*w.freq*1.7 + phase*w.speed*30)*w.amp*0.4;
-        x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-      }
-      ctx.strokeStyle=`rgba(245,200,0,${w.alpha})`;
-      ctx.lineWidth=w.width;
-      ctx.stroke();
-    });
-
-    phase++;
-    animId=requestAnimationFrame(draw);
-  }
-  draw();
-  return ()=>cancelAnimationFrame(animId);
-}
 
 function useSug(el){
   document.getElementById('sugChips').style.display='none';
@@ -910,7 +868,6 @@ if(existing){
   const welcomeBack = `${existing.name}. You're back. Same thing we were working on, or something new?`;
   msgs=[{role:'assistant',content:welcomeBack}];
   appendMsg('assistant',msgs[0].content);
-  setTimeout(initWave, 50);
 }else{
   showLanding();
 }

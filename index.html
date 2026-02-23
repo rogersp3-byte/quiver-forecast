@@ -134,7 +134,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* BADGE */
 .badge{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:7px 18px;border:1.5px solid;white-space:nowrap;}
-.badge-epic,.badge-good{color:var(--good);border-color:var(--good);}
+.badge-great,.badge-good{color:var(--good);border-color:var(--good);}
 .badge-fair{color:var(--fair);border-color:var(--fair);}
 .badge-poor{color:var(--poor);border-color:var(--poor);}
 .badge-flat{color:var(--muted);border-color:var(--muted);}
@@ -175,13 +175,13 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .forecast-table th:not(:first-child){text-align:center;}
 .forecast-row{border-bottom:1px solid rgba(255,255,255,0.05);transition:background 0.15s;border-left:3px solid transparent;}
 .forecast-row:hover{background:var(--surface2);}
-.forecast-row.good,.forecast-row.epic{border-left-color:var(--good);}
+.forecast-row.good,.forecast-row.great{border-left-color:var(--good);}
 .forecast-row.fair{border-left-color:var(--fair);}
 .forecast-row.poor{border-left-color:var(--poor);}
 .forecast-row td{padding:11px 10px;vertical-align:middle;}
 .row-time{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.5);white-space:nowrap;}
 .row-height{font-size:18px;letter-spacing:-0.5px;text-align:center;}
-.row-height.good,.row-height.epic{color:var(--good);}
+.row-height.good,.row-height.great{color:var(--good);}
 .row-height.fair{color:var(--fair);}
 .row-height.poor{color:var(--poor);}
 .row-unit{font-size:10px;opacity:0.4;}
@@ -195,12 +195,12 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 /* MOBILE FORECAST CARDS */
 .forecast-cards{display:none;gap:4px;flex-direction:column;}
 .fc-card{background:var(--surface);padding:14px 16px;border-left:3px solid transparent;display:grid;grid-template-columns:80px 1fr 1fr;align-items:center;gap:12px;}
-.fc-card.epic,.fc-card.good{border-left-color:var(--good);}
+.fc-card.great,.fc-card.good{border-left-color:var(--good);}
 .fc-card.fair{border-left-color:var(--fair);}
 .fc-card.poor{border-left-color:var(--poor);}
 .fc-time{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:rgba(255,255,255,0.5);}
 .fc-height{font-size:22px;letter-spacing:-1px;text-align:center;}
-.fc-height.epic,.fc-height.good{color:var(--good);}
+.fc-height.great,.fc-height.good{color:var(--good);}
 .fc-height.fair{color:var(--fair);}
 .fc-height.poor{color:var(--poor);}
 .fc-meta{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8;}
@@ -208,22 +208,22 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 /* 7 DAY — ENHANCED */
 .seven-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .day-card{background:var(--surface);padding:16px 10px;text-align:center;border-top:2px solid transparent;position:relative;overflow:hidden;}
-.day-card.epic,.day-card.good{border-top-color:var(--good);}
+.day-card.great,.day-card.good{border-top-color:var(--good);}
 .day-card.fair{border-top-color:var(--fair);}
 .day-card.poor{border-top-color:var(--poor);}
 .day-card::after{content:'';position:absolute;inset:0;opacity:0.04;pointer-events:none;}
-.day-card.epic::after,.day-card.good::after{background:var(--good);}
+.day-card.great::after,.day-card.good::after{background:var(--good);}
 .day-card.fair::after{background:var(--fair);}
 .day-card.poor::after{background:var(--poor);}
 .day-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:10px;}
 .day-card.today .day-name{color:rgba(245,200,0,0.8);}
 .day-height{font-size:22px;letter-spacing:-1px;}
-.day-card.epic .day-height,.day-card.good .day-height{color:var(--good);}
+.day-card.great .day-height,.day-card.good .day-height{color:var(--good);}
 .day-card.fair .day-height{color:var(--fair);}
 .day-card.poor .day-height{color:var(--poor);}
 .day-unit{font-size:9px;opacity:0.35;letter-spacing:0;}
 .day-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;margin:6px auto 4px;border:1px solid;display:block;width:fit-content;}
-.day-card.epic .day-badge,.day-card.good .day-badge{color:var(--good);border-color:rgba(34,197,94,0.3);}
+.day-card.great .day-badge,.day-card.good .day-badge{color:var(--good);border-color:rgba(34,197,94,0.3);}
 .day-card.fair .day-badge{color:var(--fair);border-color:rgba(245,200,0,0.3);}
 .day-card.poor .day-badge{color:var(--poor);border-color:rgba(239,68,68,0.3);}
 .day-detail{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);margin-top:4px;line-height:1.8;text-transform:uppercase;}
@@ -603,7 +603,7 @@ function buildSelector(dotRatings){
   const sel=document.getElementById('spotSelector');
   sel.innerHTML=currentGroup.map(function(s,i){
     const r=dotRatings[i]||'';
-    const dc=r==='good'||r==='epic'?'good-dot':r==='fair'?'fair-dot':r==='poor'?'poor-dot':'';
+    const dc=r==='good'||r==='great'?'good-dot':r==='fair'?'fair-dot':r==='poor'?'poor-dot':'';
     return '<button class="spot-btn'+(s.id===currentSpot.id?' active':'')+'" onclick="switchSpot(\''+s.id+'\')">'
       +'<span class="spot-badge '+dc+'"></span>'+s.shortName+'</button>';
   }).join('');
@@ -625,12 +625,12 @@ function rate(h,w,p,skill){
   const t=skillThresholds(skill||'advanced');
   if(h<0.3)return'flat';
   const sOk=h>=t.minH&&h<=t.maxH,pOk=p>=t.minP;
-  if(sOk&&pOk&&w<6)return'epic';
+  if(sOk&&pOk&&w<6)return'great';
   if(sOk&&pOk&&w<12)return'good';
   if(sOk&&w<17)return'fair';
   return'poor';
 }
-function rateLabel(r){return{epic:'Epic',good:'Good',fair:'Fair',poor:'Poor',flat:'Flat'}[r];}
+function rateLabel(r){return{great:'Good',good:'Good',fair:'Fair',poor:'Poor',flat:'Flat'}[r];}
 function windDesc(ws,wd,spot){
   const diff=((wd-spot.beachFacing)+360)%360;
   const wDir=windDir(wd);
@@ -770,7 +770,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     const dn=best.slotDate.toDateString()===now.toDateString()?'today':best.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
     const unavNote=!best.avail&&work==='9to5'?' (falls during work hours)':'';
     const windNote=isOffshore(best.wd,spot)?windDir(best.wd)+' offshore':windDir(best.wd)+' wind';
-    const qw=best.r==='epic'?'an epic':best.r==='good'?'a good':'a fair';
+    const qw=best.r==='great'||best.r==='good'?'a good':best.r==='fair'?'a fair':'a session';
     windowText='Best window: '+qw+' session around '+fmtT(best.time)+' '+dn+unavNote+'. ';
     windowText+=best.h.toFixed(1)+'m at '+best.p.toFixed(0)+'s, '+windNote+'.';
     if(spot.tidePreference&&spot.tidePreference!=='any')windowText+=' Tide looks '+tidePrefLabel+' — good for this break.';
@@ -778,7 +778,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     else if(skill==='expert'&&best.h>=2.0)windowText+=' Sizeable swell.';
     else if(skill==='advanced'&&best.h<0.9)windowText+=' Quieter spell — below ideal.';
   }
-  const ac=currentRating==='good'||currentRating==='epic'?'good-card':currentRating==='fair'?'fair-card':currentRating==='poor'?'poor-card':'flat-card';
+  const ac=currentRating==='good'||currentRating==='great'?'good-card':currentRating==='fair'?'fair-card':currentRating==='poor'?'poor-card':'flat-card';
   return'<div class="surf-report-card '+ac+'">'
     +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
     +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
@@ -1076,7 +1076,7 @@ function drawGraph(canvas,times,heights,periods,skill){
   for(let i=1;i<heights.length;i++){
     if(!heights[i]||!heights[i-1])continue;
     const r=rate(heights[i],10,periods[i]||8,skill);
-    ctx.strokeStyle=r==='good'||r==='epic'?'rgba(34,197,94,0.9)':r==='fair'?'rgba(245,200,0,0.9)':'rgba(239,68,68,0.7)';
+    ctx.strokeStyle=r==='good'||r==='great'?'rgba(34,197,94,0.9)':r==='fair'?'rgba(245,200,0,0.9)':'rgba(239,68,68,0.7)';
     ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(toX(i-1),toY(heights[i-1]));ctx.lineTo(toX(i),toY(heights[i]));ctx.stroke();
   }
   const ni=times.findIndex(function(tm){return new Date(tm)>=new Date();});
@@ -1097,8 +1097,8 @@ function svgSunset(){return '<svg width="22" height="22" viewBox="0 0 24 24" fil
 async function fetchTidePredictions(stationID){
   const LOG='[Quiver Tides]';
   try{
-    const from=new Date(Date.now()-3*3600000).toISOString().slice(0,19)+'Z';
-    const to=new Date(Date.now()+30*3600000).toISOString().slice(0,19)+'Z';
+    const from=new Date(Date.now()-6*3600000).toISOString().slice(0,19)+'Z';
+    const to=new Date(Date.now()+90*3600000).toISOString().slice(0,19)+'Z';  // 4 days ahead — ensures multiple full tidal cycles
     const url='https://erddap.marine.ie/erddap/tabledap/IMI_TidePrediction_HighLow.json'
       +'?time,Water_Level_ODM,tide_time_category'
       +'&stationID=%22'+encodeURIComponent(stationID)+'%22'
@@ -1113,29 +1113,44 @@ async function fetchTidePredictions(stationID){
     }
     const j=await r.json();
     // Log raw column names so we can see the exact field values
-    console.log(LOG,'Column names:',j.table&&j.table.columnNames);
+    const cols=(j.table&&j.table.columnNames)||[];
+    console.log(LOG,'Column names:',cols);
+    // Dynamically find column indices in case order varies
+    const timeIdx  = cols.indexOf('time')>=0               ? cols.indexOf('time')               : 0;
+    const heightIdx= cols.indexOf('Water_Level_ODM')>=0    ? cols.indexOf('Water_Level_ODM')    : 1;
+    const typeIdx  = cols.indexOf('tide_time_category')>=0 ? cols.indexOf('tide_time_category') : 2;
+    console.log(LOG,'Using column indices — time:'+timeIdx+' height:'+heightIdx+' type:'+typeIdx);
     const rows=(j.table&&j.table.rows)||[];
     console.log(LOG,'Row count:',rows.length);
-    if(rows.length>0) console.log(LOG,'First 3 rows:',rows.slice(0,3));
+    if(rows.length>0){
+      console.log(LOG,'First 3 rows:',rows.slice(0,3));
+      // Log every unique tide_time_category value we receive
+      const rawTypes=[...new Set(rows.map(r=>r[typeIdx]))];
+      console.log(LOG,'Unique tide_time_category values in response:',rawTypes);
+    }
     if(rows.length<1){
       console.warn(LOG,'No rows returned for',stationID);
       return null;
     }
     // Normalise type: handles "High Water", "LOW", "high", "HW", "LW" etc.
     function normaliseType(raw){
-      if(!raw) return null;
+      if(raw===null||raw===undefined) return null;
       const s=raw.toString().toUpperCase().trim();
-      if(s==='HIGH'||s==='HIGH WATER'||s==='HW'||s==='H') return 'HIGH';
-      if(s==='LOW' ||s==='LOW WATER' ||s==='LW'||s==='L') return 'LOW';
-      // Partial match fallback
+      // Exact matches
+      if(s==='HIGH'||s==='HIGH WATER'||s==='HW'||s==='H'||s==='1') return 'HIGH';
+      if(s==='LOW' ||s==='LOW WATER' ||s==='LW'||s==='L'||s==='0') return 'LOW';
+      // Contains match — catches "High Water Stand", "Low Water Slack" etc.
+      if(s.includes('HIGH')) return 'HIGH';
+      if(s.includes('LOW'))  return 'LOW';
+      // First-letter fallback
       if(s.startsWith('H')) return 'HIGH';
       if(s.startsWith('L')) return 'LOW';
       console.warn(LOG,'Unknown tide_time_category value:',JSON.stringify(raw));
       return null;
     }
     const points=rows.map(function(row){
-      const type=normaliseType(row[2]);
-      return{time:row[0], height:row[1], type:type};
+      const type=normaliseType(row[typeIdx]);
+      return{time:row[timeIdx], height:row[heightIdx], type:type};
     }).filter(function(p){
       return p.height!=null&&p.height>-900&&p.type!==null;
     });
@@ -1216,7 +1231,7 @@ async function load(){
     const cSST=sst&&sst[ci]!=null?sst[ci]:null;
     const r=rate(cH,cWS,cP,skill),energy=waveEnergy(cH,cP);
     const read=conditionsRead(cH,cWS,cWD,cSwP,spot);
-    const rColor=r==='good'||r==='epic'?'var(--good)':r==='fair'?'var(--fair)':r==='poor'?'var(--poor)':'var(--muted)';
+    const rColor=r==='good'||r==='great'?'var(--good)':r==='fair'?'var(--fair)':r==='poor'?'var(--poor)':'var(--muted)';
     const sun=getSunTimes(spot.lat,spot.lng,now);
     const swellGood=swellInWindow(cSwD||cD,spot);
     const swellWarnHTML=(!swellGood&&cH>=0.3)?'<div class="swell-warning">Swell direction ('+windDir(cSwD||cD)+') may not be optimal for this break.</div>':'';

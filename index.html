@@ -49,20 +49,39 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .search-landing-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:32px;text-align:center;}
 
 /* GLOBE */
-.globe-wrap{width:200px;height:200px;margin:0 auto 36px;position:relative;flex-shrink:0;}
+.globe-wrap{width:200px;height:200px;margin:0 auto 36px;position:relative;flex-shrink:0;align-self:center;}
 .globe-canvas{width:200px;height:200px;display:block;border-radius:50%;}
 @media(max-width:640px){
   .globe-wrap{width:150px;height:150px;margin-bottom:28px;}
   .globe-canvas{width:150px;height:150px;}
 }
 
-.search-box-wrap{width:100%;max-width:520px;position:relative;}
+.search-box-wrap{width:100%;max-width:520px;position:relative;align-self:center;}
 .search-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.18);color:var(--white);font-family:'DM Mono',monospace;font-size:14px;padding:18px 22px;outline:none;letter-spacing:1px;transition:border-color 0.2s;}
 .search-input:focus{border-color:rgba(255,255,255,0.45);}
 .search-input::placeholder{color:rgba(255,255,255,0.25);}
-/* search-results styles moved below */
-.sri-name{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--white);}
-.sri-region{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);margin-top:3px;}
+/* ── SEARCH RESULTS DROPDOWN ── */
+.search-results{
+  position:absolute;top:calc(100% + 1px);left:0;right:0;
+  background:#111;border:1px solid rgba(255,255,255,0.14);border-top:none;
+  z-index:20;display:none;max-height:380px;overflow-y:auto;
+}
+.search-results.show{display:block;}
+.sr-region-header{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.25);padding:10px 18px 5px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.sr-region-header:first-child{border-top:none;}
+.search-result-item{
+  padding:11px 18px 11px 24px;cursor:pointer;
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  transition:background 0.1s;
+}
+.search-result-item:hover,.search-result-item.focused{background:rgba(255,255,255,0.06);}
+.sri-name{font-size:13px;letter-spacing:0.3px;}
+.sri-meta{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.28);white-space:nowrap;}
+.sri-saved{color:rgba(245,200,0,0.7);margin-right:3px;}
 
 /* SAVED SPOTS */
 .saved-spots-section{width:100%;max-width:520px;margin-top:24px;}
@@ -76,7 +95,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .search-hint{display:none;}
 /* Spot index toggle button */
 .spot-index-btn{
-  width:100%;max-width:520px;margin-top:2px;
+  width:100%;max-width:520px;margin-top:20px;align-self:center;
   font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
   color:rgba(255,255,255,0.28);background:none;
   border:1px solid rgba(255,255,255,0.1);
@@ -89,7 +108,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .spot-index-btn.open .sib-arrow{transform:rotate(180deg);}
 /* Spot index panel */
 .spot-index{
-  width:100%;max-width:520px;
+  width:100%;max-width:520px;align-self:center;
   border:1px solid rgba(255,255,255,0.1);border-top:none;
   display:none;background:#0d0d0d;
   max-height:420px;overflow-y:auto;

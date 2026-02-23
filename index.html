@@ -50,10 +50,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* GLOBE */
 .globe-wrap{width:200px;height:200px;margin:0 auto 36px;position:relative;flex-shrink:0;align-self:center;}
-.globe-canvas{width:200px;height:200px;display:block;border-radius:50%;}
+.globe-canvas{display:block;border-radius:50%;}
 @media(max-width:640px){
   .globe-wrap{width:150px;height:150px;margin-bottom:28px;}
-  .globe-canvas{width:150px;height:150px;}
 }
 
 .search-box-wrap{width:100%;max-width:520px;position:relative;align-self:center;}
@@ -95,7 +94,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .search-hint{display:none;}
 /* Spot index toggle button */
 .spot-index-btn{
-  width:100%;max-width:520px;margin-top:20px;align-self:center;
+  width:100%;max-width:520px;margin-top:32px;align-self:center;
   font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
   color:rgba(255,255,255,0.28);background:none;
   border:1px solid rgba(255,255,255,0.1);
@@ -634,7 +633,7 @@ function renderSpotRows(spots){
       const gs=getSpotsInGroup(s.group);
       const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' · ');
       const saved=isSpotSaved(s.id)?'<span class="sri-saved">★</span>':'';
-      h+='<div class="search-result-item" onmousedown="selectSpot(''+s.id+'')">'+
+      h+='<div class="search-result-item" onmousedown="selectSpot(\''+s.id+'\')">'+
         '<span class="sri-name">'+saved+s.groupName+'</span>'+
         (meta?'<span class="sri-meta">'+meta+'</span>':'')+
         '</div>';
@@ -652,7 +651,7 @@ function renderIndexRows(spots){
       const gs=getSpotsInGroup(s.group);
       const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' · ');
       const saved=isSpotSaved(s.id)?'★ ':'';
-      h+='<div class="si-spot" onmousedown="selectSpot(''+s.id+'')">'+
+      h+='<div class="si-spot" onmousedown="selectSpot(\''+s.id+'\')">'+
         '<span class="si-spot-name">'+saved+s.groupName+'</span>'+
         (meta?'<span class="si-spot-meta">'+meta+'</span>':'')+
         '</div>';
@@ -1036,7 +1035,9 @@ function initGlobe(){
   const canvas=document.getElementById('globeCanvas');
   if(!canvas)return;
   const dpr=window.devicePixelRatio||1;
-  const S=canvas.offsetWidth||200;
+  const isMobile=window.innerWidth<=640;
+  const S=isMobile?150:200;
+  canvas.style.width=S+'px'; canvas.style.height=S+'px';
   canvas.width=S*dpr; canvas.height=S*dpr;
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);

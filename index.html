@@ -625,10 +625,11 @@ function rate(h,w,p,skill){
   const t=skillThresholds(skill||'advanced');
   if(h<0.3)return'flat';
   const sOk=h>=t.minH&&h<=t.maxH,pOk=p>=t.minP;
-  if(sOk&&pOk&&w<6)return'great';
-  if(sOk&&pOk&&w<12)return'good';
-  if(sOk&&w<17)return'fair';
-  return'poor';
+  // Wind thresholds in mph (applied to effective wind — already discounted for offshore)
+  if(sOk&&pOk&&w<10)return'great';   // clean: <10mph
+  if(sOk&&pOk&&w<18)return'good';    // manageable: <18mph
+  if(sOk&&w<22)return'fair';         // scrappy but rideable: <22mph onshore
+  return'poor';                       // 22mph+ onshore = blown out
 }
 function rateLabel(r){return{great:'Good',good:'Good',fair:'Fair',poor:'Poor',flat:'Flat'}[r];}
 function windDesc(ws,wd,spot){
@@ -753,7 +754,11 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     let sc=0;
     if(gS)sc+=3;if(gP)sc+=2;if(gW)sc+=2;if(offshore)sc+=1;if(avail)sc+=2;if(swOk)sc+=1;
     sc+=ts*2; // tide weight up to +2
-    return Object.assign({},s,{sc:sc,avail:avail,gS:gS,r:rate(s.h,s.ws,s.p,skill),slotDate:sd,hour:sd.getHours(),tideOk:ts>0});
+    // Direction-adjusted wind for slot rating
+      const slotWindDiff=((s.wd-spot.beachFacing)+360)%360;
+      const slotOffshore=slotWindDiff>90&&slotWindDiff<270;
+      const slotEffWind=slotOffshore?Math.min(s.ws*0.4,s.ws):s.ws;
+      return Object.assign({},s,{sc:sc,avail:avail,gS:gS,r:rate(s.h,slotEffWind,s.p,skill),slotDate:sd,hour:sd.getHours(),tideOk:ts>0});
   }).filter(Boolean);
 
   const best=scored.filter(function(s){return s.sc>=5&&s.gS&&s.tideOk;}).sort(function(a,b){return b.sc-a.sc;})[0];
@@ -1262,7 +1267,10 @@ async function load(){
 
     // Table rows
     const tableRows=slots.map(function(s){
-      const sr=rate(s.h,s.ws,s.p,skill),dir=s.swDir!=null?s.swDir:s.waveDir,slotH=new Date(s.time).getHours();
+      const srWindDiff=((s.wd-spot.beachFacing)+360)%360;
+      const srOffshore=srWindDiff>90&&srWindDiff<270;
+      const srEffWind=srOffshore?Math.min(s.ws*0.4,s.ws):s.ws;
+      const sr=rate(s.h,srEffWind,s.p,skill),dir=s.swDir!=null?s.swDir:s.waveDir,slotH=new Date(s.time).getHours();
       const isDawn=Math.abs(slotH-Math.floor(sun.sunrise))<=1,isDusk=Math.abs(slotH-Math.floor(sun.sunset))<=1;
       const isWork=profile&&profile.work==='9to5'&&![0,6].includes(new Date(s.time).getDay())&&slotH>=9&&slotH<=17;
       const tag=isDawn?'<span class="row-tag dawn">First Light</span>':isDusk?'<span class="row-tag dusk">Last Light</span>':isWork?'<span class="row-tag work">Work hours</span>':'';
@@ -1278,7 +1286,10 @@ async function load(){
 
     // Mobile forecast cards
     const mobileCards=slots.map(function(s){
-      const sr=rate(s.h,s.ws,s.p,skill);
+      const sr2WindDiff=((s.wd-spot.beachFacing)+360)%360;
+      const sr2Offshore=sr2WindDiff>90&&sr2WindDiff<270;
+      const sr2EffWind=sr2Offshore?Math.min(s.ws*0.4,s.ws):s.ws;
+      const sr=rate(s.h,sr2EffWind,s.p,skill);
       const dir=s.swDir!=null?s.swDir:s.waveDir;
       return '<div class="fc-card '+sr+'">'
         +'<div class="fc-time">'+fmtT(s.time)+'</div>'
@@ -1293,12 +1304,16 @@ async function load(){
     // Enhanced 7-day cards — includes wind speed
     const today=new Date().toDateString();
     const dayCards=days.map(function(d,i){
-      const dr=rate(d.h,10,d.p,skill);
       const isToday=new Date(d.time).toDateString()===today;
       // noon of that day in hourly array (each day = 24 indices, noon = +12)
       const dayWindIdx=Math.min(i*24+12,wndS.length-1);
       const dayWindS=wndS[dayWindIdx]||0;
       const dayWindD=wndD[dayWindIdx]||0;
+      // Penalise onshore wind — offshore wind gets a discount so it doesn't over-penalise
+      const windDiff=((dayWindD-spot.beachFacing)+360)%360;
+      const isOffshoreDay=windDiff>90&&windDiff<270;
+      const effectiveWind=isOffshoreDay?Math.min(dayWindS*0.4,dayWindS):dayWindS;
+      const dr=rate(d.h,effectiveWind,d.p,skill);
       return '<div class="day-card '+dr+(isToday?' today':'')+'">'
         +'<div class="day-name">'+(isToday?'<span style="color:rgba(245,200,0,0.8)">Today</span>':fmtDayFull(d.time))+'</div>'
         +'<div class="day-height">'+displayH(d.h)+'<span class="day-unit">'+displayUnit()+'</span></div>'

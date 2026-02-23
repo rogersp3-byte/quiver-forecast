@@ -586,30 +586,99 @@ document.getElementById('modal').addEventListener('click',function(e){if(e.targe
   },{passive:true});
 })();
 
+// ── SEARCH HELPERS ──
+const REGION_ORDER=['Clare','Donegal','Sligo','Kerry','Cork','Waterford','Wicklow','Dublin'];
+
+function groupSpotsByRegion(spots){
+  const seen={},byRegion={};
+  spots.forEach(s=>{
+    if(seen[s.group])return; seen[s.group]=true;
+    const r=s.region||'Ireland';
+    if(!byRegion[r])byRegion[r]=[];
+    byRegion[r].push(s);
+  });
+  const regions=Object.keys(byRegion).sort((a,b)=>{
+    const ai=REGION_ORDER.indexOf(a),bi=REGION_ORDER.indexOf(b);
+    if(ai>=0&&bi>=0)return ai-bi;
+    if(ai>=0)return -1; if(bi>=0)return 1;
+    return a.localeCompare(b);
+  });
+  return{byRegion,regions};
+}
+
+function renderSpotRows(spots){
+  const{byRegion,regions}=groupSpotsByRegion(spots);
+  let h='';
+  regions.forEach(region=>{
+    if(regions.length>1)h+='<div class="sr-region-header">'+region+'</div>';
+    byRegion[region].forEach(s=>{
+      const gs=getSpotsInGroup(s.group);
+      const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' · ');
+      const saved=isSpotSaved(s.id)?'<span class="sri-saved">★</span>':'';
+      h+='<div class="search-result-item" onmousedown="selectSpot(''+s.id+'')">'+
+        '<span class="sri-name">'+saved+s.groupName+'</span>'+
+        (meta?'<span class="sri-meta">'+meta+'</span>':'')+
+        '</div>';
+    });
+  });
+  return h;
+}
+
+function renderIndexRows(spots){
+  const{byRegion,regions}=groupSpotsByRegion(spots);
+  let h='';
+  regions.forEach(region=>{
+    h+='<div class="si-region">'+region+'</div>';
+    byRegion[region].forEach(s=>{
+      const gs=getSpotsInGroup(s.group);
+      const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' · ');
+      const saved=isSpotSaved(s.id)?'★ ':'';
+      h+='<div class="si-spot" onmousedown="selectSpot(''+s.id+'')">'+
+        '<span class="si-spot-name">'+saved+s.groupName+'</span>'+
+        (meta?'<span class="si-spot-meta">'+meta+'</span>':'')+
+        '</div>';
+    });
+  });
+  return h;
+}
+
 // ── SEARCH ──
+let _searchFocusIdx=-1;
+
 function onSearch(val){
   const q=val.trim().toLowerCase();
+  _searchFocusIdx=-1;
   const res=document.getElementById('searchResults');
-  const seen={};
-  const matches=ALL_SPOTS.filter(s=>{
-    const str=(s.groupName+' '+s.region+' '+s.name).toLowerCase();
-    if((!q||str.includes(q))&&!seen[s.group]){seen[s.group]=true;return true;}
-    return false;
-  });
-  if(matches.length===0){
-    res.innerHTML='<div class="search-result-item"><div class="sri-name" style="color:var(--muted)">No spots found</div></div>';
+  // Empty — hide dropdown cleanly
+  if(!q){res.classList.remove('show');res.innerHTML='';return;}
+  const matches=ALL_SPOTS.filter(s=>(s.name+' '+s.groupName+' '+s.region).toLowerCase().includes(q));
+  if(!matches.length){
+    res.innerHTML='<div class="search-result-item" style="padding:14px 18px;color:rgba(255,255,255,0.3);font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:1px;">No spots found</div>';
   }else{
-    res.innerHTML=matches.map(s=>{
-      const gs=getSpotsInGroup(s.group);
-      const sub=gs.length>1?gs.length+' breaks · ':'';
-      const isSaved=isSpotSaved(s.id);
-      return '<div class="search-result-item" onmousedown="selectSpot(\''+s.id+'\')">'
-        +'<div class="sri-name">'+(isSaved?'★ ':'')+s.groupName+'</div>'
-        +'<div class="sri-region">'+sub+s.region+' · Ireland</div>'
-        +'</div>';
-    }).join('');
+    res.innerHTML=renderSpotRows(matches);
   }
   res.classList.add('show');
+}
+
+function onSearchKey(e){
+  const items=document.querySelectorAll('#searchResults .search-result-item');
+  if(!items.length)return;
+  if(e.key==='ArrowDown'){e.preventDefault();_searchFocusIdx=Math.min(_searchFocusIdx+1,items.length-1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();_searchFocusIdx=Math.max(_searchFocusIdx-1,0);}
+  else if(e.key==='Enter'){if(_searchFocusIdx>=0)items[_searchFocusIdx].dispatchEvent(new MouseEvent('mousedown'));return;}
+  else if(e.key==='Escape'){document.getElementById('searchResults').classList.remove('show');return;}
+  items.forEach((el,i)=>el.classList.toggle('focused',i===_searchFocusIdx));
+  if(_searchFocusIdx>=0)items[_searchFocusIdx].scrollIntoView({block:'nearest'});
+}
+
+// ── SPOT INDEX ──
+function toggleSpotIndex(){
+  const panel=document.getElementById('spotIndex');
+  const btn=document.getElementById('spotIndexBtn');
+  const opening=!panel.classList.contains('show');
+  panel.classList.toggle('show',opening);
+  btn.classList.toggle('open',opening);
+  if(opening&&!panel.innerHTML.trim())panel.innerHTML=renderIndexRows(ALL_SPOTS);
 }
 
 function selectSpot(id){

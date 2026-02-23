@@ -698,6 +698,19 @@ async function sendMsg(){
   await fetchReply();
 }
 
+function getApiKey(){
+  let key = localStorage.getItem('quiver_api_key')||'';
+  if(!key){
+    key = prompt('Enter your Anthropic API key to use Core Lord:\n(starts with sk-ant-)');
+    if(key && key.startsWith('sk-')){
+      localStorage.setItem('quiver_api_key', key.trim());
+    } else {
+      return '';
+    }
+  }
+  return key.trim();
+}
+
 async function fetchReply(){
   const ws=getWS();
   if(!ws)return;
@@ -714,6 +727,13 @@ async function fetchReply(){
     msgsEl.scrollTop=msgsEl.scrollHeight;
   }
 
+  const apiKey = getApiKey();
+  if(!apiKey){
+    const tel=document.getElementById(tid);
+    if(tel) tel.outerHTML=buildMsgHTML('assistant','No API key set — refresh and try again.');
+    return;
+  }
+
   const btn=document.getElementById('sendBtn');
   const inp=document.getElementById('chatInput');
   if(btn)btn.disabled=true;
@@ -725,7 +745,8 @@ async function fetchReply(){
       headers:{
         'Content-Type':'application/json',
         'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
+        'anthropic-dangerous-direct-browser-access':'true',
+        'x-api-key': getApiKey()
       },
       body:JSON.stringify({
         model:MODEL,
@@ -735,15 +756,34 @@ async function fetchReply(){
       })
     });
     const data=await res.json();
-    const reply=data.content?.find(b=>b.type==='text')?.text||'Lost signal for a second. Try again.';
+    console.log('[CoreLord] API response:', res.status, JSON.stringify(data).slice(0,300));
+
+    // Surface API errors clearly rather than swallowing them
+    if(!res.ok || data.error){
+      const errType = data.error?.type||'unknown';
+      const errMsg  = data.error?.message||'No message';
+      console.error('[CoreLord] API error:', errType, errMsg);
+      const userMsg = errType==='authentication_error'
+        ? 'API key missing or invalid — add your key to the fetch headers.'
+        : errType==='invalid_request_error'
+        ? 'Bad request: '+errMsg
+        : `API error (${res.status}): ${errMsg}`;
+      const tel=document.getElementById(tid);
+      if(tel) tel.outerHTML=buildMsgHTML('assistant', userMsg);
+      if(btn)btn.disabled=false;
+      if(inp){inp.disabled=false;inp.focus();}
+      return;
+    }
+
+    const reply=data.content?.find(b=>b.type==='text')?.text||'No reply in response — check console.';
     msgs.push({role:'assistant',content:reply});
 
     const tel=document.getElementById(tid);
     if(tel) tel.outerHTML=buildMsgHTML('assistant',reply);
   }catch(e){
-    console.error('[CoreLord]', e);
+    console.error('[CoreLord] fetch error:', e);
     const tel=document.getElementById(tid);
-    if(tel) tel.outerHTML=buildMsgHTML('assistant',"Lost you there. Check your connection and try again.");
+    if(tel) tel.outerHTML=buildMsgHTML('assistant',"Network error — check your connection and console for details.");
   }
 
   if(btn)btn.disabled=false;

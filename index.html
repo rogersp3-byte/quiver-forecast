@@ -237,6 +237,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .tide-high .tide-simple-time{color:rgba(100,180,255,0.9);}
 .tide-low .tide-simple-time{color:rgba(255,255,255,0.7);}
 .tide-simple-ht{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+.tide-simple-day{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:2px;}
 
 /* TIDES (old cards kept for fallback) */
 .tide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:3px;}
@@ -397,13 +398,14 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 <script>
 // ── ALL SPOTS ──
 const ALL_SPOTS = [
-  {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, tidePreference:'any'},
-  {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      useBuoy:false, tidePreference:'mid'},
-  {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', useBuoy:false, tidePreference:'low-mid'},
-  {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any'},
-  {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Co. Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, tidePreference:'any'},
-  {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low', minSwellH:2.0},
-  {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low', minSwellH:2.0},
+  // tideStation: nearest Marine Institute IMI_TidePrediction_HighLow station ID
+  {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Kilrush'},
+  {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      useBuoy:false, tidePreference:'mid',     tideStation:'Kilrush'},
+  {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', useBuoy:false, tidePreference:'low-mid', tideStation:'Kilrush'},
+  {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Lahinch_MODELLED'},
+  {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Co. Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, tidePreference:'any',     tideStation:'Killybegs'},
+  {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
+  {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
 ];
 
 function getSpotsInGroup(g){return ALL_SPOTS.filter(s=>s.group===g);}
@@ -709,9 +711,27 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     tideData=tidePoints;
   }
   function getTideNorm(isoTime){
-    if(!tideData.length) return 0.5; // unknown → mid
+    if(!tideData.length) return 0.5;
     const t=new Date(isoTime).getTime();
-    // find closest point
+    // If data has type tags (sparse HIGH/LOW from MI predictions), interpolate sinusoidally
+    if(tideData[0]&&(tideData[0].type==='HIGH'||tideData[0].type==='LOW')){
+      // Find the two bracketing events
+      const sorted=tideData.slice().sort(function(a,b){return new Date(a.time)-new Date(b.time);});
+      let prev=sorted[0],next=sorted[sorted.length-1];
+      for(let i=0;i<sorted.length-1;i++){
+        if(new Date(sorted[i].time).getTime()<=t&&new Date(sorted[i+1].time).getTime()>=t){
+          prev=sorted[i]; next=sorted[i+1]; break;
+        }
+      }
+      const t0=new Date(prev.time).getTime(), t1=new Date(next.time).getTime();
+      if(t1===t0) return prev.height/(tideMax-tideMin+0.01);
+      // Cosine interpolation between adjacent HIGH and LOW
+      const frac=(t-t0)/(t1-t0);
+      const h=prev.height+(next.height-prev.height)*(0.5-0.5*Math.cos(frac*Math.PI));
+      if(tideMax===tideMin) return 0.5;
+      return(h-tideMin)/(tideMax-tideMin);
+    }
+    // Dense data: find closest point
     let closest=tideData[0],minDiff=Infinity;
     tideData.forEach(p=>{const d=Math.abs(new Date(p.time).getTime()-t);if(d<minDiff){minDiff=d;closest=p;}});
     if(tideMax===tideMin) return 0.5;
@@ -773,46 +793,57 @@ function fmtDayFull(iso){const d=new Date(iso),t=new Date();if(d.toDateString()=
 
 // ── TIDE CARDS (simple high/low display) ──
 function buildTideCards(tidePoints){
-  if(!tidePoints||tidePoints.length<4){
+  if(!tidePoints||tidePoints.length<1){
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">Tide data unavailable</div></div>';
   }
-  // Find local maxima and minima (high and low tides) within today + next 24h
   const now=Date.now();
-  const cutoff=now+28*3600000; // look 28h ahead
-  const events=[];
-  // Use a wider window (±6 steps) to find genuine highs/lows in dense data
-  const W6=6;
-  for(let i=W6;i<tidePoints.length-W6;i++){
-    const t=new Date(tidePoints[i].time).getTime();
-    if(t<now-3600000||t>cutoff) continue;
-    const curr=tidePoints[i].height;
-    let isHigh=true,isLow=true;
-    for(let j=1;j<=W6;j++){
-      if(tidePoints[i-j].height>=curr)isHigh=false;
-      if(tidePoints[i+j].height>=curr)isHigh=false;
-      if(tidePoints[i-j].height<=curr)isLow=false;
-      if(tidePoints[i+j].height<=curr)isLow=false;
+  const cutoff=now+28*3600000;
+
+  // If data already has HIGH/LOW type tags (from IMI predictions), use directly
+  let events=[];
+  if(tidePoints[0]&&tidePoints[0].type&&(tidePoints[0].type==='HIGH'||tidePoints[0].type==='LOW')){
+    events=tidePoints.filter(function(p){
+      const t=new Date(p.time).getTime();
+      return t>=now-3600000&&t<=cutoff;
+    }).map(function(p){
+      return{type:p.type==='HIGH'?'high':'low',time:p.time,height:p.height};
+    });
+  } else {
+    // Dense data (synthetic): use wide-window peak detection
+    const W6=6;
+    for(let i=W6;i<tidePoints.length-W6;i++){
+      const t=new Date(tidePoints[i].time).getTime();
+      if(t<now-3600000||t>cutoff)continue;
+      const curr=tidePoints[i].height;
+      let isHigh=true,isLow=true;
+      for(let j=1;j<=W6;j++){
+        if(tidePoints[i-j].height>=curr)isHigh=false;
+        if(tidePoints[i+j].height>=curr)isHigh=false;
+        if(tidePoints[i-j].height<=curr)isLow=false;
+        if(tidePoints[i+j].height<=curr)isLow=false;
+      }
+      if(isHigh||isLow)events.push({type:isHigh?'high':'low',time:tidePoints[i].time,height:tidePoints[i].height});
     }
-    if(isHigh||isLow) events.push({type:isHigh?'high':'low',time:tidePoints[i].time,height:tidePoints[i].height});
   }
+
   if(events.length===0){
-    // Fallback: find overall min/max in next 24h
-    const window=tidePoints.filter(p=>{const t=new Date(p.time).getTime();return t>=now&&t<=cutoff;});
-    if(window.length){
-      const maxP=window.reduce((a,b)=>a.height>b.height?a:b);
-      const minP=window.reduce((a,b)=>a.height<b.height?a:b);
-      events.push({type:'high',time:maxP.time,height:maxP.height});
-      events.push({type:'low',time:minP.time,height:minP.height});
-      events.sort((a,b)=>new Date(a.time)-new Date(b.time));
-    }
+    return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">No tides in window</div></div>';
   }
+
+  // Show up to 4 events, sorted by time
+  events.sort(function(a,b){return new Date(a.time)-new Date(b.time);});
   const cards=events.slice(0,4).map(function(e){
     const isHigh=e.type==='high';
+    // Show day label if not today
+    const d=new Date(e.time);
+    const isToday=d.toDateString()===new Date().toDateString();
+    const dayLabel=isToday?'':('<div class="tide-simple-day">'+d.toLocaleDateString('en-IE',{weekday:'short'})+'</div>');
     return'<div class="tide-simple-card'+(isHigh?' tide-high':' tide-low')+'">'
       +'<div class="tide-simple-icon">'+(isHigh?svgTideHigh():svgTideLow())+'</div>'
-      +'<div class="tide-simple-type">'+(isHigh?'High Tide':'Low Tide')+'</div>'
+      +'<div class="tide-simple-type">'+(isHigh?'High':'Low')+'</div>'
+      +dayLabel
       +'<div class="tide-simple-time">'+fmtT(e.time)+'</div>'
-      +'<div class="tide-simple-ht">'+e.height.toFixed(2)+'m</div>'
+      +'<div class="tide-simple-ht">'+e.height.toFixed(1)+'m</div>'
       +'</div>';
   }).join('');
   return'<div class="tide-simple-grid">'+cards+'</div>';
@@ -1057,6 +1088,31 @@ function drawGraph(canvas,times,heights,periods,skill){
 function svgSunrise(){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 16 12 12 16 16"/></svg>';}
 function svgSunset(){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,160,60,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 12 12 16 16 12"/></svg>';}
 
+// ── MARINE INSTITUTE TIDE PREDICTION FETCH ──
+// Uses IMI_TidePrediction_HighLow: predicted high/low tides, 2 years ahead, always populated.
+// Falls back to synthetic harmonics if unavailable.
+async function fetchTidePredictions(stationID){
+  try{
+    const from=new Date(Date.now()-3*3600000).toISOString().slice(0,19)+'Z';
+    const to=new Date(Date.now()+30*3600000).toISOString().slice(0,19)+'Z';
+    const url='https://erddap.marine.ie/erddap/tabledap/IMI_TidePrediction_HighLow.json'
+      +'?time,Water_Level_ODM,tide_time_category'
+      +'&stationID=%22'+encodeURIComponent(stationID)+'%22'
+      +'&time%3E='+encodeURIComponent(from)
+      +'&time%3C='+encodeURIComponent(to)
+      +'&orderBy(%22time%22)';
+    const r=await fetch(url);
+    if(!r.ok)return null;
+    const j=await r.json();
+    const rows=(j.table&&j.table.rows)||[];
+    if(rows.length<2)return null;
+    // rows: [time_ISO, water_level_m, tide_time_category ("HIGH"|"LOW")]
+    return rows.map(function(row){
+      return{time:row[0], height:row[1], type:(row[2]||'').toUpperCase()};
+    }).filter(function(p){return p.height!=null&&p.height>-900;});
+  }catch(e){return null;}
+}
+
 // ── M2 BUOY FETCH ──
 async function fetchM2Buoy(){
   try{
@@ -1096,7 +1152,7 @@ async function load(){
     const[mr,wr,tideR,dots,buoy]=await Promise.all([
       fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
       fetch('https://api.open-meteo.com/v1/forecast?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
-      fetch('https://erddap.marine.ie/erddap/tabledap/IrishNationalTideGaugeNetwork.json?time,Water_Level_LAT&time>='+new Date(Date.now()-7200000).toISOString().slice(0,19)+'Z&time<='+new Date(Date.now()+172800000).toISOString().slice(0,19)+'Z&station_id=%22Galway%20Port%22&orderBy(%22time%22)').catch(function(){return null;}),
+      fetchTidePredictions(spot.tideStation||'Galway'),
       fetchDotRatings(),
       isDublin?fetchM2Buoy():Promise.resolve(null)
     ]);
@@ -1132,18 +1188,10 @@ async function load(){
       slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
     }
 
-    // Tide data
-    let tidePoints=[];
-    if(tideR&&tideR.ok){
-      try{
-        const tj=await tideR.json();
-        const rows=tj.table&&tj.table.rows||[];
-        tidePoints=extractTidePoints(rows.map(r=>r[0]),rows.map(r=>r[1]));
-      }catch(e){}
-    }
-    // Fallback to synthetic if not enough data
-    if(tidePoints.length<4){
-      tidePoints=generateSyntheticTides(spot.lat,spot.lng);
+    // Tide data — tideR is already processed [{time,height,type}] from fetchTidePredictions
+    let tidePoints = tideR || [];
+    if(tidePoints.length < 2){
+      tidePoints = generateSyntheticTides(spot.lat, spot.lng);
     }
 
     const days=daily.time.map(function(t,i){return{time:t,h:daily.wave_height_max[i]||0,p:daily.wave_period_max[i]||0,dir:daily.wave_direction_dominant[i]||0};});

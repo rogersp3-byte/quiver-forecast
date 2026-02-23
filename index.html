@@ -797,18 +797,24 @@ function buildTideCards(tidePoints){
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">Tide data unavailable</div></div>';
   }
   const now=Date.now();
-  const cutoff=now+28*3600000;
+  const cutoff=now+96*3600000; // 4 days ahead
   console.log('[Quiver TideCards] Input:',tidePoints.length,'points, first:',tidePoints[0]);
 
   // If data already has HIGH/LOW type tags (from IMI predictions), use directly
   let events=[];
   if(tidePoints[0]&&tidePoints[0].type&&(tidePoints[0].type==='HIGH'||tidePoints[0].type==='LOW')){
-    events=tidePoints.filter(function(p){
-      const t=new Date(p.time).getTime();
-      return t>=now-3600000&&t<=cutoff;
+    // Convert all points within a broad window
+    const all=tidePoints.filter(function(p){
+      return new Date(p.time).getTime()<=cutoff;
     }).map(function(p){
-      return{type:p.type==='HIGH'?'high':'low',time:p.time,height:p.height};
+      const ts=new Date(p.time).getTime();
+      return{type:p.type==='HIGH'?'high':'low',time:p.time,height:p.height,ts:ts};
     });
+    // Always include: the most recent past event (context) + next 3 upcoming
+    // This prevents a low tide disappearing just because it passed 2hrs ago
+    const past=all.filter(function(p){return p.ts<now;}).slice(-1);
+    const future=all.filter(function(p){return p.ts>=now;}).slice(0,3);
+    events=past.concat(future);
   } else {
     // Dense data (synthetic): use wide-window peak detection
     const W6=6;

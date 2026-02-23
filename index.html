@@ -73,7 +73,42 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .saved-spot-chip:hover{background:rgba(245,200,0,0.12);border-color:rgba(245,200,0,0.4);}
 .saved-spot-chip .chip-remove{color:rgba(255,255,255,0.25);font-size:11px;margin-left:4px;line-height:1;}
 .saved-spot-chip .chip-remove:hover{color:rgba(255,100,100,0.7);}
-.search-hint{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);text-align:center;margin-top:16px;}
+.search-hint{display:none;}
+/* Spot index toggle button */
+.spot-index-btn{
+  width:100%;max-width:520px;margin-top:2px;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.28);background:none;
+  border:1px solid rgba(255,255,255,0.1);
+  padding:13px 22px;cursor:pointer;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.15s;
+}
+.spot-index-btn:hover{color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.22);}
+.spot-index-btn .sib-arrow{transition:transform 0.2s;display:inline-block;}
+.spot-index-btn.open .sib-arrow{transform:rotate(180deg);}
+/* Spot index panel */
+.spot-index{
+  width:100%;max-width:520px;
+  border:1px solid rgba(255,255,255,0.1);border-top:none;
+  display:none;background:#0d0d0d;
+  max-height:420px;overflow-y:auto;
+}
+.spot-index.show{display:block;}
+.si-region{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.22);padding:12px 18px 6px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.si-region:first-child{border-top:none;}
+.si-spot{
+  padding:10px 18px 10px 28px;cursor:pointer;
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  transition:background 0.1s;
+}
+.si-spot:hover{background:rgba(255,255,255,0.05);}
+.si-spot-name{font-size:13px;letter-spacing:0.3px;}
+.si-spot-meta{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.25);white-space:nowrap;}
 
 /* FORECAST PAGE */
 #forecastPage{display:none;touch-action:pan-y;}
@@ -351,13 +386,17 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
     <input class="search-input" id="searchInput" placeholder="Search a spot..."
       autocomplete="off" spellcheck="false"
       oninput="onSearch(this.value)"
-      onfocus="onSearchFocus()"
       onkeydown="onSearchKey(event)"
       onblur="setTimeout(()=>{document.getElementById('searchResults').classList.remove('show');},180)"/>
     <div class="search-results" id="searchResults"></div>
   </div>
 
-  <div class="saved-spots-section" id="savedSpotsSection" style="display:none;">
+  <button class="spot-index-btn" id="spotIndexBtn" onclick="toggleSpotIndex()">
+    See spot index <span class="sib-arrow">↓</span>
+  </button>
+  <div class="spot-index" id="spotIndex"></div>
+
+  <div class="saved-spots-section" id="savedSpotsSection" style="display:none;margin-top:20px;">
     <div class="saved-spots-label">Saved Spots</div>
     <div class="saved-spots-list" id="savedSpotsList"></div>
   </div>
@@ -597,12 +636,15 @@ function showForecast(){
 function showSearch(){
   const fp=document.getElementById('forecastPage');
   fp.classList.remove('show');
-  // Clear app content so scrolling down shows nothing
   document.getElementById('app').innerHTML='<div class="status">Loading forecast...</div>';
   document.getElementById('searchPage').classList.remove('hidden');
+  // Close index and clear search when returning to search page
+  document.getElementById('spotIndex').classList.remove('show');
+  document.getElementById('spotIndexBtn').classList.remove('open');
+  document.getElementById('searchResults').classList.remove('show');
+  document.getElementById('searchInput').value='';
   window.scrollTo(0,0);
   renderSavedSpots();
-  onSearch('');
 }
 
 function updateHero(){
@@ -1439,7 +1481,6 @@ async function load(){
 
 // ── INIT ──
 renderSavedSpots();
-onSearch('');
 // Init globe after fonts have loaded (slight delay so Archivo Black is ready)
 setTimeout(initGlobe, 200);
 (function(){

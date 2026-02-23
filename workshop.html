@@ -380,6 +380,33 @@ header{
 .landing > *:nth-child(4){animation-delay:0.28s;}
 .landing > *:nth-child(5){animation-delay:0.34s;}
 @keyframes fadeup{to{opacity:1;transform:none;}}
+
+/* ── WAVE TIDE LINE ── */
+.wave-line-wrap{
+  position:relative;height:28px;overflow:hidden;
+  margin-bottom:8px;pointer-events:none;
+}
+.wave-line-wrap canvas{
+  position:absolute;bottom:0;left:0;width:100%;height:100%;
+  display:block;
+}
+
+/* ── MESSAGE STAGGER-IN ── */
+@keyframes msg-appear{
+  0%{opacity:0;transform:translateY(8px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.msg-animate{
+  animation:msg-appear 0.32s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+/* bubble text reveal — character by character feel via clip */
+@keyframes bub-reveal{
+  0%{opacity:0;transform:translateY(4px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.msg.assistant .msg-bub{
+  animation:bub-reveal 0.28s cubic-bezier(0.22,1,0.36,1) 0.08s both;
+}
 </style>
 </head>
 <body>
@@ -619,6 +646,7 @@ function startSession(){
   msgs=[];
 
   renderChat(ws);
+  setTimeout(initWave, 50);
 
   // Core Lord's opener — no API call, just sets the tone immediately
   const opener=buildOpener(ws);
@@ -648,7 +676,7 @@ function renderChat(ws){
           </svg>
         </div>
         <div class="chat-hdr-info">
-          <div class="chat-hdr-name">CORE LORD</div>
+          <div class="chat-hdr-name">CHAT WITH CORE LORD</div>
           <div class="chat-hdr-sub">${ws.name} · ${ws.skill} · ${ws.board}</div>
         </div>
         <div class="chat-hdr-live"><span class="live-dot"></span>Online</div>
@@ -658,6 +686,7 @@ function renderChat(ws){
       <div class="chat-msgs" id="chatMsgs"></div>
 
       <div class="chat-input-area">
+        <div class="wave-line-wrap"><canvas id="waveCanvas"></canvas></div>
         <div class="sug-chips" id="sugChips">
           <div class="sug-chip" onclick="useSug(this)">What drills can I do on land?</div>
           <div class="sug-chip" onclick="useSug(this)">Is my board right for me?</div>
@@ -674,6 +703,51 @@ function renderChat(ws){
       </div>
     </div>
   `;
+}
+
+// ── WAVE ANIMATION ──
+function initWave(){
+  const canvas=document.getElementById('waveCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let W,H,phase=0,animId;
+
+  function resize(){
+    W=canvas.offsetWidth;
+    H=canvas.offsetHeight;
+    canvas.width=W*window.devicePixelRatio;
+    canvas.height=H*window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Two layered waves — main + softer echo
+    const waves=[
+      {amp:4.5, freq:0.018, speed:0.022, y:H*0.55, alpha:0.55, width:1.5},
+      {amp:2.8, freq:0.026, speed:0.014, y:H*0.65, alpha:0.25, width:1.0},
+    ];
+
+    waves.forEach(w=>{
+      ctx.beginPath();
+      for(let x=0;x<=W;x+=2){
+        const y=w.y + Math.sin(x*w.freq + phase*w.speed*50)*w.amp
+                    + Math.sin(x*w.freq*1.7 + phase*w.speed*30)*w.amp*0.4;
+        x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle=`rgba(245,200,0,${w.alpha})`;
+      ctx.lineWidth=w.width;
+      ctx.stroke();
+    });
+
+    phase++;
+    animId=requestAnimationFrame(draw);
+  }
+  draw();
+  return ()=>cancelAnimationFrame(animId);
 }
 
 function useSug(el){
@@ -806,7 +880,8 @@ function buildMsgHTML(role,text){
   const lbl=role==='user'
     ?'You'
     :'<span class="lbl-pip"></span>Core Lord';
-  return`<div class="msg ${role}">
+  const animClass=role==='assistant'?' msg-animate':'';
+  return`<div class="msg ${role}${animClass}">
     <div class="msg-lbl">${lbl}</div>
     <div class="msg-bub"><p>${formatMsg(text)}</p></div>
   </div>`;
@@ -835,6 +910,7 @@ if(existing){
   const welcomeBack = `${existing.name}. You're back. Same thing we were working on, or something new?`;
   msgs=[{role:'assistant',content:welcomeBack}];
   appendMsg('assistant',msgs[0].content);
+  setTimeout(initWave, 50);
 }else{
   showLanding();
 }

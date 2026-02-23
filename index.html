@@ -44,9 +44,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .profile-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
 
 /* SEARCH LANDING */
-#searchPage{min-height:calc(100vh - 65px);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:clamp(40px,6vh,80px) 24px 40px;}
+#searchPage{min-height:calc(100vh - 65px);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:clamp(32px,5vh,64px) 24px 40px;}
 #searchPage.hidden{display:none;}
-.search-landing-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:36px;text-align:center;}
+.search-landing-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:32px;text-align:center;}
 
 /* GLOBE */
 .globe-wrap{width:200px;height:200px;margin:0 auto 36px;position:relative;flex-shrink:0;}
@@ -60,11 +60,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .search-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.18);color:var(--white);font-family:'DM Mono',monospace;font-size:14px;padding:18px 22px;outline:none;letter-spacing:1px;transition:border-color 0.2s;}
 .search-input:focus{border-color:rgba(255,255,255,0.45);}
 .search-input::placeholder{color:rgba(255,255,255,0.25);}
-.search-results{position:absolute;top:100%;left:0;right:0;background:#111;border:1px solid rgba(255,255,255,0.15);border-top:none;z-index:20;display:none;}
-.search-results.show{display:block;}
-.search-result-item{padding:14px 22px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.12s;}
-.search-result-item:last-child{border-bottom:none;}
-.search-result-item:hover{background:rgba(255,255,255,0.06);}
+/* search-results styles moved below */
 .sri-name{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--white);}
 .sri-region{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);margin-top:3px;}
 
@@ -347,16 +343,17 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 <!-- SEARCH LANDING -->
 <div id="searchPage">
-  <div class="search-landing-title">Select a surf spot</div>
-
   <div class="globe-wrap">
     <canvas class="globe-canvas" id="globeCanvas" width="400" height="400"></canvas>
   </div>
 
   <div class="search-box-wrap">
-    <input class="search-input" id="searchInput" placeholder="Search — Lahinch, Bundoran, Strandhill, Tramore..."
-      autocomplete="off" oninput="onSearch(this.value)" onfocus="onSearch(this.value)"
-      onblur="setTimeout(()=>document.getElementById('searchResults').classList.remove('show'),200)"/>
+    <input class="search-input" id="searchInput" placeholder="Search a spot..."
+      autocomplete="off" spellcheck="false"
+      oninput="onSearch(this.value)"
+      onfocus="onSearchFocus()"
+      onkeydown="onSearchKey(event)"
+      onblur="setTimeout(()=>{document.getElementById('searchResults').classList.remove('show');},180)"/>
     <div class="search-results" id="searchResults"></div>
   </div>
 
@@ -364,8 +361,6 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
     <div class="saved-spots-label">Saved Spots</div>
     <div class="saved-spots-list" id="savedSpotsList"></div>
   </div>
-
-  <div class="search-hint" id="searchHint">7 spots available</div>
 </div>
 
 <!-- FORECAST PAGE -->
@@ -399,40 +394,40 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 // ── ALL SPOTS ──
 const ALL_SPOTS = [
   // tideStation: nearest Marine Institute IMI_TidePrediction_HighLow station ID
-  {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Kilrush'},
-  {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      useBuoy:false, tidePreference:'mid',     tideStation:'Kilrush'},
-  {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Co. Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', useBuoy:false, tidePreference:'low-mid', tideStation:'Kilrush'},
-  {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Lahinch_MODELLED'},
-  {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Co. Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, tidePreference:'any',     tideStation:'Killybegs'},
-  {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
-  {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Co. Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
+  {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Kilrush'},
+  {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      useBuoy:false, tidePreference:'mid',     tideStation:'Kilrush'},
+  {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', useBuoy:false, tidePreference:'low-mid', tideStation:'Kilrush'},
+  {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Lahinch_MODELLED'},
+  {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, tidePreference:'any',     tideStation:'Killybegs'},
+  {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
+  {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
 
   // ── LAHINCH REEFS ──
-  {id:'cornish',  name:'Cornish',             shortName:'Cornish',     region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.929472, lng:-9.349553, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
-  {id:'shits',    name:'The Shits',           shortName:'The Shits',   region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.928136, lng:-9.351014, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
-  {id:'cregg',    name:'Cregg Reef',          shortName:'Cregg Reef',  region:'Co. Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.923233, lng:-9.354639, beachFacing:270, swellWindow:[225,315], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
+  {id:'cornish',  name:'Cornish',             shortName:'Cornish',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.929472, lng:-9.349553, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
+  {id:'shits',    name:'The Shits',           shortName:'The Shits',   region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.928136, lng:-9.351014, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
+  {id:'cregg',    name:'Cregg Reef',          shortName:'Cregg Reef',  region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.923233, lng:-9.354639, beachFacing:270, swellWindow:[225,315], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
 
   // ── BUNDORAN ──
-  {id:'tullan',   name:'Tullan Strand',       shortName:'Tullan',      region:'Co. Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.494700, lng:-8.266700, beachFacing:270, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'low-mid', tideStation:'Killybegs'},
+  {id:'tullan',   name:'Tullan Strand',       shortName:'Tullan',      region:'Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.494700, lng:-8.266700, beachFacing:270, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'low-mid', tideStation:'Killybegs'},
 
   // ── ROSSKNOWLAGH ──
-  {id:'rossnowlagh', name:'Rossnowlagh',      shortName:'Rossnowlagh', region:'Co. Donegal', group:'rossnowlagh',   groupName:'Rossnowlagh',   lat:54.551967, lng:-8.213653, beachFacing:247, swellWindow:[202,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'mid-high',tideStation:'Killybegs'},
+  {id:'rossnowlagh', name:'Rossnowlagh',      shortName:'Rossnowlagh', region:'Donegal', group:'rossnowlagh',   groupName:'Rossnowlagh',   lat:54.551967, lng:-8.213653, beachFacing:247, swellWindow:[202,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'mid-high',tideStation:'Killybegs'},
 
   // ── STRANDHILL ──
-  {id:'strandhill', name:'Strandhill',        shortName:'Strandhill',  region:'Co. Sligo',   group:'strandhill',    groupName:'Strandhill',    lat:54.268400, lng:-8.597800, beachFacing:292, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'high',    tideStation:'Sligo'},
+  {id:'strandhill', name:'Strandhill',        shortName:'Strandhill',  region:'Sligo',   group:'strandhill',    groupName:'Strandhill',    lat:54.268400, lng:-8.597800, beachFacing:292, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'high',    tideStation:'Sligo'},
 
   // ── WICKLOW ──
-  {id:'magheramore', name:'Magheramore',      shortName:'Magheramore', region:'Co. Wicklow', group:'wicklow',       groupName:'Wicklow',       lat:52.930267, lng:-6.021939, beachFacing:90,  swellWindow:[45,135],  level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Wicklow', minSwellH:1.5},
+  {id:'magheramore', name:'Magheramore',      shortName:'Magheramore', region:'Wicklow', group:'wicklow',       groupName:'Wicklow',       lat:52.930267, lng:-6.021939, beachFacing:90,  swellWindow:[45,135],  level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Wicklow', minSwellH:1.5},
 
   // ── WATERFORD ──
-  {id:'tramore',  name:'Tramore',             shortName:'Tramore',     region:'Co. Waterford',group:'waterford',    groupName:'Waterford',     lat:52.155800, lng:-7.151900, beachFacing:180, swellWindow:[135,247], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Dunmore_East'},
+  {id:'tramore',  name:'Tramore',             shortName:'Tramore',     region:'Waterford',group:'waterford',    groupName:'Waterford',     lat:52.155800, lng:-7.151900, beachFacing:180, swellWindow:[135,247], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Dunmore_East'},
 
   // ── CORK ──
-  {id:'inchidoney', name:'Inchidoney',        shortName:'Inchidoney',  region:'Co. Cork',    group:'cork',          groupName:'Cork',          lat:51.594258, lng:-8.862969, beachFacing:225, swellWindow:[180,292], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Cork_Harbour'},
+  {id:'inchidoney', name:'Inchidoney',        shortName:'Inchidoney',  region:'Cork',    group:'cork',          groupName:'Cork',          lat:51.594258, lng:-8.862969, beachFacing:225, swellWindow:[180,292], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Cork_Harbour'},
 
   // ── KERRY ──
-  {id:'inch',     name:'Inch Beach',          shortName:'Inch',        region:'Co. Kerry',   group:'kerry',         groupName:'Kerry',         lat:52.133400, lng:-9.998600, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Tarbert'},
-  {id:'banna',    name:'Banna Strand',        shortName:'Banna',       region:'Co. Kerry',   group:'kerry',         groupName:'Kerry',         lat:52.338689, lng:-9.837739, beachFacing:270, swellWindow:[225,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Tarbert'},
+  {id:'inch',     name:'Inch Beach',          shortName:'Inch',        region:'Kerry',   group:'kerry',         groupName:'Kerry',         lat:52.133400, lng:-9.998600, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Tarbert'},
+  {id:'banna',    name:'Banna Strand',        shortName:'Banna',       region:'Kerry',   group:'kerry',         groupName:'Kerry',         lat:52.338689, lng:-9.837739, beachFacing:270, swellWindow:[225,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Tarbert'},
 ];
 
 function getSpotsInGroup(g){return ALL_SPOTS.filter(s=>s.group===g);}

@@ -266,6 +266,49 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-card.poor::after{background:var(--poor);}
 .day-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:10px;}
 .day-card.today .day-name{color:rgba(245,200,0,0.8);}
+.day-card{cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;}
+.day-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+.day-expand{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0.85);
+  align-items:center;justify-content:center;padding:24px;
+}
+.day-expand.open{display:flex;}
+.day-expand-card{
+  background:#141410;border:1px solid rgba(245,200,0,0.2);
+  padding:28px 32px;max-width:420px;width:100%;position:relative;
+}
+.day-expand-close{
+  position:absolute;top:14px;right:16px;
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;
+  color:rgba(255,255,255,0.4);cursor:pointer;background:none;border:none;
+  text-transform:uppercase;
+}
+.day-expand-close:hover{color:rgba(245,200,0,0.8);}
+.day-expand-date{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;
+}
+.day-expand-rating{
+  font-size:11px;font-family:'DM Mono',monospace;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:20px;
+}
+.day-expand-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;
+}
+.day-expand-item .dei-label{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:4px;
+}
+.day-expand-item .dei-val{
+  font-size:22px;font-weight:700;
+}
+.day-expand-item .dei-unit{
+  font-size:12px;opacity:0.5;margin-left:2px;
+}
+.day-expand-item .dei-sub{
+  font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;
+}
 .day-height{font-size:22px;letter-spacing:-1px;}
 .day-card.great .day-height,.day-card.good .day-height{color:var(--good);}
 .day-card.fair .day-height{color:var(--fair);}
@@ -1472,16 +1515,21 @@ async function load(){
     const today=new Date().toDateString();
     const dayCards=days.map(function(d,i){
       const isToday=new Date(d.time).toDateString()===today;
-      // noon of that day in hourly array (each day = 24 indices, noon = +12)
       const dayWindIdx=Math.min(i*24+12,wndS.length-1);
       const dayWindS=wndS[dayWindIdx]||0;
       const dayWindD=wndD[dayWindIdx]||0;
-      // Penalise onshore wind — offshore wind gets a discount so it doesn't over-penalise
       const windDiff=((dayWindD-spot.beachFacing)+360)%360;
       const isOffshoreDay=windDiff>90&&windDiff<270;
       const effectiveWind=isOffshoreDay?Math.min(dayWindS*0.4,dayWindS):dayWindS;
       const dr=rate(d.h,effectiveWind,d.p,skill);
-      return '<div class="day-card '+dr+(isToday?' today':'')+'">'
+      const windLabel=isOffshoreDay?'Offshore':'Onshore';
+      // encode data into onclick
+      const dataStr=encodeURIComponent(JSON.stringify({
+        time:d.time,h:d.h,p:d.p,dir:d.dir,
+        windS:dayWindS,windD:dayWindD,
+        rating:dr,isToday:isToday,windLabel:windLabel
+      }));
+      return '<div class="day-card '+dr+(isToday?' today':'')+' expday" data-day="'+dataStr+'" onclick="openDayExpand(this)">';
         +'<div class="day-name">'+(isToday?'<span style="color:rgba(245,200,0,0.8)">Today</span>':fmtDayFull(d.time))+'</div>'
         +'<div class="day-height">'+displayH(d.h)+'<span class="day-unit">'+displayUnit()+'</span></div>'
         +'<span class="day-badge">'+rateLabel(dr)+'</span>'
@@ -1582,6 +1630,28 @@ async function load(){
   }
 }
 
+// ── DAY EXPAND ──
+function openDayExpand(el){
+  var dataStr=el.dataset.day;
+  const d=JSON.parse(decodeURIComponent(dataStr));
+  const rColors={great:'var(--good)',good:'var(--good)',fair:'var(--fair)',poor:'var(--poor)',flat:'rgba(255,255,255,0.4)'};
+  const date=new Date(d.time);
+  const dateLabel=d.isToday?'Today — '+date.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'}):date.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('dex-date').textContent=dateLabel;
+  document.getElementById('dex-rating').innerHTML='<span style="color:'+rColors[d.rating]+'">'+rateLabel(d.rating).toUpperCase()+'</span>';
+  document.getElementById('dex-h').innerHTML=displayH(d.h)+'<span class="dei-unit">'+displayUnit()+'</span>';
+  document.getElementById('dex-hsub').textContent=d.h.toFixed(1)+'m significant height';
+  document.getElementById('dex-p').innerHTML=d.p.toFixed(0)+'<span class="dei-unit">s</span>';
+  document.getElementById('dex-dir').textContent=arrowChar(d.dir)+' '+windDir(d.dir);
+  document.getElementById('dex-wind').innerHTML=d.windS.toFixed(0)+'<span class="dei-unit">mph</span>';
+  document.getElementById('dex-windlbl').textContent=arrowChar(d.windD)+' '+windDir(d.windD)+' · '+d.windLabel;
+  document.getElementById('dayExpand').classList.add('open');
+}
+function closeDayExpand(e){
+  if(e.target===document.getElementById('dayExpand'))
+    document.getElementById('dayExpand').classList.remove('open');
+}
+
 // ── INIT ──
 renderSavedSpots();
 // Init globe after fonts have loaded (slight delay so Archivo Black is ready)
@@ -1595,6 +1665,19 @@ setTimeout(initGlobe, 200);
 })();
 </script>
 
+<div class="day-expand" id="dayExpand" onclick="closeDayExpand(event)">
+  <div class="day-expand-card">
+    <button class="day-expand-close" onclick="document.getElementById('dayExpand').classList.remove('open')">✕ Close</button>
+    <div class="day-expand-date" id="dex-date"></div>
+    <div class="day-expand-rating" id="dex-rating"></div>
+    <div class="day-expand-grid">
+      <div class="day-expand-item"><div class="dei-label">Wave Height</div><div class="dei-val" id="dex-h"></div><div class="dei-sub" id="dex-hsub"></div></div>
+      <div class="day-expand-item"><div class="dei-label">Period</div><div class="dei-val" id="dex-p"></div><div class="dei-sub">seconds</div></div>
+      <div class="day-expand-item"><div class="dei-label">Swell Direction</div><div class="dei-val" id="dex-dir"></div></div>
+      <div class="day-expand-item"><div class="dei-label">Wind</div><div class="dei-val" id="dex-wind"></div><div class="dei-sub" id="dex-windlbl"></div></div>
+    </div>
+  </div>
+</div>
 <nav class="bottom-nav">
   <a href="index.html" class="bottom-nav-item active">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/><circle cx="12" cy="12" r="5"/><path d="M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>

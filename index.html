@@ -241,16 +241,14 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .row-tag.dusk{background:rgba(255,160,60,0.15);color:rgba(255,180,80,0.8);}
 .row-tag.work{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);}
 
-/* COMBINED INFO CELL — used in 24h table and 16 day table */
-.row-info-cell{display:flex;flex-direction:column;gap:5px;align-items:center;}
-.row-info-swell{display:flex;align-items:center;gap:5px;}
-.row-info-wind{display:flex;align-items:center;gap:5px;}
-.row-info-arrow{font-size:13px;line-height:1;}
-.row-info-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.3);min-width:34px;}
-.row-info-val{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.8);letter-spacing:0.5px;}
-.row-info-period{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin-left:2px;}
-.row-info-wind .row-info-val{color:rgba(255,255,255,0.55);}
-.row-info-divider{width:100%;height:1px;background:rgba(255,255,255,0.06);}
+/* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
+.col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;}
+.col-dir{font-size:15px;line-height:1;margin-bottom:3px;}
+.col-compass{font-size:11px;letter-spacing:0.5px;color:rgba(255,255,255,0.85);}
+.col-sub{font-size:10px;color:rgba(255,255,255,0.38);margin-top:2px;letter-spacing:0.3px;}
+.col-wind .col-compass{color:rgba(255,255,255,0.55);}
+.col-wind .col-sub{color:rgba(255,255,255,0.32);}
+.col-no-data{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
 /* 16 DAY TABLE */
 .sixteen-table{width:100%;border-collapse:collapse;}
@@ -1505,30 +1503,38 @@ async function load(){
     buildSelector(dots);
 
     // ── 16-day table rows ──
+    // Note: marine API (swell) caps at 7 days; wind is available for all 16
+    const MARINE_DAYS = 7;
     const today16=new Date().toDateString();
     const sixteenRows=daily.time.map(function(t,i){
-      const dH=daily.wave_height_max[i]||0;
-      const dP=daily.wave_period_max[i]||0;
-      const dDir=daily.wave_direction_dominant[i]||0;
+      const hasSwell = i < MARINE_DAYS;
+      const dH=hasSwell?(daily.wave_height_max[i]||0):0;
+      const dP=hasSwell?(daily.wave_period_max[i]||0):0;
+      const dDir=hasSwell?(daily.wave_direction_dominant[i]||0):0;
       const dWindS=dailyWindS[i]||0;
       const dWindD=dailyWindD[i]||0;
       const windDiff16=((dWindD-spot.beachFacing)+360)%360;
       const isOff16=windDiff16>90&&windDiff16<270;
       const effWind16=isOff16?Math.min(dWindS*0.4,dWindS):dWindS;
-      const dr16=rate(dH,effWind16,dP,skill);
+      // For rows beyond 7 days, rating is wind-only / unknown — show neutral
+      const dr16=hasSwell?rate(dH,effWind16,dP,skill):'poor';
       const isToday16=new Date(t).toDateString()===today16;
       const dateObj=new Date(t);
       const dayLabel=isToday16?'Today':dateObj.toLocaleDateString('en-IE',{weekday:'short'});
       const dateLabel=dateObj.toLocaleDateString('en-IE',{day:'numeric',month:'short'});
-      return '<tr class="sixteen-row '+dr16+(isToday16?' today-row':'')+'">'
+      const swellCell=hasSwell
+        ?'<td class="col-swell"><div class="col-dir">'+arrowChar(dDir)+'</div><div class="col-compass">'+windDir(dDir)+'</div><div class="col-sub">'+dP.toFixed(0)+'s</div></td>'
+        :'<td class="col-swell"><div class="col-no-data">— no data</div></td>';
+      const heightCell=hasSwell
+        ?'<td><div class="row-height '+dr16+'">'+displayH(dH)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
+        +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.2)">—</div></td>'
+        :'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.2)">—</div></td>'
+        +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.2)">—</div></td>';
+      return '<tr class="sixteen-row '+(hasSwell?dr16:'')+(isToday16?' today-row':'')+'">'
         +'<td><div class="row-time">'+dayLabel+'</div><div class="row-day">'+dateLabel+'</div></td>'
-        +'<td><div class="row-height '+dr16+'">'+displayH(dH)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
-        +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.4)">'+dH.toFixed(1)+'<span class="row-unit">m</span></div></td>'
-        +'<td><div class="row-info-cell">'
-          +'<div class="row-info-swell"><span class="row-info-label">Swell</span><span class="row-info-arrow">'+arrowChar(dDir)+'</span><span class="row-info-val">'+windDir(dDir)+'</span><span class="row-info-period">'+dP.toFixed(0)+'s</span></div>'
-          +'<div class="row-info-divider"></div>'
-          +'<div class="row-info-wind"><span class="row-info-label">Wind</span><span class="row-info-arrow" style="opacity:0.6">'+arrowChar(dWindD)+'</span><span class="row-info-val" style="color:rgba(255,255,255,0.55)">'+windDir(dWindD)+'</span><span class="row-info-period">'+dWindS.toFixed(0)+'mph</span></div>'
-        +'</div></td>'
+        +heightCell
+        +swellCell
+        +'<td class="col-wind"><div class="col-dir">'+arrowChar(dWindD)+'</div><div class="col-compass">'+windDir(dWindD)+'</div><div class="col-sub">'+dWindS.toFixed(0)+'mph</div></td>'
         +'</tr>';
     }).join('');
 
@@ -1545,11 +1551,8 @@ async function load(){
         +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
         +'<td><div class="row-height '+sr+'">'+displayH(s.h)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.4)">'+s.h.toFixed(1)+'<span class="row-unit">m</span></div></td>'
-        +'<td><div class="row-info-cell">'
-          +'<div class="row-info-swell"><span class="row-info-label">Swell</span><span class="row-info-arrow">'+arrowChar(dir)+'</span><span class="row-info-val">'+windDir(dir)+'</span><span class="row-info-period">'+(s.swP||s.p).toFixed(0)+'s</span></div>'
-          +'<div class="row-info-divider"></div>'
-          +'<div class="row-info-wind"><span class="row-info-label">Wind</span><span class="row-info-arrow" style="opacity:0.6">'+arrowChar(s.wd)+'</span><span class="row-info-val" style="color:rgba(255,255,255,0.55)">'+windDir(s.wd)+'</span><span class="row-info-period">'+s.ws.toFixed(0)+'mph</span></div>'
-        +'</div></td>'
+        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dir)+'</div><div class="col-compass">'+windDir(dir)+'</div><div class="col-sub">'+(s.swP||s.p).toFixed(0)+'s</div></td>'
+        +'<td class="col-wind"><div class="col-dir">'+arrowChar(s.wd)+'</div><div class="col-compass">'+windDir(s.wd)+'</div><div class="col-sub">'+s.ws.toFixed(0)+'mph</div></td>'
         +'</tr>';
     }).join('');
 
@@ -1647,7 +1650,7 @@ async function load(){
 
       +'<div class="sec-label">Next 24 Hours</div>'
       +'<div class="forecast-table-wrap"><table class="forecast-table">'
-        +'<thead><tr><th>Time</th><th>Wave</th><th>Hs</th><th>Swell &amp; Wind</th></tr></thead>'
+        +'<thead><tr><th>Time</th><th>Wave</th><th>Hs</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
         +'<tbody>'+tableRows+'</tbody>'
       +'</table></div>'
       +'<div class="forecast-cards">'+mobileCards+'</div>'
@@ -1666,9 +1669,10 @@ async function load(){
 
       +'<div class="sec-label">16 Day Outlook</div>'
       +'<div class="sixteen-wrap"><table class="sixteen-table">'
-        +'<thead><tr><th>Day</th><th>Wave</th><th>Hs</th><th>Swell &amp; Wind</th></tr></thead>'
+        +'<thead><tr><th>Day</th><th>Wave</th><th>Hs</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
         +'<tbody>'+sixteenRows+'</tbody>'
       +'</table></div>'
+      +'<div style="font-family:\'DM Mono\',monospace;font-size:8px;letter-spacing:1px;color:rgba(255,255,255,0.2);padding:8px 4px 0;font-style:italic;">Swell data available for 7 days only · Wind forecast extends to 16 days</div>'
 
       +'<div class="sec-label">About This Break</div>'
       +'<div class="spot-info">'

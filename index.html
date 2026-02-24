@@ -363,7 +363,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .tide-low .tide-simple-time{color:rgba(255,255,255,0.65);}
 .tide-simple-ht{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1;}
 /* Tide graph sits flush inside the same block */
-.tide-graph-canvas{width:100%;height:110px;display:block;}
+.tide-graph-canvas{width:100%;height:130px;display:block;}
 
 /* TIDES (old cards kept for fallback) */
 .tide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:3px;}
@@ -1233,7 +1233,7 @@ function drawTideGraph(canvasId){
   const hMin=Math.min.apply(null,allH)*0.75;
   const hMax=Math.max.apply(null,allH)*1.12;
   const hRange=hMax-hMin||1;
-  const PAD={t:26,b:28};
+  const PAD={t:30,b:32};
   const gH=H-PAD.t-PAD.b;
   function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
 

@@ -1157,9 +1157,10 @@ function buildTideCards(tidePoints){
   // Store events on the canvas via a data attribute after render
   const graphId='tideGraph_'+Date.now();
   const eventsJson=encodeURIComponent(JSON.stringify(allEvents));
+  const cardTsJson=encodeURIComponent(JSON.stringify(events.map(function(e){return e.ts;})));
   return'<div class="tide-block">'
     +'<div class="tide-simple-grid">'+cards+'</div>'
-    +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'"></canvas>'
+    +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'" data-cardts="'+cardTsJson+'"></canvas>'
     +'</div>';
 }
 
@@ -1171,10 +1172,12 @@ function drawTideGraph(canvasId){
   const allEvents=JSON.parse(decodeURIComponent(eventsRaw));
   if(!allEvents||allEvents.length<2)return;
 
-  const now=Date.now();
-  const past=allEvents.filter(function(e){return e.ts<now;}).slice(-1);
-  const future=allEvents.filter(function(e){return e.ts>=now;}).slice(0,3);
-  const cardEvents=past.concat(future);
+  // Use exactly the card timestamps stored at build time
+  const cardTsRaw=canvas.dataset.cardts;
+  const cardTs=cardTsRaw?JSON.parse(decodeURIComponent(cardTsRaw)):null;
+  const cardEvents=cardTs
+    ?cardTs.map(function(ts){return allEvents.find(function(e){return e.ts===ts;});}).filter(Boolean)
+    :(function(){const now=Date.now();return allEvents.filter(function(e){return e.ts<now;}).slice(-1).concat(allEvents.filter(function(e){return e.ts>=now;}).slice(0,3));})();
   const nCards=cardEvents.length;
   if(nCards<2)return;
 
@@ -1189,11 +1192,14 @@ function drawTideGraph(canvasId){
       cardCentres.push((r.left-canvasLeft)+(r.width/2));
     });
   }
-  // Fallback if DOM read failed
-  while(cardCentres.length<nCards){
+  // Trim to exact number of cards drawn in DOM (read from data-ncards)
+  const nCardsDom=parseInt(canvas.dataset.ncards)||nCards;
+  while(cardCentres.length<nCardsDom){
     const i=cardCentres.length;
-    cardCentres.push((i+0.5)/nCards*(canvas.offsetWidth||400));
+    cardCentres.push((i+0.5)/nCardsDom*(canvas.offsetWidth||400));
   }
+  // Only use centres for the cards that actually exist in DOM
+  cardCentres.splice(nCardsDom);
 
   const dpr=window.devicePixelRatio||1;
   const W=canvas.offsetWidth||canvas.parentElement.offsetWidth||400;

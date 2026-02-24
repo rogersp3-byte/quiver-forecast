@@ -352,15 +352,18 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-detail{display:none;}
 
 /* TIDE SIMPLE CARDS */
-.tide-simple-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:3px;margin-bottom:4px;}
-.tide-simple-card{background:var(--surface);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
-.tide-simple-icon{opacity:0.85;}
-.tide-simple-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.tide-simple-time{font-size:24px;letter-spacing:-1px;line-height:1;}
+.tide-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:3px;}
+.tide-simple-card{background:var(--surface);padding:16px 10px;display:grid;grid-template-rows:20px 16px 14px 32px 18px;align-items:center;justify-items:center;gap:0;text-align:center;}
+.tide-simple-icon{height:20px;display:flex;align-items:center;justify-content:center;opacity:0.85;}
+.tide-simple-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);line-height:1;}
+.tide-simple-day{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);line-height:1;}
+.tide-simple-time{font-size:22px;letter-spacing:-1px;line-height:1;}
 .tide-high .tide-simple-time{color:rgba(100,180,255,0.9);}
-.tide-low .tide-simple-time{color:rgba(255,255,255,0.7);}
-.tide-simple-ht{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
-.tide-simple-day{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:2px;}
+.tide-low .tide-simple-time{color:rgba(255,255,255,0.65);}
+.tide-simple-ht{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1;}
+/* Tide graph */
+.tide-graph-wrap{background:var(--surface);padding:14px 20px 10px;margin-bottom:4px;}
+.tide-graph-canvas{width:100%;height:110px;display:block;}
 
 /* TIDES (old cards kept for fallback) */
 .tide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:3px;}
@@ -1067,28 +1070,25 @@ function fmtDay(iso){const d=new Date(iso),t=new Date(),tm=new Date();tm.setDate
 function fmtDayFull(iso){const d=new Date(iso),t=new Date();if(d.toDateString()===t.toDateString())return'Today';return d.toLocaleDateString('en-IE',{weekday:'short'});}
 
 // ── TIDE CARDS (simple high/low display) ──
+// ── TIDE CARDS + GRAPH ──────────────────────────────────────────────────────
 function buildTideCards(tidePoints){
   if(!tidePoints||tidePoints.length<1){
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">Tide data unavailable</div></div>';
   }
   const now=Date.now();
-  const cutoff=now+96*3600000; // 4 days ahead
+  const cutoff=now+96*3600000;
 
   // ── Extract HIGH tide events ──────────────────────────────────────────────
-  // Works for both sparse IMI typed data and dense synthetic arrays
   let highs=[];
-
   const hasTags=tidePoints[0]&&tidePoints[0].type&&
     (tidePoints[0].type==='HIGH'||tidePoints[0].type==='LOW');
 
   if(hasTags){
-    // IMI data: just grab the HIGH events in range
     highs=tidePoints
       .filter(function(p){return p.type==='HIGH';})
       .map(function(p){return{time:p.time,height:p.height,ts:new Date(p.time).getTime()};})
       .sort(function(a,b){return a.ts-b.ts;});
   } else {
-    // Dense synthetic data: peak-detect with a 6-point window (~1 hr either side)
     const W=6;
     for(let i=W;i<tidePoints.length-W;i++){
       const curr=tidePoints[i].height;
@@ -1103,19 +1103,14 @@ function buildTideCards(tidePoints){
     }
   }
 
-  // ── Derive LOW tides as the midpoint in time between each pair of highs ──
-  // Height is the cosine-interpolated value from the dense data (or estimated as
-  // average of the flanking highs scaled down by ~55% — a good approximation for
-  // spring/neap averages when dense data isn't available).
+  // ── Derive LOW tides as midpoint between consecutive highs ────────────────
   const lows=[];
   for(let i=0;i<highs.length-1;i++){
     const t0=highs[i].ts, t1=highs[i+1].ts;
     const midTs=Math.round((t0+t1)/2);
     const midIso=new Date(midTs).toISOString();
-    // Estimate low-tide height: interpolate from dense data if available, else approximate
     let lowH;
     if(!hasTags){
-      // Find closest point in dense array near midTs
       let best=tidePoints[0],bestD=Infinity;
       tidePoints.forEach(function(p){
         const d=Math.abs(new Date(p.time).getTime()-midTs);
@@ -1123,14 +1118,12 @@ function buildTideCards(tidePoints){
       });
       lowH=best.height;
     } else {
-      // Approximate: low tide is roughly 45% of the mean of the two flanking highs
-      // (semi-diurnal Irish coast average tidal ratio ≈ 0.45 of high)
       lowH=((highs[i].height+highs[i+1].height)/2)*0.45;
     }
     lows.push({type:'low',time:midIso,height:lowH,ts:midTs});
   }
 
-  // ── Merge highs + lows, sort, filter to display window ───────────────────
+  // ── Merge, sort, window ───────────────────────────────────────────────────
   const allEvents=highs.map(function(h){return{type:'high',time:h.time,height:h.height,ts:h.ts};})
     .concat(lows)
     .sort(function(a,b){return a.ts-b.ts;})
@@ -1140,25 +1133,142 @@ function buildTideCards(tidePoints){
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">No tides in window</div></div>';
   }
 
-  // Show: the most recent past event + next 3 upcoming
   const past=allEvents.filter(function(e){return e.ts<now;}).slice(-1);
   const future=allEvents.filter(function(e){return e.ts>=now;}).slice(0,3);
   const events=past.concat(future);
 
+  // ── Cards: fixed grid rows so every row aligns across all cards ───────────
   const cards=events.map(function(e){
     const isHigh=e.type==='high';
     const d=new Date(e.time);
     const isToday=d.toDateString()===new Date().toDateString();
-    const dayLabel=isToday?'':('<div class="tide-simple-day">'+d.toLocaleDateString('en-IE',{weekday:'short'})+'</div>');
+    // Day row always rendered (empty string keeps grid row height for today)
+    const dayStr=isToday?'':d.toLocaleDateString('en-IE',{weekday:'short'});
     return'<div class="tide-simple-card'+(isHigh?' tide-high':' tide-low')+'">'
       +'<div class="tide-simple-icon">'+(isHigh?svgTideHigh():svgTideLow())+'</div>'
       +'<div class="tide-simple-type">'+(isHigh?'High':'Low')+'</div>'
-      +dayLabel
+      +'<div class="tide-simple-day">'+dayStr+'</div>'
       +'<div class="tide-simple-time">'+fmtT(e.time)+'</div>'
       +'<div class="tide-simple-ht">'+e.height.toFixed(1)+'m</div>'
       +'</div>';
   }).join('');
-  return'<div class="tide-simple-grid">'+cards+'</div>';
+
+  // ── Graph: passes all events (wider window) to the draw function ──────────
+  // Store events on the canvas via a data attribute after render
+  const graphId='tideGraph_'+Date.now();
+  const eventsJson=encodeURIComponent(JSON.stringify(allEvents));
+  return'<div class="tide-simple-grid">'+cards+'</div>'
+    +'<div class="tide-graph-wrap">'
+      +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'"></canvas>'
+    +'</div>';
+}
+
+function drawTideGraph(canvasId){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const eventsRaw=canvas.dataset.events;
+  if(!eventsRaw)return;
+  const events=JSON.parse(decodeURIComponent(eventsRaw));
+  if(!events||events.length<2)return;
+
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth||canvas.parentElement.offsetWidth||400;
+  const H=canvas.offsetHeight||110;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  // Time window: span from first to last event with padding
+  const tStart=events[0].ts - 45*60000;
+  const tEnd=events[events.length-1].ts + 45*60000;
+  const tRange=tEnd-tStart;
+  const now=Date.now();
+
+  // Height range with breathing room
+  const allH=events.map(function(e){return e.height;});
+  const hMin=Math.min(...allH)*0.8;
+  const hMax=Math.max(...allH)*1.1;
+  const hRange=hMax-hMin||1;
+
+  const PAD={l:6,r:6,t:18,b:22};
+  const gW=W-PAD.l-PAD.r;
+  const gH=H-PAD.t-PAD.b;
+
+  function tx(ts){return PAD.l+(ts-tStart)/tRange*gW;}
+  function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
+
+  // Build smooth cosine curve between consecutive events
+  const pts=[];
+  const STEPS=120;
+  for(let i=0;i<events.length-1;i++){
+    const e0=events[i], e1=events[i+1];
+    for(let s=0;s<=STEPS;s++){
+      const frac=s/STEPS;
+      const t=e0.ts+(e1.ts-e0.ts)*frac;
+      // Cosine interpolation between heights
+      const h=e0.height+(e1.height-e0.height)*(0.5-0.5*Math.cos(frac*Math.PI));
+      pts.push({x:tx(t),y:ty(h),t:t});
+    }
+  }
+
+  // ── Fill gradient under curve ─────────────────────────────────────────────
+  const grad=ctx.createLinearGradient(0,PAD.t,0,PAD.t+gH);
+  grad.addColorStop(0,'rgba(100,180,255,0.22)');
+  grad.addColorStop(1,'rgba(100,180,255,0.02)');
+
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, PAD.t+gH);
+  ctx.lineTo(pts[0].x, pts[0].y);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+  ctx.lineTo(pts[pts.length-1].x, PAD.t+gH);
+  ctx.closePath();
+  ctx.fillStyle=grad;
+  ctx.fill();
+
+  // ── Curve line ────────────────────────────────────────────────────────────
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+  ctx.strokeStyle='rgba(100,180,255,0.7)';
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+
+  // ── Now line ─────────────────────────────────────────────────────────────
+  if(now>=tStart&&now<=tEnd){
+    const nx=tx(now);
+    ctx.beginPath();
+    ctx.moveTo(nx,PAD.t);
+    ctx.lineTo(nx,PAD.t+gH);
+    ctx.strokeStyle='rgba(245,200,0,0.55)';
+    ctx.lineWidth=1.5;
+    ctx.setLineDash([3,4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='rgba(245,200,0,0.7)';
+    ctx.font='bold 8px monospace';
+    ctx.textAlign='center';
+    ctx.fillText('NOW',nx,PAD.t-4);
+  }
+
+  // ── Event markers + time labels ───────────────────────────────────────────
+  events.forEach(function(e){
+    const x=tx(e.ts), y=ty(e.height);
+    const isHigh=e.type==='high';
+    const col=isHigh?'rgba(100,180,255,0.95)':'rgba(180,210,255,0.6)';
+    // Dot
+    ctx.beginPath();
+    ctx.arc(x,y,3.5,0,Math.PI*2);
+    ctx.fillStyle=col;
+    ctx.fill();
+    // Time label — highs above dot, lows below
+    const d=new Date(e.ts);
+    const label=d.toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
+    ctx.fillStyle=col;
+    ctx.font='9px monospace';
+    ctx.textAlign='center';
+    ctx.fillText(label, x, isHigh ? y-8 : Math.min(y+14, H-4));
+  });
 }
 
 function svgTideHigh(){return'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg>';}
@@ -1762,6 +1872,9 @@ async function load(){
     requestAnimationFrame(function(){
       const sg=document.getElementById('swellGraph');
       if(sg)drawGraph(sg,times,wH,wP,skill);
+      // Tide graph — find by class since ID includes timestamp
+      const tg=document.querySelector('.tide-graph-canvas');
+      if(tg)drawTideGraph(tg.id);
     });
   }catch(e){
     app.innerHTML='<div class="status error">Couldn\'t load — '+e.message+'</div>';

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiver — Forecast</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -1207,7 +1207,7 @@ function drawTideGraph(canvasId){
   const allSorted=allEvents.slice().sort(function(a,b){return a.ts-b.ts;});
   const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
   const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
-  const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+2);
+  const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+1);
 
   // x for each curve event — card events use DOM positions, extras extrapolate
   const tFirst=cardEvents[0].ts,tLast=cardEvents[nCards-1].ts,tRange=tLast-tFirst||1;

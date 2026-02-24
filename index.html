@@ -374,6 +374,10 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .change-spot-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.75);padding:12px 22px;cursor:pointer;transition:all 0.2s;margin-top:4px;}
 .change-spot-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.6);color:#fff;}
 .change-spot-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;}
+.share-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(245,200,0,0.06);border:1px solid rgba(245,200,0,0.3);color:rgba(245,200,0,0.8);padding:12px 22px;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.share-btn:hover{background:rgba(245,200,0,0.12);border-color:rgba(245,200,0,0.6);color:rgba(245,200,0,1);}
+.share-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;}
+.share-btn.copied{border-color:var(--good);color:var(--good);background:rgba(34,197,94,0.06);}
 
 /* SPOT INFO */
 .spot-info{background:var(--surface);padding:16px 20px;margin-bottom:20px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;border-left:3px solid rgba(255,255,255,0.15);}
@@ -536,7 +540,6 @@ const ALL_SPOTS = [
 
   // ── LAHINCH REEFS ──
   {id:'cornish',  name:'Cornish',             shortName:'Cornish',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.929472, lng:-9.349553, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
-  {id:'shits',    name:'Shits',               shortName:'Shits',       region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.928136, lng:-9.351014, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
   {id:'cregg',    name:'Cregg Reef',          shortName:'Cregg Reef',  region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.923233, lng:-9.354639, beachFacing:270, swellWindow:[225,315], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
 
   // ── BUNDORAN ──
@@ -807,6 +810,33 @@ function showSearch(){
   document.getElementById('searchInput').value='';
   window.scrollTo(0,0);
   renderSavedSpots();
+}
+
+function shareSpot(){
+  const url=location.origin+location.pathname+'?spot='+encodeURIComponent(currentSpot.id);
+  const btn=document.getElementById('shareBtn');
+  const lbl=document.getElementById('shareBtnLabel');
+  // Use native share sheet on mobile if available
+  if(navigator.share){
+    navigator.share({
+      title:'Quiver — '+currentSpot.groupName+' Forecast',
+      text:'Check the surf forecast for '+currentSpot.groupName+' on Quiver',
+      url:url
+    }).catch(function(){});
+    return;
+  }
+  // Fallback: copy to clipboard
+  navigator.clipboard.writeText(url).then(function(){
+    lbl.textContent='Link Copied!';
+    btn.classList.add('copied');
+    setTimeout(function(){
+      lbl.textContent='Share Forecast';
+      btn.classList.remove('copied');
+    },2200);
+  }).catch(function(){
+    // Last resort: prompt with URL
+    window.prompt('Copy this link:',url);
+  });
 }
 
 function updateHero(){
@@ -1716,10 +1746,14 @@ async function load(){
         +buoyInfoItem
       +'</div>'
 
-      +'<div style="text-align:center;margin-top:32px;">'
+      +'<div style="text-align:center;margin-top:32px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">'
         +'<button class="change-spot-btn" onclick="showSearch()">'
           +'<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>'
           +'Change Spot'
+        +'</button>'
+        +'<button class="share-btn" id="shareBtn" onclick="shareSpot()">'
+          +'<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'
+          +'<span id="shareBtnLabel">Share Forecast</span>'
         +'</button>'
       +'</div>'
 

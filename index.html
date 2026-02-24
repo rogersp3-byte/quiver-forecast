@@ -255,8 +255,8 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .fc-meta{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8;}
 
 /* 7 DAY — ENHANCED */
-.seven-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:4px;}
-.day-card{background:var(--surface);padding:12px 6px;text-align:center;border-top:2px solid transparent;position:relative;overflow:hidden;min-width:0;}
+.seven-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.day-card{background:var(--surface);padding:10px 4px;text-align:center;border-top:2px solid transparent;position:relative;box-sizing:border-box;overflow:hidden;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;min-width:0;}
 .day-card.great,.day-card.good{border-top-color:var(--good);}
 .day-card.fair{border-top-color:var(--fair);}
 .day-card.poor{border-top-color:var(--poor);}
@@ -264,9 +264,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-card.great::after,.day-card.good::after{background:var(--good);}
 .day-card.fair::after{background:var(--fair);}
 .day-card.poor::after{background:var(--poor);}
-.day-name{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.day-name{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .day-card.today .day-name{color:rgba(245,200,0,0.8);}
-.day-card{cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;}
+
 .day-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
 .day-expand{
   display:none;position:fixed;inset:0;z-index:500;
@@ -309,7 +309,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-expand-item .dei-sub{
   font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;
 }
-.day-height{font-size:18px;letter-spacing:-0.5px;}
+.day-height{font-size:clamp(13px,1.5vw,18px);letter-spacing:-0.5px;}
 .day-card.great .day-height,.day-card.good .day-height{color:var(--good);}
 .day-card.fair .day-height{color:var(--fair);}
 .day-card.poor .day-height{color:var(--poor);}
@@ -318,7 +318,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-card.great .day-badge,.day-card.good .day-badge{color:var(--good);border-color:rgba(34,197,94,0.3);}
 .day-card.fair .day-badge{color:var(--fair);border-color:rgba(245,200,0,0.3);}
 .day-card.poor .day-badge{color:var(--poor);border-color:rgba(239,68,68,0.3);}
-.day-detail{font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,0.4);margin-top:4px;line-height:1.7;text-transform:uppercase;}
+.day-detail{display:none;}
 
 /* TIDE SIMPLE CARDS */
 .tide-simple-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:3px;margin-bottom:4px;}
@@ -374,8 +374,8 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .bottom-nav-item:hover,.bottom-nav-item.active{color:#fff;}
 .bottom-nav-item.active svg{stroke:#f5c800;}
 
-@media(max-width:768px){
-  .seven-grid{grid-template-columns:repeat(4,1fr);}
+@media(max-width:540px){
+  .seven-grid{grid-template-columns:repeat(4,1fr);gap:3px;}
 }
 @media(max-width:640px){
   .bottom-nav{display:flex;}
@@ -394,7 +394,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   #searchPage{padding:28px 18px;}
   .globe-wrap{width:150px;height:150px;margin-bottom:28px;}
   .globe-canvas{width:150px;height:150px;}
-  .seven-grid{grid-template-columns:repeat(4,1fr);}
+  .seven-grid{grid-template-columns:repeat(4,1fr);gap:3px;}
 }
 </style>
 </head>
@@ -1529,7 +1529,7 @@ async function load(){
         windS:dayWindS,windD:dayWindD,
         rating:dr,isToday:isToday,windLabel:windLabel
       }));
-      return '<div class="day-card '+dr+(isToday?' today':'')+' expday" data-day="'+dataStr+'" onclick="openDayExpand(this)">';
+      return '<div class="day-card '+dr+(isToday?' today':'')+' expday" data-day="'+dataStr+'" onclick="openDayExpand(this)">'
         +'<div class="day-name">'+(isToday?'<span style="color:rgba(245,200,0,0.8)">Today</span>':fmtDayFull(d.time))+'</div>'
         +'<div class="day-height">'+displayH(d.h)+'<span class="day-unit">'+displayUnit()+'</span></div>'
         +'<span class="day-badge">'+rateLabel(dr)+'</span>'

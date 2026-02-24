@@ -528,6 +528,7 @@ const ALL_SPOTS = [
   {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Kilrush'},
   {id:'inner',    name:'Inner Reef',          shortName:'Inner Reef',  region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.844650, lng:-9.443633, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'A-frame',      useBuoy:false, tidePreference:'mid',     tideStation:'Kilrush'},
   {id:'middle',   name:'Middle Reef',         shortName:'Middle Reef', region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.845419, lng:-9.449256, beachFacing:225, swellWindow:[202,292], level:'Intermediate and above',   waveType:'Right hander', useBuoy:false, tidePreference:'low-mid', tideStation:'Kilrush'},
+  {id:'doughmore',name:'Doughmore Beach',     shortName:'Doughmore',   region:'Clare',   group:'doughmore',     groupName:'Doughmore',     lat:52.878700, lng:-9.496200, beachFacing:270, swellWindow:[225,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'low-mid', tideStation:'Kilrush', ftMult:0.8},
   {id:'lahinch',  name:'Lahinch Beach',       shortName:'Lahinch',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.933056, lng:-9.344167, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Lahinch_MODELLED'},
   {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, tidePreference:'any',     tideStation:'Killybegs'},
   {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
@@ -573,8 +574,8 @@ function setUnit(u){
   document.getElementById('btnM').classList.toggle('active',u==='m');
   if(document.getElementById('forecastPage').classList.contains('show'))load();
 }
-function displayH(hs){
-  if(currentUnit==='ft') return (hs*0.7*3.281).toFixed(1);
+function displayH(hs, mult){
+  if(currentUnit==='ft') return (hs*(mult||currentSpot.ftMult||0.7)*3.281).toFixed(1);
   return hs.toFixed(1);
 }
 function displayUnit(){return currentUnit==='ft'?'ft':'m';}

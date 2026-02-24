@@ -650,7 +650,13 @@ function startSession(){
 }
 
 function buildOpener(ws){
-  return `Welcome to the Workshop, I am the Core Lord. I've been surfing this spot for a thousand years. I can give you advice on technique, equipment, how to read forecasts, anything. Let me know below!`;
+  const openers={
+    beginner:`Right, ${ws.name}. ${ws.goal} — that's a very fixable problem. Before I give you anything to work on, tell me: when you're out there and it goes wrong, what does it feel like? What are you aware of in that moment?`,
+    intermediate:`${ws.name}. ${ws.goal} — classic one, and I hear it a lot. Let me ask you something first: is this happening on both your forehand and backhand, or is it worse on one side?`,
+    advanced:`${ws.goal} — alright. A few things can cause that depending on where exactly it's breaking down. Walk me through what's happening: is it early in the turn, at the apex, or when you're trying to come out of it?`,
+    expert:`${ws.goal}. Yeah, tell me more. Happening in specific conditions or across the board? And are we talking contest-level performance or just something that's been nagging at you?`
+  };
+  return openers[ws.skill]||openers.intermediate;
 }
 
 // ── RENDER CHAT ──

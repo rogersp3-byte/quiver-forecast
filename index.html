@@ -351,9 +351,10 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-card.poor .day-badge{color:var(--poor);border-color:rgba(239,68,68,0.3);}
 .day-detail{display:none;}
 
-/* TIDE SIMPLE CARDS */
-.tide-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:3px;}
-.tide-simple-card{background:var(--surface);padding:16px 10px;display:grid;grid-template-rows:20px 16px 14px 32px 18px;align-items:center;justify-items:center;gap:0;text-align:center;}
+/* TIDE — unified container */
+.tide-block{background:var(--surface);margin-bottom:4px;}
+.tide-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;}
+.tide-simple-card{padding:16px 10px;display:grid;grid-template-rows:20px 16px 14px 32px 18px;align-items:center;justify-items:center;gap:0;text-align:center;background:var(--surface);}
 .tide-simple-icon{height:20px;display:flex;align-items:center;justify-content:center;opacity:0.85;}
 .tide-simple-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);line-height:1;}
 .tide-simple-day{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);line-height:1;}
@@ -361,8 +362,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .tide-high .tide-simple-time{color:rgba(100,180,255,0.9);}
 .tide-low .tide-simple-time{color:rgba(255,255,255,0.65);}
 .tide-simple-ht{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1;}
-/* Tide graph */
-.tide-graph-wrap{background:var(--surface);padding:14px 20px 10px;margin-bottom:4px;}
+/* Tide graph sits flush inside the same block */
 .tide-graph-canvas{width:100%;height:110px;display:block;}
 
 /* TIDES (old cards kept for fallback) */
@@ -1157,9 +1157,9 @@ function buildTideCards(tidePoints){
   // Store events on the canvas via a data attribute after render
   const graphId='tideGraph_'+Date.now();
   const eventsJson=encodeURIComponent(JSON.stringify(allEvents));
-  return'<div class="tide-simple-grid">'+cards+'</div>'
-    +'<div class="tide-graph-wrap">'
-      +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'"></canvas>'
+  return'<div class="tide-block">'
+    +'<div class="tide-simple-grid">'+cards+'</div>'
+    +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'"></canvas>'
     +'</div>';
 }
 
@@ -1168,8 +1168,25 @@ function drawTideGraph(canvasId){
   if(!canvas)return;
   const eventsRaw=canvas.dataset.events;
   if(!eventsRaw)return;
-  const events=JSON.parse(decodeURIComponent(eventsRaw));
-  if(!events||events.length<2)return;
+  const allEvents=JSON.parse(decodeURIComponent(eventsRaw));
+  if(!allEvents||allEvents.length<2)return;
+
+  // The 4 cards shown = past.slice(-1) + future.slice(0,3)
+  // We need the same subset that was used for cards, then extend the
+  // curve one step either side for natural entry/exit.
+  const now=Date.now();
+  const past=allEvents.filter(function(e){return e.ts<now;}).slice(-1);
+  const future=allEvents.filter(function(e){return e.ts>=now;}).slice(0,3);
+  const cardEvents=past.concat(future); // exactly the 4 shown in cards
+  const nCards=cardEvents.length;
+  if(nCards<2)return;
+
+  // For the curve we also grab one event before and after the card window
+  // so the line enters/exits smoothly rather than starting/stopping abruptly
+  const allSorted=allEvents.slice().sort(function(a,b){return a.ts-b.ts;});
+  const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
+  const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
+  const curveEvents=allSorted.slice(Math.max(0,firstIdx-1), lastIdx+2);
 
   const dpr=window.devicePixelRatio||1;
   const W=canvas.offsetWidth||canvas.parentElement.offsetWidth||400;
@@ -1179,49 +1196,58 @@ function drawTideGraph(canvasId){
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
 
-  // Time window: span from first to last event with padding
-  const tStart=events[0].ts - 45*60000;
-  const tEnd=events[events.length-1].ts + 45*60000;
-  const tRange=tEnd-tStart;
-  const now=Date.now();
+  // Card column centres: card i centre = (i+0.5)/nCards * W
+  // Map each cardEvent to its column centre x
+  function cardX(i){ return (i+0.5)/nCards*W; }
 
-  // Height range with breathing room
-  const allH=events.map(function(e){return e.height;});
-  const hMin=Math.min(...allH)*0.8;
-  const hMax=Math.max(...allH)*1.1;
+  // For events outside the card window, extrapolate x linearly
+  const tFirst=cardEvents[0].ts, tLast=cardEvents[nCards-1].ts;
+  const tRange=tLast-tFirst||1;
+  const xFirst=cardX(0), xLast=cardX(nCards-1);
+  function eventX(e){
+    const idx=cardEvents.findIndex(function(c){return c.ts===e.ts;});
+    if(idx>=0) return cardX(idx);
+    // Outside card window — extrapolate
+    return xFirst+(e.ts-tFirst)/tRange*(xLast-xFirst);
+  }
+
+  // Height range
+  const allH=curveEvents.map(function(e){return e.height;});
+  const hMin=Math.min(...allH)*0.75;
+  const hMax=Math.max(...allH)*1.12;
   const hRange=hMax-hMin||1;
 
-  const PAD={l:6,r:6,t:18,b:22};
-  const gW=W-PAD.l-PAD.r;
+  const PAD={t:18,b:22};
   const gH=H-PAD.t-PAD.b;
 
-  function tx(ts){return PAD.l+(ts-tStart)/tRange*gW;}
   function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
 
-  // Build smooth cosine curve between consecutive events
+  // Build smooth cosine curve through curveEvents
   const pts=[];
-  const STEPS=120;
-  for(let i=0;i<events.length-1;i++){
-    const e0=events[i], e1=events[i+1];
+  const STEPS=80;
+  for(let i=0;i<curveEvents.length-1;i++){
+    const e0=curveEvents[i], e1=curveEvents[i+1];
+    const x0=eventX(e0), x1=eventX(e1);
     for(let s=0;s<=STEPS;s++){
       const frac=s/STEPS;
-      const t=e0.ts+(e1.ts-e0.ts)*frac;
-      // Cosine interpolation between heights
+      const x=x0+(x1-x0)*frac;
       const h=e0.height+(e1.height-e0.height)*(0.5-0.5*Math.cos(frac*Math.PI));
-      pts.push({x:tx(t),y:ty(h),t:t});
+      pts.push({x:x,y:ty(h),ts:e0.ts+(e1.ts-e0.ts)*frac});
     }
   }
 
-  // ── Fill gradient under curve ─────────────────────────────────────────────
+  if(!pts.length)return;
+
+  // ── Fill gradient ─────────────────────────────────────────────────────────
   const grad=ctx.createLinearGradient(0,PAD.t,0,PAD.t+gH);
-  grad.addColorStop(0,'rgba(100,180,255,0.22)');
+  grad.addColorStop(0,'rgba(100,180,255,0.20)');
   grad.addColorStop(1,'rgba(100,180,255,0.02)');
 
   ctx.beginPath();
-  ctx.moveTo(pts[0].x, PAD.t+gH);
-  ctx.lineTo(pts[0].x, pts[0].y);
+  ctx.moveTo(pts[0].x,PAD.t+gH);
+  ctx.lineTo(pts[0].x,pts[0].y);
   for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
-  ctx.lineTo(pts[pts.length-1].x, PAD.t+gH);
+  ctx.lineTo(pts[pts.length-1].x,PAD.t+gH);
   ctx.closePath();
   ctx.fillStyle=grad;
   ctx.fill();
@@ -1230,30 +1256,41 @@ function drawTideGraph(canvasId){
   ctx.beginPath();
   ctx.moveTo(pts[0].x,pts[0].y);
   for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
-  ctx.strokeStyle='rgba(100,180,255,0.7)';
+  ctx.strokeStyle='rgba(100,180,255,0.65)';
   ctx.lineWidth=1.5;
   ctx.stroke();
 
-  // ── Now line ─────────────────────────────────────────────────────────────
-  if(now>=tStart&&now<=tEnd){
-    const nx=tx(now);
-    ctx.beginPath();
-    ctx.moveTo(nx,PAD.t);
-    ctx.lineTo(nx,PAD.t+gH);
-    ctx.strokeStyle='rgba(245,200,0,0.55)';
-    ctx.lineWidth=1.5;
-    ctx.setLineDash([3,4]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle='rgba(245,200,0,0.7)';
-    ctx.font='bold 8px monospace';
-    ctx.textAlign='center';
-    ctx.fillText('NOW',nx,PAD.t-4);
+  // ── Now line ──────────────────────────────────────────────────────────────
+  // Find x on curve closest to now
+  if(now>=pts[0].ts&&now<=pts[pts.length-1].ts){
+    let nowX=null;
+    for(let i=0;i<pts.length-1;i++){
+      if(pts[i].ts<=now&&pts[i+1].ts>=now){
+        const f=(now-pts[i].ts)/(pts[i+1].ts-pts[i].ts);
+        nowX=pts[i].x+(pts[i+1].x-pts[i].x)*f;
+        break;
+      }
+    }
+    if(nowX!==null){
+      ctx.beginPath();
+      ctx.moveTo(nowX,PAD.t);
+      ctx.lineTo(nowX,PAD.t+gH);
+      ctx.strokeStyle='rgba(245,200,0,0.5)';
+      ctx.lineWidth=1.5;
+      ctx.setLineDash([3,4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='rgba(245,200,0,0.65)';
+      ctx.font='bold 8px monospace';
+      ctx.textAlign='center';
+      ctx.fillText('NOW',nowX,PAD.t-5);
+    }
   }
 
-  // ── Event markers + time labels ───────────────────────────────────────────
-  events.forEach(function(e){
-    const x=tx(e.ts), y=ty(e.height);
+  // ── Event markers + labels pinned to card centres ─────────────────────────
+  cardEvents.forEach(function(e,i){
+    const x=cardX(i);
+    const y=ty(e.height);
     const isHigh=e.type==='high';
     const col=isHigh?'rgba(100,180,255,0.95)':'rgba(180,210,255,0.6)';
     // Dot
@@ -1261,7 +1298,7 @@ function drawTideGraph(canvasId){
     ctx.arc(x,y,3.5,0,Math.PI*2);
     ctx.fillStyle=col;
     ctx.fill();
-    // Time label — highs above dot, lows below
+    // Time label
     const d=new Date(e.ts);
     const label=d.toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
     ctx.fillStyle=col;

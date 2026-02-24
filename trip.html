@@ -6,12 +6,20 @@
 <title>Quiver — Trip Planner</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f0f0f;--surface:#1a1a1a;--white:#fff;--muted:rgba(255,255,255,0.35);--faint:rgba(255,255,255,0.1);--good:#22c55e;--fair:#f5c800;--poor:#ef4444;}
+:root{
+  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;
+  --white:#fff;--muted:rgba(255,255,255,0.35);--faint:rgba(255,255,255,0.1);
+  --good:#22c55e;--fair:#f5c800;--poor:#ef4444;
+  --accent:#f5c800;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--white);font-family:'Archivo Black',sans-serif;min-height:100vh;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Archivo Black',sans-serif;overflow-x:hidden;}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity:0.07;mix-blend-mode:overlay;}
+
+/* HEADER */
 header{padding:18px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--faint);}
 .logo{font-size:18px;letter-spacing:2px;}
 .logo-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
@@ -20,47 +28,204 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .nav-link:last-child{border-right:none;}
 .nav-link:hover{color:var(--white);background:rgba(255,255,255,0.06);}
 .nav-link.active{color:var(--white);background:rgba(255,255,255,0.08);}
-.coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 65px);text-align:center;padding:40px 24px;}
-.cs-title{font-size:clamp(48px,12vw,110px);letter-spacing:-2px;line-height:0.9;opacity:0.15;}
-.cs-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-top:28px;}
-.cs-features{margin-top:48px;display:flex;flex-direction:column;gap:12px;max-width:360px;}
-.cs-item{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);padding:12px 18px;border:1px solid rgba(255,255,255,0.06);text-align:left;}
-.cs-item::before{content:'— ';color:rgba(255,255,255,0.15);}
+.profile-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid rgba(255,255,255,0.15);padding:7px 14px;cursor:pointer;}
+.profile-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
 
-/* MOBILE BOTTOM NAV */
-.bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,10,0.97);
-  border-top: 1px solid rgba(255,255,255,0.1);
-  z-index: 500;
-  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
-  backdrop-filter: blur(12px);
-}
-.bottom-nav-item {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; gap: 4px;
-  color: rgba(255,255,255,0.35);
-  text-decoration: none;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
-  transition: color 0.15s;
-  padding: 4px 0;
-}
-.bottom-nav-item svg { width: 20px; height: 20px; }
-.bottom-nav-item:hover,
-.bottom-nav-item.active { color: #ffffff; }
-.bottom-nav-item.active svg { stroke: #f5c800; }
-@media (max-width: 640px) {
-  .bottom-nav { display: flex; }
-  .main-nav { display: none !important; }
-  body { padding-bottom: 72px; }
-}
+/* BOTTOM NAV */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.97);border-top:1px solid rgba(255,255,255,0.1);z-index:500;padding:10px 0 max(10px,env(safe-area-inset-bottom));backdrop-filter:blur(12px);}
+.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.15s;padding:4px 0;}
+.bottom-nav-item svg{width:20px;height:20px;}
+.bottom-nav-item:hover,.bottom-nav-item.active{color:#fff;}
+.bottom-nav-item.active svg{stroke:var(--accent);}
 
+/* SHARED */
+.mono{font-family:'DM Mono',monospace;}
+.label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.btn-primary{background:var(--white);color:#0f0f0f;border:none;font-family:'Archivo Black',sans-serif;font-size:12px;letter-spacing:1px;padding:14px 24px;cursor:pointer;transition:opacity 0.15s;}
+.btn-primary:hover{opacity:0.88;}
+.btn-ghost{background:none;color:var(--white);border:1px solid rgba(255,255,255,0.2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:all 0.15s;}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.5);color:var(--white);}
+.btn-ghost.danger{border-color:rgba(239,68,68,0.3);color:rgba(239,68,68,0.7);}
+.btn-ghost.danger:hover{border-color:var(--poor);color:var(--poor);}
+
+/* ── LANDING ── */
+#landingView{min-height:calc(100vh - 65px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;}
+#landingView.hidden{display:none;}
+.landing-title{font-size:clamp(52px,10vw,96px);letter-spacing:-2px;line-height:0.9;margin-bottom:24px;opacity:0.12;}
+.landing-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:48px;}
+.landing-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.landing-features{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;max-width:480px;width:100%;margin-top:48px;}
+.feature-item{background:var(--surface);padding:16px 18px;text-align:left;}
+.feature-dash{color:var(--muted);margin-right:6px;}
+.feature-text{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.5);}
+
+/* JOIN CODE INPUT */
+.join-wrap{display:flex;gap:0;max-width:340px;width:100%;}
+.join-input{flex:1;background:#111;border:1px solid rgba(255,255,255,0.18);border-right:none;color:var(--white);font-family:'DM Mono',monospace;font-size:13px;padding:14px 16px;outline:none;letter-spacing:2px;text-transform:uppercase;}
+.join-input::placeholder{color:var(--muted);letter-spacing:1px;text-transform:none;}
+.join-input:focus{border-color:rgba(255,255,255,0.4);}
+.join-btn{background:var(--white);color:#0f0f0f;border:none;font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:1px;padding:14px 20px;cursor:pointer;white-space:nowrap;}
+
+/* ── SETUP VIEW ── */
+#setupView{display:none;min-height:calc(100vh - 65px);padding:40px 24px 80px;max-width:540px;margin:0 auto;}
+#setupView.show{display:block;}
+.setup-step{margin-bottom:32px;}
+.step-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:block;}
+.text-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.15);color:var(--white);font-family:'DM Mono',monospace;font-size:13px;padding:14px 16px;outline:none;transition:border-color 0.2s;}
+.text-input:focus{border-color:rgba(255,255,255,0.4);}
+.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;}
+.month-btn{background:var(--surface);border:1px solid transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:10px 4px;cursor:pointer;transition:all 0.15s;text-align:center;}
+.month-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.month-btn.selected{background:rgba(245,200,0,0.12);border-color:var(--accent);color:var(--accent);}
+.setup-title{font-size:28px;letter-spacing:-0.5px;margin-bottom:6px;}
+.setup-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
+
+/* ── TRIP DASHBOARD ── */
+#dashView{display:none;padding:0 0 80px;}
+#dashView.show{display:block;}
+
+.trip-hero{padding:28px 28px 24px;border-bottom:1px solid var(--faint);}
+.trip-name{font-size:clamp(26px,5vw,42px);letter-spacing:-1px;margin-bottom:6px;}
+.trip-meta{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+.trip-code{background:var(--surface);padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--white);border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:border-color 0.15s;}
+.trip-code:hover{border-color:rgba(255,255,255,0.3);}
+
+.dash-grid{display:grid;grid-template-columns:1fr 2fr;gap:3px;padding:3px;}
+.dash-panel{background:var(--surface);padding:22px;}
+.panel-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+
+/* MEMBERS */
+.member-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.member-row:last-child{border-bottom:none;}
+.member-name{font-size:14px;letter-spacing:-0.3px;}
+.member-months{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:3px;}
+.member-you{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-left:8px;}
+
+.overlap-banner{background:rgba(245,200,0,0.08);border:1px solid rgba(245,200,0,0.2);padding:14px 16px;margin-top:14px;display:flex;align-items:center;gap:10px;}
+.overlap-icon{color:var(--accent);font-size:16px;flex-shrink:0;}
+.overlap-text{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.7);line-height:1.6;}
+.overlap-months{color:var(--accent);font-weight:bold;}
+
+/* DESTINATIONS */
+.dest-cards{display:flex;flex-direction:column;gap:3px;}
+.dest-card{background:var(--surface2);border:1px solid rgba(255,255,255,0.06);padding:0;overflow:hidden;transition:border-color 0.15s;cursor:pointer;}
+.dest-card:hover{border-color:rgba(255,255,255,0.15);}
+.dest-card-inner{padding:18px 20px;}
+.dest-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.dest-name{font-size:18px;letter-spacing:-0.3px;}
+.dest-region{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.dest-match{text-align:right;}
+.match-score{font-size:26px;letter-spacing:-1px;color:var(--accent);}
+.match-label{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+.dest-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:14px;}
+.dest-stat{background:rgba(255,255,255,0.04);padding:10px 8px;text-align:center;}
+.stat-val{font-size:13px;letter-spacing:-0.3px;margin-bottom:2px;}
+.stat-key{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+.swell-calendar{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-bottom:14px;}
+.swell-month{height:6px;border-radius:1px;}
+.swell-5{background:rgba(100,180,255,0.9);}
+.swell-4{background:rgba(100,180,255,0.65);}
+.swell-3{background:rgba(100,180,255,0.38);}
+.swell-2{background:rgba(100,180,255,0.18);}
+.swell-1{background:rgba(255,255,255,0.08);}
+.swell-cal-labels{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-bottom:14px;}
+.scl{font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);text-align:center;}
+.scl.highlighted{color:var(--accent);}
+
+.dest-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);}
+.dest-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.dest-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 8px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);}
+.dest-tag.punchy{background:rgba(239,68,68,0.08);color:rgba(239,68,68,0.6);}
+.dest-tag.cruisy{background:rgba(34,197,94,0.08);color:rgba(34,197,94,0.6);}
+
+/* RANKINGS */
+.rankings-row{display:flex;gap:6px;align-items:center;}
+.rank-pip{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;font-weight:bold;border:1px solid rgba(255,255,255,0.15);color:var(--muted);cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.rank-pip.rank-1{background:rgba(245,200,0,0.15);border-color:var(--accent);color:var(--accent);}
+.rank-pip.rank-2{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);}
+.rank-pip.rank-3{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.35);}
+
+.vote-summary{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+.vote-chip{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+.vote-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.vote-dot.first{background:var(--accent);}
+.vote-dot.second{background:rgba(255,255,255,0.4);}
+
+/* ADD DESTINATION */
+.add-dest{border:1px dashed rgba(255,255,255,0.1);padding:24px;text-align:center;cursor:pointer;transition:all 0.15s;background:transparent;}
+.add-dest:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.02);}
+.add-dest-icon{font-size:20px;color:rgba(255,255,255,0.15);margin-bottom:8px;}
+.add-dest-text{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+
+/* VERDICT */
+.verdict-banner{background:rgba(245,200,0,0.06);border:1px solid rgba(245,200,0,0.15);margin:3px;padding:20px 22px;display:flex;align-items:center;gap:18px;}
+.verdict-icon{font-size:28px;flex-shrink:0;}
+.verdict-title{font-size:16px;letter-spacing:-0.3px;margin-bottom:4px;}
+.verdict-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.5);line-height:1.6;}
+
+/* ── DESTINATION DETAIL VIEW ── */
+#detailView{display:none;padding:0 0 80px;}
+#detailView.show{display:block;}
+.detail-hero{padding:28px 28px 24px;border-bottom:1px solid var(--faint);}
+.detail-back{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:20px;display:inline-flex;align-items:center;gap:6px;transition:color 0.15s;}
+.detail-back:hover{color:var(--white);}
+.detail-name{font-size:clamp(32px,6vw,52px);letter-spacing:-1.5px;margin-bottom:4px;}
+.detail-region{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.detail-section{padding:22px 28px;border-bottom:1px solid var(--faint);}
+.detail-section-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.editorial{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.3px;line-height:1.8;color:rgba(255,255,255,0.65);max-width:640px;}
+.editorial strong{color:var(--white);font-weight:normal;}
+
+.monthly-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;}
+.month-card{background:var(--surface);padding:12px 8px;text-align:center;}
+.month-card.highlighted{background:rgba(245,200,0,0.08);border:1px solid rgba(245,200,0,0.15);}
+.mc-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.mc-bar{height:4px;border-radius:2px;margin:0 auto 8px;transition:width 0.3s;}
+.mc-size{font-size:11px;letter-spacing:-0.3px;margin-bottom:3px;}
+.mc-temp{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);}
+
+.spots-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
+.spot-detail-card{background:var(--surface);padding:14px 16px;}
+.sdc-name{font-size:13px;letter-spacing:-0.2px;margin-bottom:4px;}
+.sdc-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.sdc-note{font-family:'DM Mono',monospace;font-size:9px;line-height:1.6;color:rgba(255,255,255,0.45);}
+
+/* ADD DESTINATION MODAL */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;}
+.modal-backdrop.hidden{display:none;}
+.modal{background:var(--surface);max-width:480px;width:100%;padding:32px;border:1px solid rgba(255,255,255,0.1);}
+.modal-title{font-size:22px;letter-spacing:-0.5px;margin-bottom:6px;}
+.modal-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:28px;}
+.dest-picker{display:flex;flex-direction:column;gap:3px;max-height:360px;overflow-y:auto;}
+.dest-pick-item{padding:14px 16px;background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background 0.15s;border:1px solid transparent;}
+.dest-pick-item:hover{background:rgba(255,255,255,0.06);}
+.dest-pick-item.already{opacity:0.35;cursor:default;pointer-events:none;}
+.dpi-name{font-size:13px;letter-spacing:-0.2px;}
+.dpi-region{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.dpi-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;background:rgba(255,255,255,0.06);color:var(--muted);}
+.modal-close{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:20px;padding:0;}
+.modal-close:hover{color:var(--white);}
+
+@media(max-width:640px){
+  .bottom-nav{display:flex;}
+  .main-nav{display:none!important;}
+  body{padding-bottom:72px;}
+  header{padding:14px 18px;}
+  .trip-hero{padding:20px 18px 18px;}
+  .dash-grid{grid-template-columns:1fr;}
+  .monthly-grid{grid-template-columns:repeat(4,1fr);}
+  .spots-grid{grid-template-columns:1fr;}
+  .detail-section{padding:18px;}
+  .detail-hero{padding:20px 18px 18px;}
+  .landing-features{grid-template-columns:1fr;}
+  .dest-stats{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
+
 <header>
   <div><div class="logo">QUIVER</div><div class="logo-tag">Surf Guide</div></div>
   <nav class="main-nav">
@@ -68,31 +233,871 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
     <a href="workshop.html" class="nav-link">Workshop</a>
     <a href="trip.html" class="nav-link active">Trip</a>
   </nav>
+  <button class="profile-btn">Profile</button>
 </header>
-<div class="coming-soon">
-  <div class="cs-title">TRIP<br>PLANNER</div>
-  <div class="cs-sub">Coming soon</div>
-  <div class="cs-features">
-    <div class="cs-item">Find overlapping availability in your group</div>
-    <div class="cs-item">Vote on destinations — Indonesia, Morocco, Sri Lanka</div>
-    <div class="cs-item">Surf guide for your chosen destination</div>
-    <div class="cs-item">Share via link — no accounts needed</div>
+
+<!-- ADD DESTINATION MODAL -->
+<div class="modal-backdrop hidden" id="addDestModal">
+  <div class="modal">
+    <div class="modal-title">Add Destination</div>
+    <div class="modal-sub">Pick one to compare</div>
+    <div class="dest-picker" id="destPicker"></div>
+    <button class="modal-close" onclick="closeAddDest()">✕ Cancel</button>
   </div>
 </div>
 
+<!-- ── LANDING VIEW ── -->
+<div id="landingView">
+  <div class="landing-title">TRIP</div>
+  <div class="landing-sub">Plan a surf trip with your crew</div>
+  <div class="landing-actions">
+    <button class="btn-primary" onclick="startTrip()">Start a trip →</button>
+    <div class="join-wrap">
+      <input class="join-input" id="joinCodeInput" placeholder="Enter trip code" maxlength="6" oninput="this.value=this.value.toUpperCase()"/>
+      <button class="join-btn" onclick="joinTrip()">Join</button>
+    </div>
+  </div>
+  <div class="landing-features">
+    <div class="feature-item"><span class="feature-dash">—</span><span class="feature-text">Find overlapping availability in your group</span></div>
+    <div class="feature-item"><span class="feature-dash">—</span><span class="feature-text">Vote on destinations — Indo, Morocco, Sri Lanka</span></div>
+    <div class="feature-item"><span class="feature-dash">—</span><span class="feature-text">Surf guide for your chosen destination</span></div>
+    <div class="feature-item"><span class="feature-dash">—</span><span class="feature-text">Share via link — no accounts needed</span></div>
+  </div>
+</div>
+
+<!-- ── SETUP VIEW ── -->
+<div id="setupView">
+  <div class="setup-title">New Trip</div>
+  <div class="setup-sub">A few details to get started</div>
+
+  <div class="setup-step">
+    <label class="step-label">Trip name</label>
+    <input class="text-input" id="tripNameInput" placeholder="e.g. Indo 2025, Summer Morroco..." maxlength="40"/>
+  </div>
+
+  <div class="setup-step">
+    <label class="step-label">Your name</label>
+    <input class="text-input" id="yourNameInput" placeholder="e.g. Ciarán" maxlength="24"/>
+  </div>
+
+  <div class="setup-step">
+    <label class="step-label">When can you go? (pick all that work)</label>
+    <div class="month-grid" id="monthGrid"></div>
+  </div>
+
+  <button class="btn-primary" onclick="createTrip()" style="width:100%;margin-top:8px;">Create trip →</button>
+  <button class="btn-ghost" onclick="showLanding()" style="width:100%;margin-top:8px;">← Back</button>
+</div>
+
+<!-- ── DASHBOARD VIEW ── -->
+<div id="dashView">
+  <div class="trip-hero">
+    <div id="dashTripName" class="trip-name">—</div>
+    <div class="trip-meta">
+      <span id="dashMemberCount" class="mono" style="font-size:9px;letter-spacing:2px;text-transform:uppercase;"></span>
+      <span id="dashTripCode" class="trip-code" onclick="copyLink()" title="Copy link">— copy link</span>
+    </div>
+  </div>
+
+  <div id="verdictWrap" style="display:none;"></div>
+
+  <div class="dash-grid">
+    <!-- LEFT: WHO'S IN -->
+    <div class="dash-panel">
+      <div class="panel-label">
+        <span>Who's in</span>
+        <button class="btn-ghost" style="font-size:7px;padding:6px 10px;" onclick="showJoinPrompt()">+ Invite</button>
+      </div>
+      <div id="membersList"></div>
+      <div id="overlapBanner" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- RIGHT: DESTINATIONS -->
+    <div class="dash-panel">
+      <div class="panel-label">
+        <span>Destinations</span>
+        <span id="destCounter" style="font-size:7px;"></span>
+      </div>
+      <div class="dest-cards" id="destCards"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DETAIL VIEW ── -->
+<div id="detailView">
+  <div class="detail-hero">
+    <div class="detail-back" onclick="showDash()">← Back to trip</div>
+    <div id="detailName" class="detail-name">—</div>
+    <div id="detailRegion" class="detail-region">—</div>
+  </div>
+  <div id="detailBody"></div>
+</div>
+
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <a href="index.html" class="bottom-nav-item" id="bn-forecast">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/><circle cx="12" cy="12" r="5"/><path d="M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-    <span>Forecast</span>
+  <a href="index.html" class="bottom-nav-item">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l9-9 9 9M5 12v7a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-7"/></svg>
+    Forecast
   </a>
-  <a href="workshop.html" class="bottom-nav-item" id="bn-workshop">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-    <span>Workshop</span>
+  <a href="workshop.html" class="bottom-nav-item">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 001.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.5 1.5m-11-1.5l1.5 1.5m9-9h.008v.008H19V6zm-14 0h.008v.008H5V6z"/></svg>
+    Workshop
   </a>
-  <a href="trip.html" class="bottom-nav-item active" id="bn-trip">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-    <span>Trip</span>
+  <a href="trip.html" class="bottom-nav-item active">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+    Trip
   </a>
 </nav>
+
+<script>
+// ── DESTINATION DATA ─────────────────────────────────────────────────────────
+const DESTINATIONS = [
+  {
+    id:'bali',
+    name:'Bali',
+    region:'Indonesia',
+    country:'Indonesia',
+    character:'Punchy', // cruisy / punchy / mixed
+    swell:[2,2,2,2,3,4,5,5,5,4,3,2], // monthly reliability 1-5
+    size:['0.5–1.5m','0.5–1.5m','0.5–1.5m','0.5–1.5m','1–2m','1.5–2.5m','1.5–3m','1.5–3m','1.5–2.5m','1–2m','0.5–1.5m','0.5–1.5m'],
+    waterTemp:[28,28,28,29,28,27,26,26,26,27,27,28],
+    crowd:[3,3,3,3,3,4,5,5,4,3,3,3], // 1-5
+    bestMonths:[6,7,8,9],
+    editorial:`<strong>Bali</strong> is the benchmark against which most surf trips are measured, for better and worse. The waves are excellent — Uluwatu, Padang Padang, and Keramas deliver powerful, hollow surf that rewards experience. The infrastructure is world-class and cheap. The downside is you'll share it with half of surfing's travelling population in July and August.\n\nThe dry season runs May to October, with the SE trade winds grooming the southwest-facing reefs into textbook conditions. June, July and August are peak — reliable 1.5–2.5m swell with light offshore in the mornings. <strong>The wet season (November–March) is not without surf</strong> — the east coast lights up and the crowds thin dramatically.\n\nGo at dawn everywhere. By 10am at Ulu in peak season it's a circus.`,
+    spots:[
+      {name:'Uluwatu',type:'Reef break',note:'The iconic left. Needs 1.5m+ to show its best. Can get crowded but the cave paddle-out is an experience in itself.'},
+      {name:'Padang Padang',type:'Reef break',note:'Hollow, short, powerful. When it\'s on, it\'s world-class. Needs a solid 2m+ swell to open up.'},
+      {name:'Keramas',type:'Reef break',note:'East coast right-hander. Offshore in the wet season when everywhere else is onshore. Less crowded.'},
+      {name:'Kuta Beach',type:'Beach break',note:'Consistent and forgiving. Good for progression. Very busy but the waves are real.'}
+    ],
+    visa:'Visa on arrival — straightforward.',
+    flight:'~14–16 hrs from Ireland (usually via Dubai or Singapore)'
+  },
+  {
+    id:'mentawais',
+    name:'Mentawai Islands',
+    region:'Sumatra, Indonesia',
+    country:'Indonesia',
+    character:'Punchy',
+    swell:[3,3,3,3,4,5,5,5,5,4,3,3],
+    size:['1–2m','1–2m','1–2m','1–2m','1.5–2.5m','2–3.5m','2–3.5m','2–3.5m','2–3m','1.5–2.5m','1–2m','1–2m'],
+    waterTemp:[28,28,28,29,28,27,26,26,27,27,28,28],
+    crowd:[2,2,2,2,3,4,4,4,3,2,2,2],
+    bestMonths:[5,6,7,8,9],
+    editorial:`The Mentawais are as close as it gets to a perfect surf trip. Dozens of world-class reef breaks across a chain of remote islands, accessible mainly by liveaboard boat or a handful of surf camps on Sipora and Siberut.\n\n<strong>Macaronis, Lance's Right, Rifles</strong> — these are waves that define what a surf trip can be. The peak season May–September delivers consistent SW groundswell with light offshore trades. It's not cheap — liveaboards run €200–350/day — but the quality is unmatched.\n\nThis is not a beginner or intermediate destination. The reefs are shallow, the waves are powerful, and the nearest hospital is a long boat ride away. Come prepared.`,
+    spots:[
+      {name:'Macaronis',type:'Reef break',note:'Perfect left-hander. Long, fun, workable walls. The most accessible Mentawai wave for intermediate-advanced surfers.'},
+      {name:'Lance\'s Right',type:'Reef break',note:'Hollow, powerful right. One of the best waves in the world on a big day. Not for the faint-hearted.'},
+      {name:'Rifles',type:'Reef break',note:'Very hollow left. Short but intense. Breaks in relatively deep water so more forgiving than it looks.'},
+      {name:'E-Bay',type:'Reef break',note:'Mellow long left. Good on smaller days. Great warm-up wave.'}
+    ],
+    visa:'Visa on arrival.',
+    flight:'~16 hrs from Ireland to Padang, then boat or short flight'
+  },
+  {
+    id:'morocco',
+    name:'Morocco',
+    region:'North Africa',
+    country:'Morocco',
+    character:'Mixed',
+    swell:[4,4,4,3,2,1,1,1,2,3,4,5],
+    size:['1–2.5m','1–2.5m','1–2m','0.5–1.5m','0.5–1m','flat','flat','flat','0.5–1m','1–1.5m','1–2m','1.5–3m'],
+    waterTemp:[17,16,16,17,18,20,22,23,22,21,19,17],
+    crowd:[3,3,2,2,2,1,1,1,2,3,3,4],
+    bestMonths:[0,1,2,11],
+    editorial:`Morocco is Europe's closest world-class surf destination and one of the great underrated trips. The Atlantic coast from Agadir to Essaouira picks up the same North Atlantic groundswells that hit Ireland, but with warmer air, cheaper living, and better food.\n\n<strong>Taghazout</strong> is the hub — a small fishing village that's built a solid surf tourism infrastructure without losing all its character. Anchor Point, the famous right-hander just north of town, is Morocco's most consistent and celebrated wave. Hash Point and Panoramas offer more forgiving options nearby.\n\nPeak season is October–March. The summer is essentially flat. Come in November or February for the best balance of swell, warmth, and manageable crowds. The water is cooler than you might expect — bring a 3/2 at minimum in winter.`,
+    spots:[
+      {name:'Anchor Point',type:'Point break',note:'Long right-hander. Peels for hundreds of metres on a good day. Best at 1.5m+. Gets crowded but the wave handles a crowd better than most.'},
+      {name:'Hash Point',type:'Point break',note:'Right in Taghazout village. Smaller, more manageable. Good for intermediates. Fun on 1–1.5m days.'},
+      {name:'Panoramas',type:'Reef/point',note:'Between Hash and Anchor. Often overlooked. Can be very good.'},
+      {name:'Killer Point',type:'Point break',note:'Further north. Only works on big swells. Long, powerful, empty. Worth checking on a solid 2m+ day.'}
+    ],
+    visa:'No visa required for Irish/EU passports.',
+    flight:'~3.5 hrs from Dublin — easy and cheap'
+  },
+  {
+    id:'srilanka',
+    name:'Sri Lanka',
+    region:'South Asia',
+    country:'Sri Lanka',
+    character:'Cruisy',
+    swell:[4,4,3,2,1,1,1,2,3,3,4,4],
+    size:['1–2m','1–2m','0.5–1.5m','0.5–1m','flat','flat','flat','0.5–1m','1–1.5m','1–1.5m','1–2m','1–2m'],
+    waterTemp:[27,28,29,30,29,28,27,27,27,28,28,27],
+    crowd:[2,2,2,1,1,1,1,1,1,2,2,2],
+    bestMonths:[0,1,11],
+    editorial:`Sri Lanka is the quieter, warmer, more exotic alternative to Morocco for a Northern Hemisphere winter escape. The south and east coasts take turns firing — the south from November to April, the east from May to September — so there's almost always surf somewhere on the island.\n\n<strong>Arugam Bay</strong> on the east coast is the famous one, a long right point that's been pulling surfers for decades. The south — Weligama, Midigama, Hikkaduwa — is more accessible and better for a range of levels. Weligama in particular is one of the best learn-to-surf bays in the world.\n\nSri Lanka is excellent value. Guesthouses are cheap, the food is extraordinary, and the culture is genuinely welcoming. Come December–February for the south coast at its best.`,
+    spots:[
+      {name:'Arugam Bay',type:'Point break',note:'The famous east coast right. Long, mellow, fun. Best May–September. Very consistent.'},
+      {name:'Weligama',type:'Bay',note:'A big sheltered bay with gentle waves. South coast. Perfect for learning or relaxed longboarding.'},
+      {name:'Midigama',type:'Reef break',note:'A few different breaks close together. More technical than Weligama. Good for intermediates.'},
+      {name:'Hikkaduwa',type:'Reef break',note:'Busy beach town with a fun reef break. Consistent. Crowded in peak season.'}
+    ],
+    visa:'ETA required — easy online, €15 approx.',
+    flight:'~11 hrs from Ireland (usually via Middle East)'
+  },
+  {
+    id:'costarica',
+    name:'Costa Rica',
+    region:'Central America',
+    country:'Costa Rica',
+    character:'Mixed',
+    swell:[2,2,2,2,3,4,4,4,4,4,3,2],
+    size:['0.5–1.5m','0.5–1.5m','0.5–1.5m','0.5–1.5m','1–2m','1.5–2.5m','1.5–2.5m','1.5–2.5m','1.5–2.5m','1.5–2.5m','1–2m','0.5–1.5m'],
+    waterTemp:[27,27,27,28,28,27,26,26,26,26,27,27],
+    crowd:[3,3,2,2,2,2,2,2,2,2,3,3],
+    bestMonths:[5,6,7,8,9],
+    editorial:`Costa Rica punches above its weight for surf variety. The Pacific coast has beach breaks, point breaks, and reef breaks within easy driving distance of each other. Pavones — the longest left in the world on a good day — is a pilgrimage for any serious surfer.\n\nThe rainy season (May–November) is paradoxically the best surf season — consistent SW groundswell and the crowds are thinner because tourists avoid the rain. It rains hard in the afternoons but the mornings are generally clear and the surf is good.\n\n<strong>Nosara, Santa Teresa, and Dominical</strong> are the main hubs. Nosara has become well-known but still has a relaxed feel. Santa Teresa is busier but the waves are excellent. All are reachable on decent roads now, which wasn't always the case.`,
+    spots:[
+      {name:'Nosara / Playa Guiones',type:'Beach break',note:'Long consistent beach break. Handles crowds well. Great for all levels. Lots of infrastructure nearby.'},
+      {name:'Santa Teresa',type:'Beach break',note:'Powerful and consistent. Beach break with some reef sections. Very popular — go early.'},
+      {name:'Pavones',type:'Point break',note:'One of the longest lefts in the world on a good day. Remote. Only works on solid SW swell. Worth the effort.'},
+      {name:'Dominical',type:'Beach break',note:'Punchy and powerful beach break. Best for experienced surfers. Can get very heavy.'}
+    ],
+    visa:'No visa for Irish/EU passports up to 90 days.',
+    flight:'~11–12 hrs from Ireland (usually via US hub)'
+  },
+  {
+    id:'nicaragua',
+    name:'Nicaragua',
+    region:'Central America',
+    country:'Nicaragua',
+    character:'Punchy',
+    swell:[2,2,2,2,3,4,4,4,4,4,3,2],
+    size:['0.5–1.5m','0.5–1.5m','0.5–1.5m','0.5–1.5m','1–2m','1.5–2.5m','1.5–3m','1.5–3m','1.5–2.5m','1.5–2.5m','1–2m','0.5–1.5m'],
+    waterTemp:[28,28,28,29,28,27,27,27,27,27,27,28],
+    crowd:[1,1,1,1,1,2,2,2,2,2,1,1],
+    bestMonths:[5,6,7,8,9],
+    editorial:`Nicaragua is what Costa Rica was 20 years ago — uncrowded, affordable, and surprisingly good waves. The stretch of coast around Popoyo and Playa Maderas delivers consistent beach and reef breaks with a fraction of the crowds you'd find further north.\n\n<strong>Popoyo</strong> is the headline wave — a powerful right reef break that handles size well and has legitimate world-class days. The surrounding area has a handful of other breaks within easy reach. Infrastructure is basic but functional, which is largely the point.\n\nThe dry season is November–April (light offshore winds, smaller swell). The wet season May–October brings bigger SW groundswell and the best waves, along with afternoon rain. A 3mm wetsuit is enough year-round — the water is warm.`,
+    spots:[
+      {name:'Popoyo',type:'Reef break',note:'Punchy right-hander. The star of the show. Works best at 1.5m+. Can be very hollow and powerful on bigger swells.'},
+      {name:'Playa Maderas',type:'Beach break',note:'Fun, consistent beach break near San Juan del Sur. Good for all levels. More sheltered than Popoyo.'},
+      {name:'Playa Santana',type:'Beach break',note:'Less consistent than Maderas but can be very good. Fewer people.'},
+      {name:'Jiquilillo',type:'Beach break',note:'Remote northern beach. Long stretches of uncrowded break. Worth the drive on a good swell.'}
+    ],
+    visa:'Visa on arrival available for most EU passports — check current requirements.',
+    flight:'~13 hrs from Ireland (usually via US hub or Mexico City)'
+  },
+  {
+    id:'canaries',
+    name:'Canary Islands',
+    region:'Atlantic, Spain',
+    country:'Spain',
+    character:'Mixed',
+    swell:[4,4,3,2,1,1,1,1,2,3,4,5],
+    size:['1–2.5m','1–2.5m','1–2m','0.5–1m','flat','flat','flat','flat','0.5–1m','1–1.5m','1–2m','1.5–3m'],
+    waterTemp:[20,19,19,20,21,22,23,24,24,23,22,21],
+    crowd:[3,3,2,2,1,2,3,3,2,3,3,4],
+    bestMonths:[0,1,2,11],
+    editorial:`The Canaries are Europe's most reliable winter surf destination — close enough for a week's trip, far enough south to feel like a proper escape. Lanzarote and Fuerteventura are the surf islands of the group, both picking up clean North Atlantic groundswells with warm air temperatures and world-class reef breaks.\n\n<strong>Lanzarote's La Santa</strong> is famous for good reason — a long left-hand reef that produces some of the best waves in Europe on a solid NW swell. Fuerteventura's north coast is more varied with breaks for different conditions.\n\nThe combination of a 3–4 hour direct flight from Dublin, no visa requirements, decent accommodation options at every budget, and genuinely world-class waves on the right swell makes this an easy choice for a winter trip. Water temperature drops to around 19°C in February — a 3/2 is comfortable.`,
+    spots:[
+      {name:'La Santa (Lanzarote)',type:'Reef break',note:'The best wave in the Canaries on a good day. Long left with multiple sections. Best at 1.5m+. Gets crowded when it\'s on.'},
+      {name:'El Quemao (Lanzarote)',type:'Reef break',note:'Heavy, shallow left. Not for the faint-hearted. Tows in big swells. Expert only.'},
+      {name:'Playa de Famara (Lanzarote)',type:'Beach break',note:'Long exposed beach with consistent waves. Good for all levels. Often blown out but catches more swell than the south.'},
+      {name:'Punta de Pared (Fuerteventura)',type:'Reef break',note:'Classic right point. Consistent and fun. Good for intermediates and above.'}
+    ],
+    visa:'No visa — EU territory.',
+    flight:'~3.5–4 hrs from Dublin'
+  },
+  {
+    id:'azores',
+    name:'Azores',
+    region:'Mid-Atlantic, Portugal',
+    country:'Portugal',
+    character:'Punchy',
+    swell:[4,4,3,3,2,2,2,2,3,4,4,5],
+    size:['1.5–3m','1.5–3m','1–2.5m','1–2m','0.5–1.5m','0.5–1m','0.5–1m','0.5–1m','1–1.5m','1–2m','1–2.5m','1.5–3m'],
+    waterTemp:[17,16,16,16,17,19,21,22,22,21,19,18],
+    crowd:[1,1,1,1,1,1,1,2,2,2,1,1],
+    bestMonths:[0,1,2,9,10,11],
+    editorial:`The Azores sit in the middle of the North Atlantic swell factory, which means they get waves — a lot of waves, often very powerful ones. São Miguel and Faial are the most visited islands; Santa Maria and Flores have the most celebrated surf spots.\n\n<strong>Flores</strong> in particular has gained a reputation as one of the best big wave destinations in the Atlantic, with a WCT event held there in recent years. But the islands have plenty for regular-sized swells too — beach breaks, reef passes, and point-like setups across the island chain.\n\nThe Azores are not a cruise-control surf trip. The weather changes quickly, the water is cooler than you'd expect (16–22°C), and some spots require local knowledge to find. But the scenery is extraordinary, the islands are genuinely untouched, and on a good day the waves are exceptional. Best October–March.`,
+    spots:[
+      {name:'Santa Bárbara (São Miguel)',type:'Beach break',note:'The most consistent break on São Miguel. Long, powerful beach break. Open to all Atlantic swells.'},
+      {name:'Mosteiros (São Miguel)',type:'Reef break',note:'Good right-hand reef. Works on NW swell. Impressive volcanic backdrop.'},
+      {name:'Lajido (Flores)',type:'Reef break',note:'World-class when the swell aligns. Can be enormous. Expert surfers only on big days.'},
+      {name:'Santa Maria',type:'Various',note:'The sunniest island. Multiple breaks of different characters. Worth the extra effort to get there.'}
+    ],
+    visa:'No visa — Portuguese territory/EU.',
+    flight:'~2.5 hrs from Dublin — surprisingly close'
+  },
+  {
+    id:'hossegor',
+    name:'Hossegor',
+    region:'Landes, France',
+    country:'France',
+    character:'Punchy',
+    swell:[3,3,3,2,2,1,1,2,3,4,4,4],
+    size:['1–2m','1–2m','1–1.5m','0.5–1m','0.5–1m','0.5–1m','0.5–1m','0.5–1.5m','1–2m','1–2.5m','1–2.5m','1–2m'],
+    waterTemp:[13,12,12,13,15,18,20,21,20,18,16,14],
+    crowd:[2,2,2,1,2,3,5,5,5,4,3,2],
+    bestMonths:[9,10,11,0,1,2],
+    editorial:`Hossegor is one of the world's great beach breaks — and in September and October, when the summer crowds thin and the autumn groundswells start pushing through, it can be extraordinary. The sandbars shift constantly, producing an ever-changing lineup that rewards frequent exploration.\n\n<strong>La Gravière</strong> is the famous one — a heavy, hollow beach break that hosts the Quiksilver Pro France in autumn. But the whole stretch of coast from Capbreton to Seignosse has waves worth surfing.\n\nSummer (July–August) is flat-ish and absolutely packed. Avoid. The shoulder seasons — April–May and September–November — offer the best combination of swell, temperature, and manageable crowds. The water gets cold in winter (12–14°C) so a 4/3 is needed from November onwards.`,
+    spots:[
+      {name:'La Gravière',type:'Beach break',note:'The best bank in the area when it\'s on. Very hollow and powerful. Expert to advanced.'},
+      {name:'Les Culs Nus',type:'Beach break',note:'The main public beach. Multiple peaks. More options for different levels.'},
+      {name:'Seignosse / Les Bourdaines',type:'Beach break',note:'Slightly more sheltered than Hossegor proper. Can be good on strong NW swells.'},
+      {name:'Capbreton Harbour',type:'Various',note:'The harbour wall creates a semi-protected peak that works in very big or very small conditions.'}
+    ],
+    visa:'No visa — France/EU.',
+    flight:'~2 hrs to Biarritz from Dublin. Easy drive from there.'
+  },
+  {
+    id:'portugal',
+    name:'Portugal',
+    region:'Iberian Peninsula',
+    country:'Portugal',
+    character:'Mixed',
+    swell:[4,4,3,3,2,1,1,2,3,4,4,4],
+    size:['1–2.5m','1–2.5m','1–2m','0.5–1.5m','0.5–1m','flat','flat','0.5–1m','1–1.5m','1–2m','1–2.5m','1.5–3m'],
+    waterTemp:[16,15,15,15,16,18,20,21,20,19,17,16],
+    crowd:[2,2,2,2,2,2,4,4,3,3,2,2],
+    bestMonths:[0,1,2,9,10,11],
+    editorial:`Portugal has quietly become one of Europe's best all-round surf destinations. Ericeira — Europe's only World Surfing Reserve — sits an hour north of Lisbon and delivers consistent quality reef and point breaks for all levels. The Alentejo coast is rawer and more exposed. Peniche, Sagres, and the Algarve's western tip offer big wave options and consistency through the winter months.\n\n<strong>Ribeira d'Ilhas</strong> in Ericeira is the most celebrated wave — a right-hand point that hosts WSL events and produces long, workable walls. Coxos, a few kilometres north, is world-class on its day but not for beginners.\n\nPortugal is also excellent value compared to France or the Canaries. Lisbon is one of Europe's great cities. The food and wine are exceptional. October is the sweet spot — autumn swells, warm air, half the summer crowd.`,
+    spots:[
+      {name:'Ribeira d\'Ilhas',type:'Point break',note:'The jewel of Ericeira. Long right-hander with multiple sections. All levels on smaller days, advanced on bigger swells.'},
+      {name:'Coxos',type:'Reef break',note:'World-class right reef. Hollow, powerful, shallow. Expert only. One of Europe\'s best waves on its day.'},
+      {name:'Supertubos (Peniche)',type:'Beach break',note:'The Portuguese Pipeline. Ultra-hollow, powerful beach break. Often compared to Puerto Escondido. Expert only in good conditions.'},
+      {name:'Sagres area',type:'Various',note:'The SW tip of Europe. Multiple exposed breaks that catch any swell going. Good for swell-hunting in light months.'}
+    ],
+    visa:'No visa — EU.',
+    flight:'~2.5 hrs to Lisbon from Dublin'
+  },
+  {
+    id:'maldives',
+    name:'Maldives',
+    region:'Indian Ocean',
+    country:'Maldives',
+    character:'Punchy',
+    swell:[2,2,2,3,4,5,5,5,4,3,2,2],
+    size:['0.5–1m','0.5–1m','0.5–1.5m','1–1.5m','1.5–2.5m','2–3m','2–3m','2–3m','1.5–2.5m','1–2m','0.5–1.5m','0.5–1m'],
+    waterTemp:[29,29,29,30,30,29,29,28,29,29,29,29],
+    crowd:[2,2,2,2,3,4,4,4,3,2,2,2],
+    bestMonths:[5,6,7,8],
+    editorial:`The Maldives is a once-in-a-trip destination — expensive, remote, but genuinely special. The atolls pick up Indian Ocean groundswells from May to October, producing clean, consistent reef breaks in warm, crystal-clear water.\n\n<strong>Pasta Point, Sultans, Honky's</strong> — these are perfect waves. Long, peeling, warm. The liveaboard model is the standard approach — you move between atolls chasing the best surf and spend nights anchored in lagoons that look like they were designed as screensavers.\n\nThe cost is real. A week on a decent liveaboard runs €2,000–4,000+ depending on the vessel. Land-based options exist around North Malé Atoll but the proximity to good surf is limited. Go when you can afford to go properly — it's worth it once.`,
+    spots:[
+      {name:'Pasta Point',type:'Reef break',note:'The most famous wave. Long left-hander with multiple sections. Very consistent during the SW season.'},
+      {name:'Sultans',type:'Reef break',note:'Fun right-hander. More forgiving than Pasta. Good for intermediate to advanced surfers.'},
+      {name:'Honky\'s',type:'Reef break',note:'Heavy, hollow left. Expert only. One of the best waves in the atolls on a big swell.'},
+      {name:'Jailbreaks',type:'Reef break',note:'Consistent right. Further from the main hub so less crowded. Worth seeking out.'}
+    ],
+    visa:'Visa on arrival — free.',
+    flight:'~11 hrs from Ireland (usually via Middle East)'
+  },
+  {
+    id:'garajagan',
+    name:'G-Land',
+    region:'Java, Indonesia',
+    country:'Indonesia',
+    character:'Punchy',
+    swell:[2,2,3,3,4,5,5,5,5,4,3,2],
+    size:['0.5–1.5m','0.5–1.5m','1–2m','1–2m','1.5–3m','2–4m','2–4m','2–4m','1.5–3m','1–2m','0.5–1.5m','0.5–1.5m'],
+    waterTemp:[28,28,28,29,28,27,26,26,27,27,27,28],
+    crowd:[1,1,1,1,2,3,3,3,2,2,1,1],
+    bestMonths:[5,6,7,8],
+    editorial:`Grajagan — G-Land — is one of the great pilgrimage waves of surfing. A left-hand point break in a remote national park on the southeastern tip of Java, it doesn't give itself up easily, which is part of the appeal. You access it by a short boat ride through a tiger reserve. There are a handful of surf camps within the national park — no roads in, no day-trippers, just the wave.\n\nAt its best, <strong>G-Land is a multi-kilometre left</strong> that peels through three named sections — Kongs, Moneytrees, and Speed Reef — each with different character. It needs size to work properly and it's not a wave for the inexperienced. But when a solid 2m+ Indian Ocean swell arrives in June or July, it's one of the best experiences in surfing.\n\nBook the camps well in advance for peak season. The accommodation is basic, the mosquitoes are significant, and the surf is extraordinary.`,
+    spots:[
+      {name:'Kongs',type:'Reef break',note:'The first section. Longest and most workable. Good intro to the wave.'},
+      {name:'Moneytrees',type:'Reef break',note:'The centrepiece. Long, powerful, hollow on bigger swells. The classic G-Land section.'},
+      {name:'Speed Reef',type:'Reef break',note:'The end section. Very fast and hollow. Needs a big swell to connect with Moneytrees.'},
+      {name:'Tiger Tracks',type:'Reef break',note:'An inside section that can produce its own quality waves on certain swells.'}
+    ],
+    visa:'Visa on arrival in Indonesia.',
+    flight:'~15 hrs to Surabaya from Ireland'
+  }
+];
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let state = {
+  tripId: null,
+  myName: null,
+  trip: null // {name, members:[{name,months[]}], destinations:[id,...], votes:{memberName:{destId:rank}}}
+};
+
+// ── STORAGE ──────────────────────────────────────────────────────────────────
+function storageKey(id){ return 'quiver_trip_' + id; }
+function saveTrip(trip){ localStorage.setItem(storageKey(trip.id), JSON.stringify(trip)); }
+function loadTrip(id){ const d=localStorage.getItem(storageKey(id)); return d?JSON.parse(d):null; }
+function genId(){ return Math.random().toString(36).substr(2,6).toUpperCase(); }
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+window.onload = function(){
+  buildMonthGrid();
+  // Check URL for trip code
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('trip');
+  if(code){
+    const trip = loadTrip(code);
+    if(trip){
+      // Ask who they are
+      state.tripId = code;
+      state.trip = trip;
+      promptJoinExisting(trip);
+      return;
+    }
+  }
+  showLanding();
+};
+
+function buildMonthGrid(){
+  const g = document.getElementById('monthGrid');
+  MONTHS.forEach(function(m,i){
+    const btn = document.createElement('button');
+    btn.className = 'month-btn';
+    btn.textContent = m;
+    btn.dataset.idx = i;
+    btn.onclick = function(){ btn.classList.toggle('selected'); };
+    g.appendChild(btn);
+  });
+}
+
+// ── VIEWS ────────────────────────────────────────────────────────────────────
+function showLanding(){
+  document.getElementById('landingView').classList.remove('hidden');
+  document.getElementById('setupView').classList.remove('show');
+  document.getElementById('dashView').classList.remove('show');
+  document.getElementById('detailView').classList.remove('show');
+}
+function showSetup(){
+  document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('setupView').classList.add('show');
+  document.getElementById('dashView').classList.remove('show');
+  document.getElementById('detailView').classList.remove('show');
+}
+function showDash(){
+  document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('setupView').classList.remove('show');
+  document.getElementById('dashView').classList.add('show');
+  document.getElementById('detailView').classList.remove('show');
+  renderDash();
+}
+function showDetail(destId){
+  document.getElementById('dashView').classList.remove('show');
+  document.getElementById('detailView').classList.add('show');
+  renderDetail(destId);
+  window.scrollTo(0,0);
+}
+
+// ── LANDING ACTIONS ───────────────────────────────────────────────────────────
+function startTrip(){ showSetup(); }
+
+function joinTrip(){
+  const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
+  if(!code || code.length < 4){ alert('Enter a trip code'); return; }
+  const trip = loadTrip(code);
+  if(!trip){ alert('Trip not found. Check the code and try again.'); return; }
+  state.tripId = code;
+  state.trip = trip;
+  promptJoinExisting(trip);
+}
+
+function promptJoinExisting(trip){
+  const name = prompt('Welcome to "' + trip.name + '"! What\'s your name?');
+  if(!name || !name.trim()) return;
+  state.myName = name.trim();
+  // Check if already a member
+  const existing = trip.members.find(function(m){ return m.name.toLowerCase() === state.myName.toLowerCase(); });
+  if(!existing){
+    // Ask availability
+    showSetupForJoin(trip);
+  } else {
+    showDash();
+  }
+}
+
+function showSetupForJoin(trip){
+  document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('setupView').classList.add('show');
+  document.getElementById('tripNameInput').value = trip.name;
+  document.getElementById('tripNameInput').disabled = true;
+  document.getElementById('yourNameInput').value = state.myName;
+  document.getElementById('yourNameInput').disabled = true;
+}
+
+// ── CREATE TRIP ───────────────────────────────────────────────────────────────
+function createTrip(){
+  const tripName = document.getElementById('tripNameInput').value.trim();
+  const yourName = document.getElementById('yourNameInput').value.trim();
+  if(!tripName){ alert('Give the trip a name'); return; }
+  if(!yourName){ alert('Enter your name'); return; }
+
+  const selectedMonths = Array.from(document.querySelectorAll('.month-btn.selected')).map(function(b){ return parseInt(b.dataset.idx); });
+  if(selectedMonths.length === 0){ alert('Pick at least one month you can go'); return; }
+
+  state.myName = yourName;
+
+  if(state.trip && state.tripId){
+    // Joining existing — add member
+    const trip = state.trip;
+    if(!trip.members.find(function(m){ return m.name.toLowerCase() === yourName.toLowerCase(); })){
+      trip.members.push({name:yourName, months:selectedMonths});
+    }
+    saveTrip(trip);
+    state.trip = trip;
+    showDash();
+    return;
+  }
+
+  // Create new trip
+  const id = genId();
+  const trip = {
+    id: id,
+    name: tripName,
+    members: [{name: yourName, months: selectedMonths}],
+    destinations: [],
+    votes: {}
+  };
+  saveTrip(trip);
+  state.tripId = id;
+  state.trip = trip;
+  showDash();
+}
+
+// ── COPY LINK ─────────────────────────────────────────────────────────────────
+function copyLink(){
+  const url = window.location.origin + window.location.pathname + '?trip=' + state.tripId;
+  navigator.clipboard.writeText(url).then(function(){
+    const el = document.getElementById('dashTripCode');
+    const orig = el.textContent;
+    el.textContent = 'link copied ✓';
+    setTimeout(function(){ el.textContent = orig; }, 2000);
+  }).catch(function(){
+    prompt('Share this link:', window.location.origin + window.location.pathname + '?trip=' + state.tripId);
+  });
+}
+
+function showJoinPrompt(){
+  const url = window.location.origin + window.location.pathname + '?trip=' + state.tripId;
+  prompt('Share this link to invite your crew:', url);
+}
+
+// ── OVERLAP CALC ──────────────────────────────────────────────────────────────
+function calcOverlap(members){
+  if(members.length < 2) return null;
+  let overlap = members[0].months.slice();
+  for(let i=1;i<members.length;i++){
+    overlap = overlap.filter(function(m){ return members[i].months.includes(m); });
+  }
+  return overlap.length > 0 ? overlap : null;
+}
+
+// ── MATCH SCORE ───────────────────────────────────────────────────────────────
+function matchScore(dest, overlapMonths){
+  if(!overlapMonths || overlapMonths.length === 0) return 0;
+  // Average swell reliability in overlap months
+  const swellAvg = overlapMonths.reduce(function(s,m){ return s+dest.swell[m]; },0) / overlapMonths.length;
+  const score = Math.round((swellAvg / 5) * 100);
+  return Math.min(score, 99);
+}
+
+// ── RENDER DASHBOARD ──────────────────────────────────────────────────────────
+function renderDash(){
+  const trip = state.trip;
+  document.getElementById('dashTripName').textContent = trip.name;
+  document.getElementById('dashTripCode').textContent = state.tripId + ' — copy link';
+  document.getElementById('dashMemberCount').textContent = trip.members.length + ' member' + (trip.members.length !== 1 ? 's' : '');
+
+  // Members
+  const membersList = document.getElementById('membersList');
+  membersList.innerHTML = trip.members.map(function(m){
+    const isMe = m.name === state.myName;
+    const mNames = m.months.map(function(i){ return MONTHS[i]; }).join(', ');
+    return '<div class="member-row">'
+      +'<div><div class="member-name">'+m.name+(isMe?'<span class="member-you">you</span>':'')+'</div>'
+      +'<div class="member-months">'+mNames+'</div></div>'
+      +'</div>';
+  }).join('');
+
+  // Overlap
+  const overlap = calcOverlap(trip.members);
+  const overlapEl = document.getElementById('overlapBanner');
+  if(overlap && trip.members.length >= 2){
+    const overlapNames = overlap.map(function(i){ return MONTHS[i]; }).join(', ');
+    overlapEl.innerHTML = '<div class="overlap-banner">'
+      +'<div class="overlap-icon">◈</div>'
+      +'<div class="overlap-text">Everyone free in <span class="overlap-months">'+overlapNames+'</span>. '+overlap.length+' month'+( overlap.length!==1?'s':'')+' overlap.</div>'
+      +'</div>';
+  } else if(trip.members.length < 2){
+    overlapEl.innerHTML = '<div class="overlap-banner" style="opacity:0.4;">'
+      +'<div class="overlap-icon">◈</div>'
+      +'<div class="overlap-text">Invite your crew to find overlapping availability.</div>'
+      +'</div>';
+  } else {
+    overlapEl.innerHTML = '<div class="overlap-banner" style="border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.04);">'
+      +'<div class="overlap-icon" style="color:var(--poor);">◈</div>'
+      +'<div class="overlap-text" style="color:rgba(255,255,255,0.5);">No overlapping months yet. Someone may need to flex.</div>'
+      +'</div>';
+  }
+
+  // Destinations
+  renderDestCards(overlap);
+
+  // Verdict
+  renderVerdict(overlap);
+}
+
+function renderDestCards(overlap){
+  const trip = state.trip;
+  const container = document.getElementById('destCards');
+  document.getElementById('destCounter').textContent = trip.destinations.length + '/4';
+
+  let html = '';
+  trip.destinations.forEach(function(destId){
+    const dest = DESTINATIONS.find(function(d){ return d.id === destId; });
+    if(!dest) return;
+    html += renderDestCard(dest, overlap, trip);
+  });
+
+  if(trip.destinations.length < 4){
+    html += '<div class="add-dest" onclick="openAddDest()">'
+      +'<div class="add-dest-icon">+</div>'
+      +'<div class="add-dest-text">Add a destination to compare</div>'
+      +'</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function swellClass(val){ return 'swell-'+Math.max(1,Math.min(5,Math.round(val))); }
+
+function renderDestCard(dest, overlap, trip){
+  const score = matchScore(dest, overlap);
+  const overlapMonths = overlap || [];
+
+  // Swell calendar
+  const calBars = dest.swell.map(function(v,i){
+    const isOverlap = overlapMonths.includes(i);
+    return '<div class="swell-month '+swellClass(v)+'" style="'+(isOverlap?'outline:1px solid rgba(245,200,0,0.4);':'')+'" title="'+MONTHS[i]+'"></div>';
+  }).join('');
+  const calLabels = MONTHS.map(function(m,i){
+    const isOverlap = overlapMonths.includes(i);
+    return '<div class="scl'+(isOverlap?' highlighted':'')+'">'+m.charAt(0)+'</div>';
+  }).join('');
+
+  // Best month for overlap
+  let bestOverlapSwell = 0, bestOverlapSize = '';
+  if(overlapMonths.length > 0){
+    const best = overlapMonths.reduce(function(a,b){ return dest.swell[a]>=dest.swell[b]?a:b; });
+    bestOverlapSwell = dest.swell[best];
+    bestOverlapSize = dest.size[best];
+  }
+
+  // Water temp in overlap
+  const avgTemp = overlapMonths.length > 0
+    ? Math.round(overlapMonths.reduce(function(s,m){ return s+dest.waterTemp[m]; },0) / overlapMonths.length)
+    : dest.waterTemp[5];
+
+  // Crowd in overlap
+  const avgCrowd = overlapMonths.length > 0
+    ? overlapMonths.reduce(function(s,m){ return s+dest.crowd[m]; },0) / overlapMonths.length
+    : 3;
+  const crowdLabel = avgCrowd <= 1.5 ? 'Empty' : avgCrowd <= 2.5 ? 'Quiet' : avgCrowd <= 3.5 ? 'Moderate' : avgCrowd <= 4 ? 'Busy' : 'Packed';
+
+  // My current ranking
+  const myVotes = trip.votes[state.myName] || {};
+  const myRank = myVotes[dest.id] || 0;
+
+  // Other members' votes
+  const otherVoteSummary = trip.members.filter(function(m){ return m.name !== state.myName; }).map(function(m){
+    const rank = (trip.votes[m.name] || {})[dest.id] || 0;
+    return '<div class="vote-chip"><div class="vote-dot'+(rank===1?' first':rank===2?' second':'')+'"></div>'+m.name+(rank?(' #'+rank):'')+'</div>';
+  }).join('');
+
+  const charTag = dest.character === 'Punchy'
+    ? '<span class="dest-tag punchy">Punchy</span>'
+    : dest.character === 'Cruisy'
+    ? '<span class="dest-tag cruisy">Cruisy</span>'
+    : '<span class="dest-tag">Mixed</span>';
+
+  return '<div class="dest-card" onclick="showDetail(\''+dest.id+'\')">'
+    +'<div class="dest-card-inner">'
+    +'<div class="dest-header">'
+    +'<div><div class="dest-name">'+dest.name+'</div><div class="dest-region">'+dest.region+'</div></div>'
+    +'<div class="dest-match"><div class="match-score">'+score+'%</div><div class="match-label">match</div></div>'
+    +'</div>'
+    +'<div class="swell-cal-labels">'+calLabels+'</div>'
+    +'<div class="swell-calendar">'+calBars+'</div>'
+    +'<div class="dest-stats">'
+    +'<div class="dest-stat"><div class="stat-val">'+bestOverlapSize+'</div><div class="stat-key">Wave size</div></div>'
+    +'<div class="dest-stat"><div class="stat-val">'+avgTemp+'°C</div><div class="stat-key">Water temp</div></div>'
+    +'<div class="dest-stat"><div class="stat-val">'+crowdLabel+'</div><div class="stat-key">Crowds</div></div>'
+    +'<div class="dest-stat"><div class="stat-val">'+dest.flight.split('~')[1].split(' ')[0]+' hrs'+'</div><div class="stat-key">Flight</div></div>'
+    +'</div>'
+    +'<div class="dest-footer" onclick="event.stopPropagation();">'
+    +'<div class="dest-tags">'+charTag+'<span class="dest-tag">'+dest.country+'</span></div>'
+    +'<div>'
+    +'<div class="rankings-row" title="Your ranking">'
+    +[1,2,3].map(function(r){
+      return '<div class="rank-pip'+(myRank===r?' rank-'+r:'')+'" onclick="setRank(\''+dest.id+'\','+r+',event)" title="Rank #'+r+'">'+r+'</div>';
+    }).join('')
+    +'</div>'
+    +(otherVoteSummary ? '<div class="vote-summary">'+otherVoteSummary+'</div>' : '')
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>';
+}
+
+function setRank(destId, rank, e){
+  if(e) e.stopPropagation();
+  if(!state.trip || !state.myName) return;
+  if(!state.trip.votes[state.myName]) state.trip.votes[state.myName] = {};
+  // Toggle off if already that rank
+  if(state.trip.votes[state.myName][destId] === rank){
+    delete state.trip.votes[state.myName][destId];
+  } else {
+    // Remove this rank from other destinations
+    Object.keys(state.trip.votes[state.myName]).forEach(function(id){
+      if(state.trip.votes[state.myName][id] === rank) delete state.trip.votes[state.myName][id];
+    });
+    state.trip.votes[state.myName][destId] = rank;
+  }
+  saveTrip(state.trip);
+  const overlap = calcOverlap(state.trip.members);
+  renderDestCards(overlap);
+  renderVerdict(overlap);
+}
+
+function renderVerdict(overlap){
+  const trip = state.trip;
+  const wrap = document.getElementById('verdictWrap');
+  if(trip.destinations.length < 2){ wrap.style.display='none'; return; }
+
+  // Count first-place votes per destination
+  const firstVotes = {};
+  trip.destinations.forEach(function(id){ firstVotes[id] = 0; });
+  const allVoters = trip.members.map(function(m){ return trip.votes[m.name] || {}; });
+  let totalVoters = 0;
+  allVoters.forEach(function(votes){
+    const hasVote = Object.keys(votes).length > 0;
+    if(!hasVote) return;
+    totalVoters++;
+    Object.keys(votes).forEach(function(id){
+      if(votes[id] === 1 && firstVotes[id] !== undefined) firstVotes[id]++;
+    });
+  });
+
+  if(totalVoters === 0){ wrap.style.display='none'; return; }
+
+  const topId = Object.keys(firstVotes).sort(function(a,b){ return firstVotes[b]-firstVotes[a]; })[0];
+  const topDest = DESTINATIONS.find(function(d){ return d.id === topId; });
+  const topCount = firstVotes[topId];
+  if(!topDest || topCount === 0){ wrap.style.display='none'; return; }
+
+  wrap.style.display = 'block';
+  wrap.innerHTML = '<div class="verdict-banner">'
+    +'<div class="verdict-icon">✈</div>'
+    +'<div>'
+    +'<div class="verdict-title">'+topDest.name+' is leading</div>'
+    +'<div class="verdict-sub">'+topCount+' of '+trip.members.length+' ranked it first'
+    +(overlap && overlap.length > 0 ? ' · Best swell in '+overlap.map(function(i){return MONTHS[i];}).join(', ') : '')
+    +'</div>'
+    +'</div>'
+    +'</div>';
+}
+
+// ── ADD DESTINATION ───────────────────────────────────────────────────────────
+function openAddDest(){
+  const trip = state.trip;
+  const picker = document.getElementById('destPicker');
+  const overlap = calcOverlap(trip.members);
+
+  // Sort by match score
+  const sorted = DESTINATIONS.slice().sort(function(a,b){
+    return matchScore(b, overlap) - matchScore(a, overlap);
+  });
+
+  picker.innerHTML = sorted.map(function(dest){
+    const already = trip.destinations.includes(dest.id);
+    const score = matchScore(dest, overlap);
+    return '<div class="dest-pick-item'+(already?' already':'')+'" onclick="addDest(\''+dest.id+'\')">'
+      +'<div><div class="dpi-name">'+dest.name+'</div><div class="dpi-region">'+dest.region+'</div></div>'
+      +'<div style="display:flex;gap:6px;align-items:center;">'
+      +(already ? '<span class="dpi-tag">added</span>' : '<span class="dpi-tag">'+score+'% match</span>')
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  document.getElementById('addDestModal').classList.remove('hidden');
+}
+
+function closeAddDest(){
+  document.getElementById('addDestModal').classList.add('hidden');
+}
+
+function addDest(destId){
+  if(state.trip.destinations.length >= 4) return;
+  if(state.trip.destinations.includes(destId)) return;
+  state.trip.destinations.push(destId);
+  saveTrip(state.trip);
+  closeAddDest();
+  const overlap = calcOverlap(state.trip.members);
+  renderDestCards(overlap);
+  renderVerdict(overlap);
+}
+
+// ── DETAIL VIEW ───────────────────────────────────────────────────────────────
+function renderDetail(destId){
+  const dest = DESTINATIONS.find(function(d){ return d.id === destId; });
+  if(!dest) return;
+  document.getElementById('detailName').textContent = dest.name;
+  document.getElementById('detailRegion').textContent = dest.region;
+
+  const overlap = calcOverlap(state.trip ? state.trip.members : []);
+
+  // Monthly breakdown
+  const monthlyCards = MONTHS.map(function(m,i){
+    const rel = dest.swell[i];
+    const isOverlap = overlap && overlap.includes(i);
+    const barW = Math.round((rel/5)*100);
+    const barCol = rel>=4?'rgba(100,180,255,0.9)':rel>=3?'rgba(100,180,255,0.6)':rel>=2?'rgba(100,180,255,0.3)':'rgba(255,255,255,0.1)';
+    return '<div class="month-card'+(isOverlap?' highlighted':'')+'">'
+      +'<div class="mc-name">'+m+'</div>'
+      +'<div class="mc-bar" style="width:'+barW+'%;background:'+barCol+';"></div>'
+      +'<div class="mc-size" style="font-size:10px;font-family:\'DM Mono\',monospace;color:rgba(255,255,255,0.6);">'+dest.size[i]+'</div>'
+      +'<div class="mc-temp">'+dest.waterTemp[i]+'°C</div>'
+      +'</div>';
+  }).join('');
+
+  // Spots
+  const spotCards = dest.spots.map(function(s){
+    return '<div class="spot-detail-card">'
+      +'<div class="sdc-name">'+s.name+'</div>'
+      +'<div class="sdc-type">'+s.type+'</div>'
+      +'<div class="sdc-note">'+s.note+'</div>'
+      +'</div>';
+  }).join('');
+
+  // Editorial paragraphs
+  const editorialHTML = dest.editorial.split('\n\n').map(function(p){
+    return '<p style="margin-bottom:14px;">'+p+'</p>';
+  }).join('');
+
+  document.getElementById('detailBody').innerHTML =
+    '<div class="detail-section">'
+    +'<div class="detail-section-title">About</div>'
+    +'<div class="editorial">'+editorialHTML+'</div>'
+    +'</div>'
+
+    +'<div class="detail-section">'
+    +'<div class="detail-section-title">Month by month'+(overlap&&overlap.length>0?' · <span style="color:var(--accent);font-size:7px;">highlighted = your window</span>':'')+'</div>'
+    +'<div class="monthly-grid">'+monthlyCards+'</div>'
+    +'</div>'
+
+    +'<div class="detail-section">'
+    +'<div class="detail-section-title">Key spots</div>'
+    +'<div class="spots-grid">'+spotCards+'</div>'
+    +'</div>'
+
+    +'<div class="detail-section">'
+    +'<div class="detail-section-title">Getting there</div>'
+    +'<div class="editorial">'
+    +'<p style="margin-bottom:10px;"><strong>Flight:</strong> '+dest.flight+'</p>'
+    +'<p><strong>Visa:</strong> '+dest.visa+'</p>'
+    +'</div>'
+    +'</div>';
+}
+</script>
 </body>
 </html>

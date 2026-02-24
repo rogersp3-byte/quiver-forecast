@@ -1159,7 +1159,7 @@ function buildTideCards(tidePoints){
   const eventsJson=encodeURIComponent(JSON.stringify(allEvents));
   const cardTsJson=encodeURIComponent(JSON.stringify(events.map(function(e){return e.ts;})));
   return'<div class="tide-block">'
-    +'<div class="tide-simple-grid">'+cards+'</div>'
+    +'<div class="tide-simple-grid" style="grid-template-columns:repeat('+events.length+',1fr);">'+cards+'</div>'
     +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'" data-cardts="'+cardTsJson+'"></canvas>'
     +'</div>';
 }

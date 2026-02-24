@@ -1215,12 +1215,17 @@ function drawTideGraph(canvasId){
   const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
   const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+1);
 
-  // x for each curve event — card events use DOM positions, extras extrapolate
+  // Map first/last card centres to canvas edges so curve runs full width
+  // Inner cards keep their DOM-measured centres
+  const edgeCentres=cardCentres.slice();
+  edgeCentres[0]=0;
+  edgeCentres[nCards-1]=W;
+
   const tFirst=cardEvents[0].ts,tLast=cardEvents[nCards-1].ts,tRange=tLast-tFirst||1;
-  const xFirst=cardCentres[0],xLast=cardCentres[nCards-1];
+  const xFirst=edgeCentres[0],xLast=edgeCentres[nCards-1];
   function eventX(e){
     const idx=cardEvents.findIndex(function(c){return c.ts===e.ts;});
-    if(idx>=0)return cardCentres[idx];
+    if(idx>=0)return edgeCentres[idx];
     return xFirst+(e.ts-tFirst)/tRange*(xLast-xFirst);
   }
 
@@ -1228,7 +1233,7 @@ function drawTideGraph(canvasId){
   const hMin=Math.min.apply(null,allH)*0.75;
   const hMax=Math.max.apply(null,allH)*1.12;
   const hRange=hMax-hMin||1;
-  const PAD={t:18,b:22};
+  const PAD={t:26,b:28};
   const gH=H-PAD.t-PAD.b;
   function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
 
@@ -1296,21 +1301,33 @@ function drawTideGraph(canvasId){
     }
   }
 
-  // Dots + labels pinned to real card centres
+  // Dots + labels (time + height) pinned to real card centres
   cardEvents.forEach(function(e,i){
     const x=cardCentres[i];
     const y=ty(e.height);
     const isHigh=e.type==='high';
     const col=isHigh?'rgba(100,180,255,0.95)':'rgba(180,210,255,0.6)';
+    // Dot
     ctx.beginPath();
     ctx.arc(x,y,3.5,0,Math.PI*2);
     ctx.fillStyle=col;
     ctx.fill();
-    const label=new Date(e.ts).toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
+    // Labels: height + time, stacked
+    const timeLbl=new Date(e.ts).toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
+    const htLbl=e.height.toFixed(1)+'m';
     ctx.fillStyle=col;
-    ctx.font='9px monospace';
     ctx.textAlign='center';
-    ctx.fillText(label,x,isHigh?y-8:Math.min(y+14,H-4));
+    if(isHigh){
+      ctx.font='bold 9px monospace';
+      ctx.fillText(htLbl,x,y-17);
+      ctx.font='9px monospace';
+      ctx.fillText(timeLbl,x,y-7);
+    } else {
+      ctx.font='9px monospace';
+      ctx.fillText(timeLbl,x,Math.min(y+11,H-13));
+      ctx.font='bold 9px monospace';
+      ctx.fillText(htLbl,x,Math.min(y+21,H-3));
+    }
   });
 }
 

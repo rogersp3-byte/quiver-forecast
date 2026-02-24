@@ -264,11 +264,12 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .sixteen-row .row-day{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px;}
 .sixteen-row.today-row .row-time{color:rgba(245,200,0,0.85);}
 .sixteen-row.today-row{background:rgba(245,200,0,0.03);}
-.sixteen-wrap{background:var(--surface);overflow-x:auto;}
+.sixteen-wrap{background:var(--surface);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.sixteen-table{min-width:420px;}
 
 /* MOBILE FORECAST CARDS */
 .forecast-cards{display:none;gap:4px;flex-direction:column;}
-.fc-card{background:var(--surface);padding:14px 16px;border-left:3px solid transparent;display:grid;grid-template-columns:80px 1fr 1fr;align-items:center;gap:12px;}
+.fc-card{background:var(--surface);padding:14px 16px;border-left:3px solid transparent;display:grid;grid-template-columns:72px 1fr 1fr 1fr;align-items:center;gap:8px;}
 .fc-card.great,.fc-card.good{border-left-color:var(--good);}
 .fc-card.fair{border-left-color:var(--fair);}
 .fc-card.poor{border-left-color:var(--poor);}
@@ -277,7 +278,12 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .fc-height.great,.fc-height.good{color:var(--good);}
 .fc-height.fair{color:var(--fair);}
 .fc-height.poor{color:var(--poor);}
-.fc-meta{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8;}
+.fc-col{font-family:'DM Mono',monospace;text-align:center;}
+.fc-col-arrow{font-size:14px;line-height:1;margin-bottom:2px;}
+.fc-col-dir{font-size:10px;letter-spacing:0.3px;color:rgba(255,255,255,0.8);}
+.fc-col-sub{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;}
+.fc-col.fc-wind .fc-col-dir{color:rgba(255,255,255,0.5);}
+.fc-col-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-bottom:3px;}
 
 /* 7 DAY — ENHANCED */
 .seven-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
@@ -1563,12 +1569,24 @@ async function load(){
       const sr2EffWind=sr2Offshore?Math.min(s.ws*0.4,s.ws):s.ws;
       const sr=rate(s.h,sr2EffWind,s.p,skill);
       const dir=s.swDir!=null?s.swDir:s.waveDir;
+      const slotH2=new Date(s.time).getHours();
+      const isDawn2=Math.abs(slotH2-Math.floor(sun.sunrise))<=1,isDusk2=Math.abs(slotH2-Math.floor(sun.sunset))<=1;
+      const isWork2=profile&&profile.work==='9to5'&&![0,6].includes(new Date(s.time).getDay())&&slotH2>=9&&slotH2<=17;
+      const tagText=isDawn2?'First Light':isDusk2?'Last Light':isWork2?'Work hours':'';
       return '<div class="fc-card '+sr+'">'
-        +'<div class="fc-time">'+fmtT(s.time)+'</div>'
+        +'<div class="fc-time">'+fmtT(s.time)+(tagText?'<br><span style="font-size:8px;opacity:0.5">'+tagText+'</span>':'')+'</div>'
         +'<div class="fc-height '+sr+'">'+displayH(s.h)+'<span style="font-size:10px;opacity:0.4">'+displayUnit()+'</span></div>'
-        +'<div class="fc-meta">'
-          +arrowChar(dir)+' '+windDir(dir)+' '+s.p.toFixed(0)+'s<br>'
-          +arrowChar(s.wd)+' '+windDir(s.wd)+' '+s.ws.toFixed(0)+'mph'
+        +'<div class="fc-col">'
+          +'<div class="fc-col-label">Swell</div>'
+          +'<div class="fc-col-arrow">'+arrowChar(dir)+'</div>'
+          +'<div class="fc-col-dir">'+windDir(dir)+'</div>'
+          +'<div class="fc-col-sub">'+(s.swP||s.p).toFixed(0)+'s</div>'
+        +'</div>'
+        +'<div class="fc-col fc-wind">'
+          +'<div class="fc-col-label">Wind</div>'
+          +'<div class="fc-col-arrow">'+arrowChar(s.wd)+'</div>'
+          +'<div class="fc-col-dir">'+windDir(s.wd)+'</div>'
+          +'<div class="fc-col-sub">'+s.ws.toFixed(0)+'mph</div>'
         +'</div>'
         +'</div>';
     }).join('');

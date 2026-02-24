@@ -389,14 +389,14 @@ header{
 .msg-animate{
   animation:msg-appear 0.32s cubic-bezier(0.22,1,0.36,1) forwards;
 }
-/* bubble text reveal — character by character feel via clip */
-@keyframes bub-reveal{
-  0%{opacity:0;transform:translateY(4px);}
-  100%{opacity:1;transform:translateY(0);}
+/* typewriter cursor */
+.typing-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:rgba(245,200,0,0.7);
+  margin-left:2px;vertical-align:text-bottom;
+  animation:cursor-blink 0.7s steps(1) infinite;
 }
-.msg.assistant .msg-bub{
-  animation:bub-reveal 0.28s cubic-bezier(0.22,1,0.36,1) 0.08s both;
-}
+@keyframes cursor-blink{0%,100%{opacity:1;}50%{opacity:0;}}
 </style>
 </head>
 <body>
@@ -730,18 +730,8 @@ async function sendMsg(){
   await fetchReply();
 }
 
-function getApiKey(){
-  let key = localStorage.getItem('quiver_api_key')||'';
-  if(!key){
-    key = prompt('Enter your Anthropic API key to use Core Lord:\n(starts with sk-ant-)');
-    if(key && key.startsWith('sk-')){
-      localStorage.setItem('quiver_api_key', key.trim());
-    } else {
-      return '';
-    }
-  }
-  return key.trim();
-}
+// ── API proxy — swap this URL after deploying your Cloudflare Worker ──
+const PROXY_URL = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev/chat';
 
 async function fetchReply(){
   const ws=getWS();
@@ -759,26 +749,16 @@ async function fetchReply(){
     msgsEl.scrollTop=msgsEl.scrollHeight;
   }
 
-  const apiKey = getApiKey();
-  if(!apiKey){
-    const tel=document.getElementById(tid);
-    if(tel) tel.outerHTML=buildMsgHTML('assistant','No API key set — refresh and try again.');
-    return;
-  }
-
   const btn=document.getElementById('sendBtn');
   const inp=document.getElementById('chatInput');
   if(btn)btn.disabled=true;
   if(inp)inp.disabled=true;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch(PROXY_URL,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true',
-        'x-api-key': getApiKey()
       },
       body:JSON.stringify({
         model:MODEL,
@@ -796,7 +776,7 @@ async function fetchReply(){
       const errMsg  = data.error?.message||'No message';
       console.error('[CoreLord] API error:', errType, errMsg);
       const userMsg = errType==='authentication_error'
-        ? 'API key missing or invalid — add your key to the fetch headers.'
+        ? 'Could not reach Core Lord — the proxy may be down.'
         : errType==='invalid_request_error'
         ? 'Bad request: '+errMsg
         : `API error (${res.status}): ${errMsg}`;
@@ -807,11 +787,20 @@ async function fetchReply(){
       return;
     }
 
-    const reply=data.content?.find(b=>b.type==='text')?.text||'No reply in response — check console.';
+    const rawReply=data.content?.find(b=>b.type==='text')?.text||'No reply in response — check console.';
+    const reply=rawReply;
     msgs.push({role:'assistant',content:reply});
 
     const tel=document.getElementById(tid);
-    if(tel) tel.outerHTML=buildMsgHTML('assistant',reply);
+    if(tel){
+      // Replace typing indicator with empty bubble, then stream words in
+      const msgId='m'+Date.now();
+      tel.outerHTML=`<div class="msg assistant msg-animate" id="${msgId}">
+        <div class="msg-lbl"><span class="lbl-pip"></span>Core Lord</div>
+        <div class="msg-bub"><p id="${msgId}-p"></p></div>
+      </div>`;
+      await typewriterReveal(msgId+'-p', reply, msgsEl);
+    }
   }catch(e){
     console.error('[CoreLord] fetch error:', e);
     const tel=document.getElementById(tid);
@@ -829,11 +818,58 @@ function esc(s){
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 function formatMsg(text){
-  // Convert double newlines to paragraph breaks, single newlines to <br>
-  return esc(text)
+  // Strip markdown formatting Core Lord sometimes uses
+  let t = text
+    // bold **text** or __text__
+    .replace(/\*\*(.+?)\*\*/g,'$1')
+    .replace(/__(.+?)__/g,'$1')
+    // italic *text* or _text_ (single, not part of **)
+    .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g,'$1')
+    .replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g,'$1')
+    // headings ## Heading → just the text
+    .replace(/^#{1,4}\s+/gm,'')
+    // bullet points — keep as line breaks, strip the dash/asterisk
+    .replace(/^[\*\-]\s+/gm,'');
+  // Paragraphs and line breaks
+  return esc(t)
     .replace(/\n\n/g,'</p><p style="margin-top:10px">')
     .replace(/\n/g,'<br>');
 }
+// ── TYPEWRITER REVEAL ──
+async function typewriterReveal(elId, text, scrollEl){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  // Add cursor
+  el.innerHTML='<span class="typing-cursor"></span>';
+  // Format the full text first, then stream it in word chunks
+  const formatted=formatMsg(text);
+  // Split into tokens: tags stay whole, text splits by word
+  const tokens=[];
+  let buf='',inTag=false;
+  for(const ch of formatted){
+    if(ch==='<'){inTag=true;buf+=ch;}
+    else if(ch==='>'){inTag=false;buf+=ch;tokens.push(buf);buf='';}
+    else if(inTag){buf+=ch;}
+    else if(ch===' '&&buf){tokens.push(buf+' ');buf='';}
+    else{buf+=ch;}
+  }
+  if(buf)tokens.push(buf);
+
+  let content='';
+  const cursor='<span class="typing-cursor"></span>';
+  // Batch tokens for speed — ~3 words per frame feels natural
+  const BATCH=3;
+  for(let i=0;i<tokens.length;i+=BATCH){
+    content+=tokens.slice(i,i+BATCH).join('');
+    el.innerHTML=content+cursor;
+    if(scrollEl)scrollEl.scrollTop=scrollEl.scrollHeight;
+    await new Promise(r=>setTimeout(r,28));
+  }
+  // Final — remove cursor
+  el.innerHTML=content;
+  if(scrollEl)scrollEl.scrollTop=scrollEl.scrollHeight;
+}
+
 function buildMsgHTML(role,text){
   const lbl=role==='user'
     ?'You'

@@ -353,8 +353,8 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* TIDE — unified container */
 .tide-block{background:var(--surface);margin-bottom:4px;}
-.tide-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;}
-.tide-simple-card{padding:16px 10px;display:grid;grid-template-rows:20px 16px 14px 32px 18px;align-items:center;justify-items:center;gap:0;text-align:center;background:var(--surface);}
+.tide-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+.tide-simple-card{padding:16px 10px;display:grid;grid-template-rows:20px 16px 14px 32px 18px;align-items:center;justify-items:center;gap:0;text-align:center;background:var(--surface);border-right:1px solid rgba(255,255,255,0.06);}
 .tide-simple-icon{height:20px;display:flex;align-items:center;justify-content:center;opacity:0.85;}
 .tide-simple-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);line-height:1;}
 .tide-simple-day{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);line-height:1;}
@@ -1171,97 +1171,100 @@ function drawTideGraph(canvasId){
   const allEvents=JSON.parse(decodeURIComponent(eventsRaw));
   if(!allEvents||allEvents.length<2)return;
 
-  // The 4 cards shown = past.slice(-1) + future.slice(0,3)
-  // We need the same subset that was used for cards, then extend the
-  // curve one step either side for natural entry/exit.
   const now=Date.now();
   const past=allEvents.filter(function(e){return e.ts<now;}).slice(-1);
   const future=allEvents.filter(function(e){return e.ts>=now;}).slice(0,3);
-  const cardEvents=past.concat(future); // exactly the 4 shown in cards
+  const cardEvents=past.concat(future);
   const nCards=cardEvents.length;
   if(nCards<2)return;
 
-  // For the curve we also grab one event before and after the card window
-  // so the line enters/exits smoothly rather than starting/stopping abruptly
-  const allSorted=allEvents.slice().sort(function(a,b){return a.ts-b.ts;});
-  const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
-  const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
-  const curveEvents=allSorted.slice(Math.max(0,firstIdx-1), lastIdx+2);
+  // ── Read actual card centre x-positions from DOM ─────────────────────────
+  // The grid is the previous sibling of the canvas inside .tide-block
+  const grid=canvas.previousElementSibling;
+  const canvasLeft=canvas.getBoundingClientRect().left;
+  const cardCentres=[];
+  if(grid){
+    grid.querySelectorAll('.tide-simple-card').forEach(function(card){
+      const r=card.getBoundingClientRect();
+      cardCentres.push((r.left-canvasLeft)+(r.width/2));
+    });
+  }
+  // Fallback if DOM read failed
+  while(cardCentres.length<nCards){
+    const i=cardCentres.length;
+    cardCentres.push((i+0.5)/nCards*(canvas.offsetWidth||400));
+  }
 
   const dpr=window.devicePixelRatio||1;
   const W=canvas.offsetWidth||canvas.parentElement.offsetWidth||400;
   const H=canvas.offsetHeight||110;
-  canvas.style.width=W+'px'; canvas.style.height=H+'px';
-  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  canvas.width=W*dpr;canvas.height=H*dpr;
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
 
-  // Card column centres: card i centre = (i+0.5)/nCards * W
-  // Map each cardEvent to its column centre x
-  function cardX(i){ return (i+0.5)/nCards*W; }
+  // One event before/after card window for smooth curve entry/exit
+  const allSorted=allEvents.slice().sort(function(a,b){return a.ts-b.ts;});
+  const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
+  const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
+  const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+2);
 
-  // For events outside the card window, extrapolate x linearly
-  const tFirst=cardEvents[0].ts, tLast=cardEvents[nCards-1].ts;
-  const tRange=tLast-tFirst||1;
-  const xFirst=cardX(0), xLast=cardX(nCards-1);
+  // x for each curve event — card events use DOM positions, extras extrapolate
+  const tFirst=cardEvents[0].ts,tLast=cardEvents[nCards-1].ts,tRange=tLast-tFirst||1;
+  const xFirst=cardCentres[0],xLast=cardCentres[nCards-1];
   function eventX(e){
     const idx=cardEvents.findIndex(function(c){return c.ts===e.ts;});
-    if(idx>=0) return cardX(idx);
-    // Outside card window — extrapolate
+    if(idx>=0)return cardCentres[idx];
     return xFirst+(e.ts-tFirst)/tRange*(xLast-xFirst);
   }
 
-  // Height range
   const allH=curveEvents.map(function(e){return e.height;});
-  const hMin=Math.min(...allH)*0.75;
-  const hMax=Math.max(...allH)*1.12;
+  const hMin=Math.min.apply(null,allH)*0.75;
+  const hMax=Math.max.apply(null,allH)*1.12;
   const hRange=hMax-hMin||1;
-
   const PAD={t:18,b:22};
   const gH=H-PAD.t-PAD.b;
-
   function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
 
-  // Build smooth cosine curve through curveEvents
+  // Cosine curve through curveEvents
   const pts=[];
   const STEPS=80;
   for(let i=0;i<curveEvents.length-1;i++){
-    const e0=curveEvents[i], e1=curveEvents[i+1];
-    const x0=eventX(e0), x1=eventX(e1);
+    const e0=curveEvents[i],e1=curveEvents[i+1];
+    const x0=eventX(e0),x1=eventX(e1);
     for(let s=0;s<=STEPS;s++){
       const frac=s/STEPS;
-      const x=x0+(x1-x0)*frac;
-      const h=e0.height+(e1.height-e0.height)*(0.5-0.5*Math.cos(frac*Math.PI));
-      pts.push({x:x,y:ty(h),ts:e0.ts+(e1.ts-e0.ts)*frac});
+      pts.push({
+        x:x0+(x1-x0)*frac,
+        y:ty(e0.height+(e1.height-e0.height)*(0.5-0.5*Math.cos(frac*Math.PI))),
+        ts:e0.ts+(e1.ts-e0.ts)*frac
+      });
     }
   }
-
   if(!pts.length)return;
 
-  // ── Fill gradient ─────────────────────────────────────────────────────────
+  // Fill gradient
   const grad=ctx.createLinearGradient(0,PAD.t,0,PAD.t+gH);
   grad.addColorStop(0,'rgba(100,180,255,0.20)');
   grad.addColorStop(1,'rgba(100,180,255,0.02)');
-
   ctx.beginPath();
   ctx.moveTo(pts[0].x,PAD.t+gH);
   ctx.lineTo(pts[0].x,pts[0].y);
-  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);
   ctx.lineTo(pts[pts.length-1].x,PAD.t+gH);
   ctx.closePath();
   ctx.fillStyle=grad;
   ctx.fill();
 
-  // ── Curve line ────────────────────────────────────────────────────────────
+  // Curve line
   ctx.beginPath();
   ctx.moveTo(pts[0].x,pts[0].y);
-  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);
   ctx.strokeStyle='rgba(100,180,255,0.65)';
   ctx.lineWidth=1.5;
   ctx.stroke();
 
-  // ── Now line ──────────────────────────────────────────────────────────────
-  // Find x on curve closest to now
+  // Now line — interpolated along curve
   if(now>=pts[0].ts&&now<=pts[pts.length-1].ts){
     let nowX=null;
     for(let i=0;i<pts.length-1;i++){
@@ -1287,24 +1290,21 @@ function drawTideGraph(canvasId){
     }
   }
 
-  // ── Event markers + labels pinned to card centres ─────────────────────────
+  // Dots + labels pinned to real card centres
   cardEvents.forEach(function(e,i){
-    const x=cardX(i);
+    const x=cardCentres[i];
     const y=ty(e.height);
     const isHigh=e.type==='high';
     const col=isHigh?'rgba(100,180,255,0.95)':'rgba(180,210,255,0.6)';
-    // Dot
     ctx.beginPath();
     ctx.arc(x,y,3.5,0,Math.PI*2);
     ctx.fillStyle=col;
     ctx.fill();
-    // Time label
-    const d=new Date(e.ts);
-    const label=d.toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
+    const label=new Date(e.ts).toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
     ctx.fillStyle=col;
     ctx.font='9px monospace';
     ctx.textAlign='center';
-    ctx.fillText(label, x, isHigh ? y-8 : Math.min(y+14, H-4));
+    ctx.fillText(label,x,isHigh?y-8:Math.min(y+14,H-4));
   });
 }
 

@@ -336,16 +336,16 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <a href="index.html" class="bottom-nav-item">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l9-9 9 9M5 12v7a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-7"/></svg>
-    Forecast
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/><circle cx="12" cy="12" r="5"/><path d="M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <span>Forecast</span>
   </a>
   <a href="workshop.html" class="bottom-nav-item">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 001.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.5 1.5m-11-1.5l1.5 1.5m9-9h.008v.008H19V6zm-14 0h.008v.008H5V6z"/></svg>
-    Workshop
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <span>Workshop</span>
   </a>
   <a href="trip.html" class="bottom-nav-item active">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
-    Trip
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+    <span>Trip</span>
   </a>
 </nav>
 
@@ -616,10 +616,51 @@ let state = {
 };
 
 // ── STORAGE ──────────────────────────────────────────────────────────────────
-function storageKey(id){ return 'quiver_trip_' + id; }
-function saveTrip(trip){ localStorage.setItem(storageKey(trip.id), JSON.stringify(trip)); }
-function loadTrip(id){ const d=localStorage.getItem(storageKey(id)); return d?JSON.parse(d):null; }
+// Trip state is encoded into the URL hash so sharing works without a server.
+// Format: #t=<base64(JSON)>
+// We also mirror to sessionStorage as a local cache within the same tab session.
+
 function genId(){ return Math.random().toString(36).substr(2,6).toUpperCase(); }
+
+function encodeTrip(trip){
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(trip)))); }
+  catch(e){ return null; }
+}
+function decodeTrip(str){
+  try{ return JSON.parse(decodeURIComponent(escape(atob(str)))); }
+  catch(e){ return null; }
+}
+
+function saveTrip(trip){
+  const encoded = encodeTrip(trip);
+  if(!encoded) return;
+  // Update URL hash (no page reload)
+  history.replaceState(null,'','?trip='+trip.id+'#t='+encoded);
+  // Also cache in sessionStorage for quick access
+  try{ sessionStorage.setItem('quiver_trip_'+trip.id, JSON.stringify(trip)); }catch(e){}
+}
+
+function loadTrip(id){
+  // 1. Try URL hash (most up to date when coming from a shared link)
+  const hash = window.location.hash;
+  if(hash && hash.startsWith('#t=')){
+    const trip = decodeTrip(hash.slice(3));
+    if(trip && trip.id === id) return trip;
+  }
+  // 2. Try sessionStorage cache
+  try{
+    const cached = sessionStorage.getItem('quiver_trip_'+id);
+    if(cached) return JSON.parse(cached);
+  }catch(e){}
+  return null;
+}
+
+// Build a shareable URL containing full trip state
+function buildShareUrl(trip){
+  const encoded = encodeTrip(trip);
+  const base = window.location.origin + window.location.pathname;
+  return base + '?trip=' + trip.id + '#t=' + encoded;
+}
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 window.onload = function(){
@@ -685,8 +726,13 @@ function startTrip(){ showSetup(); }
 function joinTrip(){
   const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
   if(!code || code.length < 4){ alert('Enter a trip code'); return; }
+  // When joining by code only (no hash), we can't load the trip data —
+  // prompt them to use the full link instead.
   const trip = loadTrip(code);
-  if(!trip){ alert('Trip not found. Check the code and try again.'); return; }
+  if(!trip){
+    alert('Trip not found from code alone. Ask your crew to share the full link — it contains all the trip data.');
+    return;
+  }
   state.tripId = code;
   state.trip = trip;
   promptJoinExisting(trip);
@@ -756,20 +802,19 @@ function createTrip(){
 
 // ── COPY LINK ─────────────────────────────────────────────────────────────────
 function copyLink(){
-  const url = window.location.origin + window.location.pathname + '?trip=' + state.tripId;
+  const url = buildShareUrl(state.trip);
   navigator.clipboard.writeText(url).then(function(){
     const el = document.getElementById('dashTripCode');
     const orig = el.textContent;
     el.textContent = 'link copied ✓';
     setTimeout(function(){ el.textContent = orig; }, 2000);
   }).catch(function(){
-    prompt('Share this link:', window.location.origin + window.location.pathname + '?trip=' + state.tripId);
+    prompt('Share this link with your crew:', url);
   });
 }
 
 function showJoinPrompt(){
-  const url = window.location.origin + window.location.pathname + '?trip=' + state.tripId;
-  prompt('Share this link to invite your crew:', url);
+  prompt('Share this link to invite your crew:', buildShareUrl(state.trip));
 }
 
 // ── OVERLAP CALC ──────────────────────────────────────────────────────────────

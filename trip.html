@@ -794,9 +794,18 @@ function showLanding(){
 }
 function showSetup(){
   document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('whoView').style.display='none';
   document.getElementById('setupView').classList.add('show');
   document.getElementById('dashView').classList.remove('show');
   document.getElementById('detailView').classList.remove('show');
+  // Reset fields for a fresh new trip
+  document.getElementById('tripNameInput').disabled = false;
+  document.getElementById('tripNameInput').value = '';
+  document.getElementById('yourNameInput').disabled = false;
+  document.getElementById('yourNameInput').value = '';
+  document.querySelectorAll('.month-btn.selected').forEach(function(b){ b.classList.remove('selected'); });
+  // Update title for new trip context
+  document.querySelector('#setupView .setup-title').textContent = 'New Trip';
 }
 function showDash(){
   document.getElementById('landingView').classList.add('hidden');

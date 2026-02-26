@@ -19,6 +19,49 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity:0.07;mix-blend-mode:overlay;}
 
+
+/* ── WHO ARE YOU view ── */
+.whoview-wrap{max-width:420px;margin:0 auto;padding:clamp(32px,5vh,60px) 24px;}
+.whoview-title{font-size:26px;letter-spacing:-0.5px;margin-bottom:6px;}
+.whoview-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
+.member-pick{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.member-pick-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.1);cursor:pointer;
+  font-family:'Archivo Black',sans-serif;font-size:14px;
+  color:var(--white);text-align:left;transition:all 0.15s;
+}
+.member-pick-btn:hover{background:rgba(245,200,0,0.06);border-color:rgba(245,200,0,0.3);}
+.member-pick-months{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--muted);}
+.who-divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.who-divider-line{flex:1;height:1px;background:rgba(255,255,255,0.07);}
+.who-divider-text{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);}
+
+/* ── SYNC BANNER ── */
+.sync-banner{
+  display:none;
+  align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px;margin-bottom:16px;
+  background:rgba(245,200,0,0.07);border:1px solid rgba(245,200,0,0.22);
+}
+.sync-banner.show{display:flex;}
+.sync-banner-text{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,200,0,0.8);}
+.sync-banner-btn{
+  background:var(--accent);color:#0a0a0a;border:none;
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;padding:8px 14px;cursor:pointer;white-space:nowrap;
+  transition:opacity 0.15s;flex-shrink:0;
+}
+.sync-banner-btn:hover{opacity:0.85;}
+
+/* ── LAST UPDATED ── */
+.last-updated{
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(255,255,255,0.18);
+  text-align:right;margin-bottom:12px;
+}
+
 /* HEADER */
 header{padding:18px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--faint);}
 .logo{font-size:18px;letter-spacing:2px;}
@@ -297,6 +340,26 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   <button class="btn-ghost" onclick="showLanding()" style="width:100%;margin-top:8px;">← Back</button>
 </div>
 
+
+<!-- ── WHO ARE YOU VIEW ── -->
+<div id="whoView" style="display:none;">
+  <div class="whoview-wrap">
+    <div class="whoview-title">Welcome back</div>
+    <div class="whoview-sub" id="whoViewTripName">Loading trip...</div>
+    <div class="setup-step">
+      <label class="step-label">Who are you?</label>
+      <div class="member-pick" id="memberPickList"></div>
+      <div class="who-divider">
+        <div class="who-divider-line"></div>
+        <div class="who-divider-text">or join as someone new</div>
+        <div class="who-divider-line"></div>
+      </div>
+      <input class="text-input" id="whoNameInput" placeholder="Enter your name" maxlength="24" style="margin-bottom:10px;"/>
+      <button class="btn-primary" onclick="confirmWhoIAm()" style="width:100%;">That's me →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── DASHBOARD VIEW ── -->
 <div id="dashView">
   <div class="trip-hero">
@@ -307,6 +370,8 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
     </div>
   </div>
 
+  <div id="lastUpdated" class="last-updated"></div>
+  <div id="syncBanner" class="sync-banner"><span class="sync-banner-text">↑ You've made changes — share the updated link with your crew</span><button class="sync-banner-btn" onclick="copyLink()">Copy link</button></div>
   <div id="verdictWrap" style="display:none;"></div>
 
   <div class="dash-grid">
@@ -630,6 +695,14 @@ let state = {
 
 function genId(){ return Math.random().toString(36).substr(2,6).toUpperCase(); }
 
+// ── NAME MEMORY ──────────────────────────────────────────────────────────────
+function rememberName(tripId, name){
+  try{ localStorage.setItem('quiver_who_'+tripId, name); }catch(e){}
+}
+function recallName(tripId){
+  try{ return localStorage.getItem('quiver_who_'+tripId)||null; }catch(e){ return null; }
+}
+
 function encodeTrip(trip){
   try{ return btoa(unescape(encodeURIComponent(JSON.stringify(trip)))); }
   catch(e){ return null; }
@@ -640,12 +713,14 @@ function decodeTrip(str){
 }
 
 function saveTrip(trip){
+  trip.updatedAt = Date.now();
   const encoded = encodeTrip(trip);
   if(!encoded) return;
-  // Update URL hash (no page reload)
   history.replaceState(null,'','?trip='+trip.id+'#t='+encoded);
-  // Also cache in sessionStorage for quick access
   try{ sessionStorage.setItem('quiver_trip_'+trip.id, JSON.stringify(trip)); }catch(e){}
+  // Show sync banner whenever trip is saved
+  const banner = document.getElementById('syncBanner');
+  if(banner) banner.classList.add('show');
 }
 
 function loadTrip(id){
@@ -673,16 +748,25 @@ function buildShareUrl(trip){
 // ── INIT ─────────────────────────────────────────────────────────────────────
 window.onload = function(){
   buildMonthGrid();
-  // Check URL for trip code
   const params = new URLSearchParams(window.location.search);
   const code = params.get('trip');
   if(code){
     const trip = loadTrip(code);
     if(trip){
-      // Ask who they are
       state.tripId = code;
       state.trip = trip;
-      promptJoinExisting(trip);
+      // Check if we remember this person on this device
+      const remembered = recallName(code);
+      if(remembered){
+        const existing = trip.members.find(function(m){ return m.name.toLowerCase()===remembered.toLowerCase(); });
+        if(existing){
+          state.myName = remembered;
+          showDash();
+          return;
+        }
+      }
+      // Unknown — show who-are-you view
+      showWhoView(trip);
       return;
     }
   }
@@ -746,22 +830,60 @@ function joinTrip(){
   promptJoinExisting(trip);
 }
 
-function promptJoinExisting(trip){
-  const name = prompt('Welcome to "' + trip.name + '"! What\'s your name?');
-  if(!name || !name.trim()) return;
-  state.myName = name.trim();
-  // Check if already a member
-  const existing = trip.members.find(function(m){ return m.name.toLowerCase() === state.myName.toLowerCase(); });
-  if(!existing){
-    // Ask availability
-    showSetupForJoin(trip);
-  } else {
+function promptJoinExisting(trip){ showWhoView(trip); }
+
+function showWhoView(trip){
+  // Hide all other views
+  document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('setupView').classList.remove('show');
+  document.getElementById('dashView').classList.remove('show');
+  document.getElementById('detailView').classList.remove('show');
+  document.getElementById('whoView').style.display='block';
+
+  document.getElementById('whoViewTripName').textContent = trip.name;
+
+  // Build member pick list
+  const list = document.getElementById('memberPickList');
+  list.innerHTML = trip.members.map(function(m){
+    const mNames = m.months.map(function(i){ return MONTHS[i]; }).join(', ');
+    return '<button class="member-pick-btn" onclick="pickMember(''+m.name.replace(/'/g,"\'")+'')">'
+      +'<span>'+m.name+'</span>'
+      +'<span class="member-pick-months">'+mNames+'</span>'
+      +'</button>';
+  }).join('');
+
+  // Pre-fill name input
+  document.getElementById('whoNameInput').value = '';
+  setTimeout(function(){ document.getElementById('whoNameInput').focus(); }, 150);
+}
+
+function pickMember(name){
+  state.myName = name;
+  rememberName(state.tripId, name);
+  document.getElementById('whoView').style.display='none';
+  showDash();
+}
+
+function confirmWhoIAm(){
+  const inp = document.getElementById('whoNameInput');
+  const name = inp.value.trim();
+  if(!name){ inp.style.borderColor='rgba(245,200,0,0.5)'; inp.focus(); return; }
+  // Check if existing member
+  const existing = state.trip.members.find(function(m){ return m.name.toLowerCase()===name.toLowerCase(); });
+  state.myName = name;
+  rememberName(state.tripId, name);
+  document.getElementById('whoView').style.display='none';
+  if(existing){
     showDash();
+  } else {
+    // New member — go to setup to pick months
+    showSetupForJoin(state.trip);
   }
 }
 
 function showSetupForJoin(trip){
   document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('whoView').style.display='none';
   document.getElementById('setupView').classList.add('show');
   document.getElementById('tripNameInput').value = trip.name;
   document.getElementById('tripNameInput').disabled = true;
@@ -789,6 +911,7 @@ function createTrip(){
     }
     saveTrip(trip);
     state.trip = trip;
+    rememberName(state.tripId, yourName);
     showDash();
     return;
   }
@@ -805,6 +928,7 @@ function createTrip(){
   saveTrip(trip);
   state.tripId = id;
   state.trip = trip;
+  rememberName(id, yourName);
   showDash();
 }
 
@@ -850,6 +974,16 @@ function renderDash(){
   document.getElementById('dashTripName').textContent = trip.name;
   document.getElementById('dashTripCode').textContent = state.tripId + ' — copy link';
   document.getElementById('dashMemberCount').textContent = trip.members.length + ' member' + (trip.members.length !== 1 ? 's' : '');
+  // Last updated
+  const luEl = document.getElementById('lastUpdated');
+  if(luEl && trip.updatedAt){
+    const d = new Date(trip.updatedAt);
+    const fmt = d.toLocaleDateString('en-IE',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + d.toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',hour12:false});
+    luEl.textContent = 'Last updated ' + fmt;
+  }
+  // Hide sync banner on fresh load (only show after local changes)
+  const banner = document.getElementById('syncBanner');
+  if(banner) banner.classList.remove('show');
 
   // Members
   const membersList = document.getElementById('membersList');

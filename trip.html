@@ -853,15 +853,17 @@ function showWhoView(trip){
 
   // Build member pick list
   const list = document.getElementById('memberPickList');
-  list.innerHTML = trip.members.map(function(m){
+  list.innerHTML = '';
+  trip.members.forEach(function(m){
     const mNames = m.months.map(function(i){ return MONTHS[i]; }).join(', ');
-    return '<button class="member-pick-btn" onclick="pickMember(''+m.name.replace(/'/g,"\'")+'')">'
-      +'<span>'+m.name+'</span>'
-      +'<span class="member-pick-months">'+mNames+'</span>'
-      +'</button>';
-  }).join('');
+    const btn = document.createElement('button');
+    btn.className = 'member-pick-btn';
+    btn.innerHTML = '<span>'+m.name+'</span><span class="member-pick-months">'+mNames+'</span>';
+    btn.onclick = (function(name){ return function(){ pickMember(name); }; })(m.name);
+    list.appendChild(btn);
+  });
 
-  // Pre-fill name input
+    // Pre-fill name input
   document.getElementById('whoNameInput').value = '';
   setTimeout(function(){ document.getElementById('whoNameInput').focus(); }, 150);
 }

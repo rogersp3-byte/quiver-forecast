@@ -1059,43 +1059,84 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       })||slots[slots.length-1]||slots[0];
     }
 
-    let rawLine='—';
-    if(refSlot){
+    // Helper: build raw numbers string from a slot
+    function rawNumbers(s){
       const mult=spot.ftMult||0.7;
-      const ftH=(refSlot.h*mult*3.281).toFixed(1);
-      const mH=(refSlot.h*mult).toFixed(1);
-      const windStr=isOffshore(refSlot.wd,spot)?windDir(refSlot.wd)+' offshore':windDir(refSlot.wd)+' onshore';
-      const periodStr=refSlot.p?refSlot.p.toFixed(0)+'s':'—';
-      const swDirStr=windDir(refSlot.swDir!=null?refSlot.swDir:refSlot.waveDir);
-      rawLine=ftH+'ft ('+mH+'m) @ '+periodStr+' '+swDirStr+', '+windStr;
+      const ftH=(s.h*mult*3.281).toFixed(1);
+      const mH=(s.h*mult).toFixed(1);
+      const windStr=isOffshore(s.wd,spot)?windDir(s.wd)+' offshore':windDir(s.wd)+' onshore';
+      const periodStr=s.p?s.p.toFixed(0)+'s':'—';
+      const swDirStr=windDir(s.swDir!=null?s.swDir:s.waveDir);
+      return ftH+'ft ('+mH+'m) @ '+periodStr+' '+swDirStr+', '+windStr;
     }
 
-    // Next future tide event
-    let tideStr='—';
-    if(tidePoints&&tidePoints.length){
-      const futureTides=tidePoints.filter(function(tp){return new Date(tp.time)>now;}).sort(function(a,b){return new Date(a.time)-new Date(b.time);});
-      const nt=futureTides[0];
-      if(nt){
-        const tLabel=nt.type==='HIGH'?'High':'Low';
-        const tHeight=nt.height!=null?nt.height.toFixed(1)+'m':'';
-        tideStr=tLabel+(tHeight?' '+tHeight:'')+' at '+fmtT(nt.time);
+    // Helper: next future tide event string
+    function nextTideStr(){
+      if(!tidePoints||!tidePoints.length) return'—';
+      const ft=tidePoints.filter(function(tp){return new Date(tp.time)>now;}).sort(function(a,b){return new Date(a.time)-new Date(b.time);});
+      const nt=ft[0];
+      if(!nt) return'—';
+      const tLabel=nt.type==='HIGH'?'High':'Low';
+      const tHeight=nt.height!=null?nt.height.toFixed(1)+'m':'';
+      return tLabel+(tHeight?' '+tHeight:'')+' at '+fmtT(nt.time);
+    }
+
+    // ── NOW section: always current conditions ──
+    const nowLine=rawNumbers(slots[0]||refSlot||{h:0,p:0,wd:0,swDir:null,waveDir:0,ws:0});
+
+    // ── NEXT section: smart — depends on time of day and current rating ──
+    let nextLabel='Next';
+    let nextLine='—';
+    let nextTide=nextTideStr();
+
+    if(!isDaytime){
+      // After dark → first light tomorrow
+      nextLabel='First light';
+      if(refSlot) nextLine=rawNumbers(refSlot);
+    } else if(currentRating==='good'||currentRating==='great'){
+      // Currently good → next label, raw numbers for current slot
+      nextLabel='On now';
+      nextLine=rawNumbers(slots[0]||refSlot||{h:0,p:0,wd:0,swDir:null,waveDir:0,ws:0});
+      nextTide=nextTideStr();
+    } else {
+      // Daytime but not great → find next better slot later today
+      const laterSlots=slots.slice(1); // skip current hour
+      const nextGood=laterSlots.filter(function(s){
+        const h=new Date(s.time).getHours()+new Date(s.time).getMinutes()/60;
+        return h>=dawnHour&&h<=duskCutoff&&s.h>0.3;
+      }).sort(function(a,b){
+        // score: prefer better conditions
+        const scoreA=(isOffshore(a.wd,spot)?3:0)+(a.h>1?2:0)+(a.p>10?1:0);
+        const scoreB=(isOffshore(b.wd,spot)?3:0)+(b.h>1?2:0)+(b.p>10?1:0);
+        return scoreB-scoreA;
+      })[0];
+      if(nextGood){
+        const sd=new Date(nextGood.time);
+        const dn=sd.toDateString()===now.toDateString()?'Today':'Tomorrow';
+        nextLabel='Next · '+dn+' '+fmtT(nextGood.time);
+        nextLine=rawNumbers(nextGood);
+      } else {
+        nextLabel='Next';
+        nextLine='—';
       }
     }
 
-    const refLabel=isDaytime?'Now':'First light';
     return'<div class="surf-report-card '+ac+'">'
       +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
       +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
-      +'<div class="surf-report-body">'+currentRead+'</div>'
+      +'<div class="surf-report-window" style="margin-bottom:0">'
+        +'<div class="surf-report-window-label">Now</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.3px;">'+nowLine+'</div>'
+      +'</div>'
       +'<div class="surf-report-window">'
-        +'<div class="surf-report-window-label">'+refLabel+'</div>'
-        +'<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.3px;margin-bottom:6px;">'+rawLine+'</div>'
-        +'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+tideStr+'</div>'
+        +'<div class="surf-report-window-label">'+nextLabel+'</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.3px;margin-bottom:6px;">'+nextLine+'</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+nextTide+'</div>'
       +'</div>'
       +'</div>';
   }
 
-  // ── BEGINNER / INTERMEDIATE: keep the window recommendation ──
+  // ── BEGINNER / INTERMEDIATE: NOW + NEXT window recommendation ──
   const best=scored.filter(function(s){return s.sc>=5&&s.gS&&s.tideOk;}).sort(function(a,b){return b.sc-a.sc;})[0];
   let windowText='';
   const tidePrefLabel=tidePreferenceLabel(spot.tidePreference||'any');
@@ -1104,23 +1145,28 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     if(!next)windowText='Nothing great during daylight hours today. Check back as conditions develop.';
     else{
       const tideNote=spot.tidePreference&&spot.tidePreference!=='any'?' Tide conditions may not be ideal (best at '+tidePrefLabel+').':'';
-      windowText='Best opportunity around '+fmtT(next.time)+'. '+next.h.toFixed(1)+'m at '+next.p.toFixed(0)+'s.'+tideNote;
+      windowText='Around '+fmtT(next.time)+'. '+next.h.toFixed(1)+'m at '+next.p.toFixed(0)+'s.'+tideNote;
     }
   } else {
-    const dn=best.slotDate.toDateString()===now.toDateString()?'today':best.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
+    const dn=best.slotDate.toDateString()===now.toDateString()?'Today':best.slotDate.toLocaleDateString('en-IE',{weekday:'long'});
     const unavNote=!best.avail&&work==='9to5'?' (falls during work hours)':'';
     const windNote=isOffshore(best.wd,spot)?windDir(best.wd)+' offshore':windDir(best.wd)+' wind';
-    const qw=best.r==='great'||best.r==='good'?'a good':best.r==='fair'?'a fair':'a session';
-    windowText='Best window: '+qw+' session around '+fmtT(best.time)+' '+dn+unavNote+'. ';
+    windowText=dn+' around '+fmtT(best.time)+unavNote+'. ';
     windowText+=best.h.toFixed(1)+'m at '+best.p.toFixed(0)+'s, '+windNote+'.';
-    if(spot.tidePreference&&spot.tidePreference!=='any')windowText+=' Tide looks '+tidePrefLabel+' — good for this break.';
+    if(spot.tidePreference&&spot.tidePreference!=='any')windowText+=' Best at '+tidePrefLabel+'.';
     if(skill==='beginner'&&best.h>=1.0)windowText+=' Slightly bigger than ideal for beginners.';
   }
+  // Current conditions one-liner for beginner/intermediate NOW section
+  const nowRead=slots[0]?(function(s){
+    const mult=spot.ftMult||0.7;
+    return (s.h*mult).toFixed(1)+'m @ '+s.p.toFixed(0)+'s, '+(isOffshore(s.wd,spot)?windDir(s.wd)+' offshore':windDir(s.wd)+' onshore');
+  })(slots[0]):'';
+
   return'<div class="surf-report-card '+ac+'">'
     +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
     +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
-    +'<div class="surf-report-body">'+currentRead+'</div>'
-    +(windowText?'<div class="surf-report-window"><div class="surf-report-window-label">Next Window</div>'+windowText+'</div>':'')
+    +(nowRead?'<div class="surf-report-window" style="margin-bottom:0"><div class="surf-report-window-label">Now</div><div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(255,255,255,0.75);letter-spacing:0.3px;">'+nowRead+'</div></div>':'')
+    +(windowText?'<div class="surf-report-window"><div class="surf-report-window-label">Next</div>'+windowText+'</div>':'')
     +'</div>';
 }
 

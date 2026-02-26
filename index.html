@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>Quiver — Forecast</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -1168,7 +1168,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       +'<div class="surf-report-window">'
         +'<div class="surf-report-window-label">'+nextLabel+'</div>'
         +'<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.3px;margin-bottom:6px;">'+nextLine+'</div>'
-        +'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+nextTide+'</div>'
+        +(nextTide&&nextTide!=='—'?'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+nextTide+'</div>':'')
       +'</div>'
       +'</div>';
   }

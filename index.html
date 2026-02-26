@@ -544,6 +544,7 @@ const ALL_SPOTS = [
   // ── LAHINCH REEFS ──
   {id:'cornish',  name:'Cornish',             shortName:'Cornish',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.929472, lng:-9.349553, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
   {id:'cregg',    name:'Cregg Reef',          shortName:'Cregg Reef',  region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.923233, lng:-9.354639, beachFacing:270, swellWindow:[225,315], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
+  {id:'crab',     name:'Crab Island',         shortName:'Crab Island', region:'Clare',   group:'doolin',        groupName:'Doolin',        lat:53.007700, lng:-9.277500, beachFacing:300, swellWindow:[247,337], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Kilrush', ftMult:0.8},
 
   // ── BUNDORAN ──
   {id:'tullan',   name:'Tullan Strand',       shortName:'Tullan',      region:'Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.494700, lng:-8.266700, beachFacing:270, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'low-mid', tideStation:'Killybegs'},
@@ -1034,6 +1035,67 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       return Object.assign({},s,{sc:sc,avail:avail,gS:gS,r:rate(s.h,slotEffWind,s.p,skill),slotDate:sd,hour:sd.getHours(),tideOk:ts>0});
   }).filter(Boolean);
 
+  const ac=currentRating==='good'||currentRating==='great'?'good-card':currentRating==='fair'?'fair-card':currentRating==='poor'?'poor-card':'flat-card';
+
+  // ── ADVANCED / EXPERT: raw conditions readout instead of window ──
+  if(skill==='advanced'||skill==='expert'){
+    // Determine reference slot: if daylight use current, else use first light tomorrow
+    const nowHour=now.getHours()+now.getMinutes()/60;
+    const isDaytime=nowHour>=dawnHour&&nowHour<=duskCutoff;
+    let refSlot=null;
+    if(isDaytime){
+      // Use the current hour slot (first in slots array)
+      refSlot=slots[0]||null;
+    } else {
+      // Find first slot at or after dawn tomorrow
+      const tomorrow=new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+      const tomorrowSun=getSunTimes(spot.lat,spot.lng,tomorrow);
+      const tDawnHour=tomorrowSun.sunrise;
+      refSlot=slots.find(function(s){
+        const sd=new Date(s.time);
+        const h=sd.getHours()+sd.getMinutes()/60;
+        const isNextDay=sd.getDate()===tomorrow.getDate();
+        return isNextDay&&h>=tDawnHour;
+      })||slots[slots.length-1]||slots[0];
+    }
+
+    let rawLine='—';
+    if(refSlot){
+      const mult=spot.ftMult||0.7;
+      const ftH=(refSlot.h*mult*3.281).toFixed(1);
+      const mH=(refSlot.h*mult).toFixed(1);
+      const windStr=isOffshore(refSlot.wd,spot)?windDir(refSlot.wd)+' offshore':windDir(refSlot.wd)+' onshore';
+      const periodStr=refSlot.p?refSlot.p.toFixed(0)+'s':'—';
+      const swDirStr=windDir(refSlot.swDir!=null?refSlot.swDir:refSlot.waveDir);
+      rawLine=ftH+'ft ('+mH+'m) @ '+periodStr+' '+swDirStr+', '+windStr;
+    }
+
+    // Next future tide event
+    let tideStr='—';
+    if(tidePoints&&tidePoints.length){
+      const futureTides=tidePoints.filter(function(tp){return new Date(tp.time)>now;}).sort(function(a,b){return new Date(a.time)-new Date(b.time);});
+      const nt=futureTides[0];
+      if(nt){
+        const tLabel=nt.type==='HIGH'?'High':'Low';
+        const tHeight=nt.height!=null?nt.height.toFixed(1)+'m':'';
+        tideStr=tLabel+(tHeight?' '+tHeight:'')+' at '+fmtT(nt.time);
+      }
+    }
+
+    const refLabel=isDaytime?'Now':'First light';
+    return'<div class="surf-report-card '+ac+'">'
+      +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
+      +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
+      +'<div class="surf-report-body">'+currentRead+'</div>'
+      +'<div class="surf-report-window">'
+        +'<div class="surf-report-window-label">'+refLabel+'</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.3px;margin-bottom:6px;">'+rawLine+'</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+tideStr+'</div>'
+      +'</div>'
+      +'</div>';
+  }
+
+  // ── BEGINNER / INTERMEDIATE: keep the window recommendation ──
   const best=scored.filter(function(s){return s.sc>=5&&s.gS&&s.tideOk;}).sort(function(a,b){return b.sc-a.sc;})[0];
   let windowText='';
   const tidePrefLabel=tidePreferenceLabel(spot.tidePreference||'any');
@@ -1053,10 +1115,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     windowText+=best.h.toFixed(1)+'m at '+best.p.toFixed(0)+'s, '+windNote+'.';
     if(spot.tidePreference&&spot.tidePreference!=='any')windowText+=' Tide looks '+tidePrefLabel+' — good for this break.';
     if(skill==='beginner'&&best.h>=1.0)windowText+=' Slightly bigger than ideal for beginners.';
-    else if(skill==='expert'&&best.h>=2.0)windowText+=' Sizeable swell.';
-    else if(skill==='advanced'&&best.h<0.9)windowText+=' Quieter spell — below ideal.';
   }
-  const ac=currentRating==='good'||currentRating==='great'?'good-card':currentRating==='fair'?'fair-card':currentRating==='poor'?'poor-card':'flat-card';
   return'<div class="surf-report-card '+ac+'">'
     +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
     +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
@@ -1721,7 +1780,7 @@ async function load(){
     const swellWarnHTML=(!swellGood&&cH>=0.3)?'<div class="swell-warning">Swell direction ('+windDir(cSwD||cD)+') may not be optimal for this break.</div>':'';
 
     const slots=[];
-    for(let i=ci;i<ci+24&&i<times.length;i+=3){
+    for(let i=ci;i<ci+36&&i<times.length;i+=3){
       slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
     }
 

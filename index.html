@@ -1087,7 +1087,19 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       const ft=tidePoints.filter(function(tp){return new Date(tp.time)>now;}).sort(function(a,b){return new Date(a.time)-new Date(b.time);});
       const nt=ft[0];
       if(!nt) return'—';
-      const tLabel=nt.type==='HIGH'?'High':'Low';
+      // Cross-check: if we have 2+ future events, infer type by comparing heights
+      // (guards against IMI returning wrong type label)
+      let type=nt.type;
+      if(ft.length>=2){
+        const h0=nt.height, h1=ft[1].height;
+        if(h0!=null&&h1!=null){
+          // If next height > following height, it's a HIGH; else LOW
+          const inferredHigh=h0>h1;
+          if(inferredHigh&&type==='LOW') type='HIGH';
+          if(!inferredHigh&&type==='HIGH') type='LOW';
+        }
+      }
+      const tLabel=type==='HIGH'?'High':'Low';
       const tHeight=nt.height!=null?nt.height.toFixed(1)+'m':'';
       return tLabel+(tHeight?' '+tHeight:'')+' at '+fmtT(nt.time);
     }
@@ -2044,7 +2056,7 @@ async function load(){
         +'</button>'
       +'</div>'
 
-      +'<div class="feedback-widget" id="feedbackWidget">'        +'<div class="feedback-question" id="feedbackQuestion">'          +'<span class="feedback-label">Was this forecast accurate?</span>'          +'<div class="feedback-btns">'            +'<button class="feedback-btn" onclick="submitFeedback(true)">&#128077;</button>'            +'<button class="feedback-btn" onclick="submitFeedback(false)">&#128078;</button>'          +'</div>'        +'</div>'        +'<div class="feedback-comment" id="feedbackComment" style="display:none;">'          +'<div class="feedback-label" style="margin-bottom:10px;">What was off? (optional)</div>'          +'<textarea class="feedback-textarea" id="feedbackText" placeholder="e.g. Wind was much stronger, waves were smaller than shown..." rows="3"></textarea>'          +'<div style="display:flex;gap:8px;margin-top:8px;">'            +'<button class="feedback-submit" onclick="sendFeedbackComment()">Send feedback</button>'            +'<button class="feedback-skip" onclick="dismissFeedback()">Skip</button>'          +'</div>'        +'</div>'        +'<div class="feedback-thanks" id="feedbackThanks" style="display:none;">'          +'<span class="feedback-thanks-text">Thanks &#128587;</span>'        +'</div>'      +'</div>'      +'<div class="disclaimer">In forecasting we don\'t deal in definites. Quiver Surf Forecast should be used in tandem with your own local knowledge of this wave.</div>';
+      +'<div class="feedback-widget" id="feedbackWidget">'        +'<div class="feedback-question" id="feedbackQuestion">'          +'<span class="feedback-label">Was this forecast accurate?</span>'          +'<div class="feedback-btns">'            +'<button class="feedback-btn" onclick="submitFeedback(true)">&#128077;</button>'            +'<button class="feedback-btn" onclick="submitFeedback(false)">&#128078;</button>'          +'</div>'        +'</div>'        +'<div class="feedback-comment" id="feedbackComment" style="display:none;">'          +'<div class="feedback-label" style="margin-bottom:10px;">What was off? (optional)</div>'          +'<textarea class="feedback-textarea" id="feedbackText" placeholder="e.g. Wind was much stronger, waves were smaller than shown..." rows="3"></textarea>'          +'<div style="display:flex;gap:8px;margin-top:8px;">'            +'<button class="feedback-submit" onclick="sendFeedbackComment()">Send feedback</button>'            +'<button class="feedback-skip" onclick="dismissFeedback()">Skip</button>'          +'</div>'        +'</div>'        +'<div class="feedback-thanks" id="feedbackThanks" style="display:none;">'          +'<span class="feedback-thanks-text">Thanks &#128587;</span>'        +'</div>'      +'</div>'      +'<div class="disclaimer">Quiver Surf Forecast should be used in tandem with your own local knowledge of this wave.</div>';
 
     requestAnimationFrame(function(){
       const sg=document.getElementById('swellGraph');

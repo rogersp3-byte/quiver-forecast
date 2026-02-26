@@ -962,7 +962,8 @@ function showJoinPrompt(){
 
 // ── OVERLAP CALC ──────────────────────────────────────────────────────────────
 function calcOverlap(members){
-  if(members.length < 2) return null;
+  if(!members || members.length === 0) return null;
+  if(members.length === 1) return members[0].months.slice(); // solo — use own months
   let overlap = members[0].months.slice();
   for(let i=1;i<members.length;i++){
     overlap = overlap.filter(function(m){ return members[i].months.includes(m); });
@@ -1015,6 +1016,12 @@ function renderDash(){
     overlapEl.innerHTML = '<div class="overlap-banner">'
       +'<div class="overlap-icon">◈</div>'
       +'<div class="overlap-text">Everyone free in <span class="overlap-months">'+overlapNames+'</span>. '+overlap.length+' month'+( overlap.length!==1?'s':'')+' overlap.</div>'
+      +'</div>';
+  } else if(overlap && trip.members.length === 1){
+    const myMonths = overlap.map(function(i){ return MONTHS[i]; }).join(', ');
+    overlapEl.innerHTML = '<div class="overlap-banner" style="opacity:0.5;">'
+      +'<div class="overlap-icon">◈</div>'
+      +'<div class="overlap-text">Your availability: <span class="overlap-months">'+myMonths+'</span>. Invite your crew to find overlap.</div>'
       +'</div>';
   } else if(trip.members.length < 2){
     overlapEl.innerHTML = '<div class="overlap-banner" style="opacity:0.4;">'

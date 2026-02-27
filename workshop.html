@@ -87,11 +87,11 @@ header{
 .nokia-col::after,.face-col::after{
   content:'';position:absolute;inset:0;pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  opacity:0.15;mix-blend-mode:overlay;z-index:1;
+  opacity:0.35;mix-blend-mode:overlay;z-index:1;
 }
 .nokia-img{
   height:180px;width:auto;display:block;
-  filter: grayscale(1) sepia(1) hue-rotate(5deg) saturate(8) contrast(1.3) brightness(0.8);
+  filter: grayscale(1) sepia(0.6) hue-rotate(5deg) saturate(4) contrast(1.5) brightness(0.65);
 }
 .nokia-lbl{
   font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
@@ -101,20 +101,32 @@ header{
   flex:1;display:flex;align-items:center;padding:0 4px;margin-bottom:28px;
 }
 .signal-svg{width:100%;overflow:visible;}
-.sig-line{stroke-dasharray:4 6;animation:march 0.6s linear infinite;}
+.sig-line{stroke-dasharray:4 6;animation:march 0.5s linear infinite;}
 @keyframes march{to{stroke-dashoffset:-10;}}
+.sig-pulse{
+  fill:none;stroke:#f5c800;stroke-width:1.5;
+  opacity:0;animation:pulse-travel 2s ease-in-out infinite;
+}
+.sig-pulse:nth-child(2){animation-delay:0.65s;}
+.sig-pulse:nth-child(3){animation-delay:1.3s;}
+@keyframes pulse-travel{
+  0%{opacity:0;stroke-dashoffset:0;}
+  10%{opacity:1;}
+  80%{opacity:0.6;}
+  100%{opacity:0;stroke-dashoffset:-80;}
+}
 .sig-dot{animation:sig-pulse 1.4s ease-in-out infinite;}
 .sig-dot:nth-child(2){animation-delay:0.35s;}
 .sig-dot:nth-child(3){animation-delay:0.7s;}
 .sig-dot:nth-child(4){animation-delay:1.05s;}
-@keyframes sig-pulse{0%,100%{opacity:0.15;}50%{opacity:1;}}
+@keyframes sig-pulse{0%,100%{opacity:0.15;r:3;}50%{opacity:1;r:4.5;}}
 .face-col{
   flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;
   opacity:0;animation:fadeup 0.5s 0.2s forwards;position:relative;
 }
 .face-img{
   width:160px;height:160px;border-radius:50%;display:block;
-  filter: grayscale(1) sepia(1) hue-rotate(5deg) saturate(8) contrast(1.3) brightness(0.8);
+  filter: grayscale(1) sepia(0.6) hue-rotate(5deg) saturate(4) contrast(1.5) brightness(0.65);
   border:1.5px solid rgba(245,200,0,0.3);
   box-shadow:0 0 30px rgba(245,200,0,0.08),0 0 0 6px rgba(245,200,0,0.04);
   object-fit:cover;
@@ -344,6 +356,7 @@ header{
 .landing > *:nth-child(3){animation-delay:0.2s;}
 .landing > *:nth-child(4){animation-delay:0.28s;}
 .landing > *:nth-child(5){animation-delay:0.34s;}
+@keyframes ping{0%{transform:scale(1);opacity:0.7;}100%{transform:scale(2.8);opacity:0;}}
 @keyframes fadeup{to{opacity:1;transform:none;}}
 
 @keyframes msg-appear{
@@ -491,17 +504,23 @@ function showLanding(){
 
         <!-- Animated signal line -->
         <div class="signal-track">
-          <svg class="signal-svg" height="28" viewBox="0 0 200 28" preserveAspectRatio="xMidYMid meet">
-            <line class="sig-line" x1="0" y1="14" x2="160" y2="14"
-              stroke="rgba(245,200,0,0.45)" stroke-width="1.5"
+          <svg class="signal-svg" height="36" viewBox="0 0 200 36" preserveAspectRatio="xMidYMid meet">
+            <!-- base dashed line -->
+            <line class="sig-line" x1="0" y1="18" x2="165" y2="18"
+              stroke="rgba(245,200,0,0.3)" stroke-width="1"
               stroke-dasharray="4 6" stroke-dashoffset="0"/>
-            <circle class="sig-dot" cx="30" cy="14" r="3.5" fill="#f5c800"/>
-            <circle class="sig-dot" cx="72" cy="14" r="3.5" fill="#f5c800"/>
-            <circle class="sig-dot" cx="114" cy="14" r="3.5" fill="#f5c800"/>
-            <circle class="sig-dot" cx="156" cy="14" r="3.5" fill="#f5c800"/>
-            <polyline points="158,8 172,14 158,20"
-              stroke="#f5c800" stroke-width="1.8"
+            <!-- travelling dots -->
+            <circle class="sig-dot" cx="30" cy="18" r="3" fill="#f5c800"/>
+            <circle class="sig-dot" cx="72" cy="18" r="3" fill="#f5c800"/>
+            <circle class="sig-dot" cx="114" cy="18" r="3" fill="#f5c800"/>
+            <circle class="sig-dot" cx="150" cy="18" r="3" fill="#f5c800"/>
+            <!-- arrowhead -->
+            <polyline points="158,11 174,18 158,25"
+              stroke="#f5c800" stroke-width="2"
               fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- ping rings on arrowhead -->
+            <circle cx="174" cy="18" r="6" fill="none" stroke="rgba(245,200,0,0.5)" stroke-width="1" style="animation:ping 1.8s ease-out infinite;transform-origin:174px 18px;"/>
+            <circle cx="174" cy="18" r="6" fill="none" stroke="rgba(245,200,0,0.3)" stroke-width="1" style="animation:ping 1.8s ease-out 0.6s infinite;transform-origin:174px 18px;"/>
           </svg>
         </div>
 
@@ -605,7 +624,8 @@ function renderChat(ws){
     <div class="chat-wrap">
       <div class="chat-hdr">
         <div class="chat-hdr-avatar" style="overflow:hidden;padding:0;">
-          
+          <img src="https://quiver-forecast.vercel.app/images/Core%20Lord.png" style="width:100%;height:100%;object-fit:cover;filter:grayscale(1) sepia(0.6) saturate(4) contrast(1.5) brightness(0.65);" alt="Core Lord"/>
+        </div>
         <div class="chat-hdr-info">
           <div class="chat-hdr-name">CHAT WITH CORE LORD</div>
           <div class="chat-hdr-sub">${ws.name} · ${ws.skill} · ${ws.board}</div>

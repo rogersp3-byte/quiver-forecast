@@ -82,11 +82,16 @@ header{
 }
 .nokia-col{
   flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;
-  opacity:0;animation:fadeup 0.5s 0.1s forwards;
+  opacity:0;animation:fadeup 0.5s 0.1s forwards;position:relative;
+}
+.nokia-col::after,.face-col::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  opacity:0.15;mix-blend-mode:overlay;z-index:1;
 }
 .nokia-img{
   height:180px;width:auto;display:block;
-  mix-blend-mode:screen;filter:contrast(1.05);
+  filter: grayscale(1) sepia(1) hue-rotate(5deg) saturate(8) contrast(1.3) brightness(0.8);
 }
 .nokia-lbl{
   font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
@@ -105,13 +110,14 @@ header{
 @keyframes sig-pulse{0%,100%{opacity:0.15;}50%{opacity:1;}}
 .face-col{
   flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;
-  opacity:0;animation:fadeup 0.5s 0.2s forwards;
+  opacity:0;animation:fadeup 0.5s 0.2s forwards;position:relative;
 }
 .face-img{
   width:160px;height:160px;border-radius:50%;display:block;
-  mix-blend-mode:screen;filter:contrast(1.1) brightness(0.9);
+  filter: grayscale(1) sepia(1) hue-rotate(5deg) saturate(8) contrast(1.3) brightness(0.8);
   border:1.5px solid rgba(245,200,0,0.3);
   box-shadow:0 0 30px rgba(245,200,0,0.08),0 0 0 6px rgba(245,200,0,0.04);
+  object-fit:cover;
 }
 .face-lbl{
   font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
@@ -479,7 +485,8 @@ function showLanding(){
       <div class="cl-hero">
         <!-- Nokia -->
         <div class="nokia-col">
-        
+          <img class="nokia-img" src="https://raw.githubusercontent.com/rogersp3-byte/quiver-forecast/main/images/Nokia%203210.png" alt="Nokia 3210"/>
+          <div class="nokia-lbl">Nokia 3210</div>
         </div>
 
         <!-- Animated signal line -->
@@ -500,7 +507,8 @@ function showLanding(){
 
         <!-- Core Lord face -->
         <div class="face-col">
-          
+          <img class="face-img" src="https://raw.githubusercontent.com/rogersp3-byte/quiver-forecast/main/images/Core%20Lord.png" alt="Core Lord"/>
+          <div class="face-lbl">Core Lord</div>
         </div>
       </div>
 

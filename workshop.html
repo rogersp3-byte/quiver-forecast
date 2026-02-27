@@ -27,17 +27,17 @@ body::after{
 /* ── HEADER ── */
 header{
   position:relative;z-index:10;padding:18px 28px;
-  display:flex;align-items:center;justify-content:space-between;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   border-bottom:1px solid var(--faint);
 }
 .logo{font-size:18px;letter-spacing:2px;}
 .logo-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
-.main-nav{display:flex;gap:0;border:1px solid rgba(255,255,255,0.12);flex:1;margin:0 32px;}
+.main-nav{display:flex;gap:0;border:1px solid rgba(255,255,255,0.12);}
 .nav-link{flex:1;text-align:center;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:11px 20px;color:var(--muted);text-decoration:none;border-right:1px solid rgba(255,255,255,0.12);transition:all 0.15s;}
 .nav-link:last-child{border-right:none;}
 .nav-link:hover{color:var(--white);background:rgba(255,255,255,0.05);}
 .nav-link.active{color:var(--white);background:rgba(255,255,255,0.07);}
-.profile-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid rgba(255,255,255,0.15);padding:7px 14px;cursor:pointer;transition:all 0.15s;}
+.profile-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid rgba(255,255,255,0.15);padding:7px 14px;cursor:pointer;transition:all 0.15s;justify-self:end;}
 .profile-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
 
 /* ── MODAL ── */
@@ -92,6 +92,7 @@ header{
 .nokia-img{
   height:180px;width:auto;display:block;
   filter: grayscale(1) sepia(0.6) hue-rotate(5deg) saturate(4) contrast(1.5) brightness(0.65);
+  mix-blend-mode:lighten;
 }
 .nokia-lbl{
   font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
@@ -127,6 +128,7 @@ header{
 .face-img{
   width:160px;height:160px;border-radius:50%;display:block;
   filter: grayscale(1) sepia(0.6) hue-rotate(5deg) saturate(4) contrast(1.5) brightness(0.65);
+  mix-blend-mode:lighten;
   border:1.5px solid rgba(245,200,0,0.3);
   box-shadow:0 0 30px rgba(245,200,0,0.08),0 0 0 6px rgba(245,200,0,0.04);
   object-fit:cover;
@@ -404,7 +406,11 @@ header{
 </div>
 
 <header>
-  
+  <div class="logo">
+    <div>QUIVER</div>
+    <div class="logo-tag">Surf Intelligence</div>
+  </div>
+  <nav class="main-nav">
     <a href="index.html" class="nav-link">Forecast</a>
     <a href="workshop.html" class="nav-link active">Workshop</a>
     <a href="trip.html" class="nav-link">Trip</a>
@@ -499,7 +505,7 @@ function showLanding(){
         <!-- Nokia -->
         <div class="nokia-col">
           <img class="nokia-img" src="https://quiver-forecast.vercel.app/images/Nokia%203210.png" alt="Nokia 3210"/>
-          <div class="nokia-lbl">Nokia 3210</div>
+          <div class="nokia-lbl">You</div>
         </div>
 
         <!-- Animated signal line -->

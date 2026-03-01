@@ -220,14 +220,14 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* FORECAST TABLE — MOBILE CARDS */
 .forecast-table{width:100%;border-collapse:collapse;}
-.forecast-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);padding:10px 12px;text-align:left;border-bottom:1px solid var(--faint);}
+.forecast-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);padding:12px 12px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);}
 .forecast-table th:not(:first-child){text-align:center;}
-.forecast-row{border-bottom:1px solid rgba(255,255,255,0.05);transition:background 0.15s;border-left:3px solid transparent;}
+.forecast-row{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;border-left:4px solid transparent;}.forecast-row:nth-child(even){background:rgba(255,255,255,0.02);}
 .forecast-row:hover{background:var(--surface2);}
 .forecast-row.good,.forecast-row.great{border-left-color:var(--good);}
 .forecast-row.fair{border-left-color:var(--fair);}
 .forecast-row.poor{border-left-color:var(--poor);}
-.forecast-row td{padding:16px 12px;vertical-align:middle;}
+.forecast-row td{padding:14px 12px;vertical-align:middle;}
 .row-time{font-family:'DM Mono',monospace;font-size:15px;letter-spacing:1px;color:#fff;white-space:nowrap;font-weight:700;}
 .row-height{font-size:22px;letter-spacing:-0.5px;text-align:center;}
 .row-height.good,.row-height.great{color:var(--good);}
@@ -252,9 +252,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* 16 DAY TABLE */
 .sixteen-table{width:100%;border-collapse:collapse;}
-.sixteen-table th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--faint);}
+.sixteen-table th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);padding:12px 10px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);}
 .sixteen-table th:not(:first-child){text-align:center;}
-.sixteen-row{border-bottom:1px solid rgba(255,255,255,0.05);transition:background 0.15s;border-left:3px solid transparent;cursor:pointer;}
+.sixteen-row{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;border-left:4px solid transparent;cursor:pointer;}.sixteen-row:nth-child(even){background:rgba(255,255,255,0.02);}
 .sixteen-row:hover{background:var(--surface2);}
 .sixteen-row.good,.sixteen-row.great{border-left-color:var(--good);}
 .sixteen-row.fair{border-left-color:var(--fair);}
@@ -263,7 +263,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .sixteen-row .row-time{font-size:12px;letter-spacing:0.5px;}
 .sixteen-row .row-day{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px;}
 .sixteen-row.today-row .row-time{color:rgba(245,200,0,0.85);}
-.sixteen-row.today-row{background:rgba(245,200,0,0.03);}
+.sixteen-row.today-row{background:rgba(245,200,0,0.05);}
 .sixteen-wrap{background:var(--surface);overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .sixteen-table{min-width:420px;}
 .sixteen-cards{display:none;gap:4px;flex-direction:column;}
@@ -405,7 +405,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 .status{text-align:center;padding:80px 24px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .status.error{color:var(--poor);}
-.disclaimer{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.5px;color:rgba(255,255,255,0.25);text-align:center;padding:24px 20px;border-top:1px solid var(--faint);margin-top:28px;line-height:1.8;font-style:italic;}
+.disclaimer{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.3px;color:rgba(255,255,255,0.45);text-align:center;padding:32px 24px;border-top:1px solid rgba(255,255,255,0.1);margin-top:28px;line-height:2;}
 .feedback-widget{border:1px solid rgba(255,255,255,0.08);margin:28px 0 0;padding:20px 24px;background:rgba(255,255,255,0.02);}
 .feedback-question{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .feedback-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
@@ -2253,7 +2253,7 @@ async function load(){
         +'</button>'
       +'</div>'
 
-      +'<div class="feedback-widget" id="feedbackWidget">'        +'<div class="feedback-question" id="feedbackQuestion">'          +'<span class="feedback-label">Was this forecast accurate?</span>'          +'<div class="feedback-btns">'            +'<button class="feedback-btn" onclick="submitFeedback(true)" title="Accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>'            +'<button class="feedback-btn" onclick="submitFeedback(false)" title="Not accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg></button>'          +'</div>'        +'</div>'        +'<div class="feedback-comment" id="feedbackComment" style="display:none;">'          +'<div class="feedback-label" style="margin-bottom:10px;">What was off? (optional)</div>'          +'<textarea class="feedback-textarea" id="feedbackText" placeholder="e.g. Wind was much stronger, waves were smaller than shown..." rows="3"></textarea>'          +'<div style="display:flex;gap:8px;margin-top:8px;">'            +'<button class="feedback-submit" onclick="sendFeedbackComment()">Send feedback</button>'            +'<button class="feedback-skip" onclick="dismissFeedback()">Skip</button>'          +'</div>'        +'</div>'        +'<div class="feedback-thanks" id="feedbackThanks" style="display:none;">'          +'<span class="feedback-thanks-text">Thanks &#128587;</span>'        +'</div>'      +'</div>'      +'<div class="disclaimer">'  +'Quiver Surf Forecast should be used in tandem with your own local knowledge of this wave.<br><br>'  +'Wave &amp; swell data: <a href="https://open-meteo.com" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">Open-Meteo Marine API</a>'  +' &nbsp;·&nbsp; Wind data: <a href="https://open-meteo.com" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">Open-Meteo Forecast API</a>'  +' &nbsp;·&nbsp; Tide predictions &amp; buoy data: <a href="https://www.marine.ie" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">Marine Institute</a> &amp; <a href="https://www.met.ie" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">Met Éireann</a>'  +'</div>';
+      +'<div class="feedback-widget" id="feedbackWidget">'        +'<div class="feedback-question" id="feedbackQuestion">'          +'<span class="feedback-label">Was this forecast accurate?</span>'          +'<div class="feedback-btns">'            +'<button class="feedback-btn" onclick="submitFeedback(true)" title="Accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>'            +'<button class="feedback-btn" onclick="submitFeedback(false)" title="Not accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg></button>'          +'</div>'        +'</div>'        +'<div class="feedback-comment" id="feedbackComment" style="display:none;">'          +'<div class="feedback-label" style="margin-bottom:10px;">What was off? (optional)</div>'          +'<textarea class="feedback-textarea" id="feedbackText" placeholder="e.g. Wind was much stronger, waves were smaller than shown..." rows="3"></textarea>'          +'<div style="display:flex;gap:8px;margin-top:8px;">'            +'<button class="feedback-submit" onclick="sendFeedbackComment()">Send feedback</button>'            +'<button class="feedback-skip" onclick="dismissFeedback()">Skip</button>'          +'</div>'        +'</div>'        +'<div class="feedback-thanks" id="feedbackThanks" style="display:none;">'          +'<span class="feedback-thanks-text">Thanks &#128587;</span>'        +'</div>'      +'</div>'      +'<div class="disclaimer">'  +'Quiver should be used alongside your own local knowledge of the wave.<br>'  +'Wave &amp; swell data: Open-Meteo Marine API &nbsp;·&nbsp; Wind data: Open-Meteo Forecast API<br>'  +'Tide predictions &amp; buoy data: Marine Institute Ireland &amp; Met Éireann'  +'</div>';
 
     requestAnimationFrame(function(){
       const sg=document.getElementById('swellGraph');

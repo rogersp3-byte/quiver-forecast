@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=10.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiver — Forecast</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -1945,7 +1945,6 @@ async function load(){
       const dateObj=new Date(t);
       const dayLabel=isToday?'Today':dateObj.toLocaleDateString('en-IE',{weekday:'short'});
       const dateLabel=dateObj.toLocaleDateString('en-IE',{day:'numeric',month:'short'});
-      const wRel=windRelative(dWindD,spot);
       return '<div class="sx-card '+dr+'">'
         +'<div><div class="sx-time">'+(isToday?'<span style="color:rgba(245,200,0,0.85)">'+dayLabel+'</span>':dayLabel)+'</div><div class="sx-day">'+dateLabel+'</div></div>'
         +'<div class="fc-height '+dr+'">'+displayH(dH)+'<span style="font-size:10px;opacity:0.4">'+displayUnit()+'</span></div>'
@@ -1958,7 +1957,7 @@ async function load(){
         +'<div class="fc-col fc-wind">'
           +'<div class="fc-col-label">Wind</div>'
           +'<div class="fc-col-arrow">'+arrowChar(dWindD)+'</div>'
-          +'<div class="fc-col-dir">'+wRel+'</div>'
+          +'<div class="fc-col-dir">'+windDir(dWindD)+'</div>'
           +'<div class="fc-col-sub">'+dWindS.toFixed(0)+'mph</div>'
         +'</div>'
         +'</div>';
@@ -2206,7 +2205,7 @@ function openDayExpand(el){
   document.getElementById('dex-p').innerHTML=d.p.toFixed(0)+'<span class="dei-unit">s</span>';
   document.getElementById('dex-dir').textContent=arrowChar(d.dir)+' '+windDir(d.dir);
   document.getElementById('dex-wind').innerHTML=d.windS.toFixed(0)+'<span class="dei-unit">mph</span>';
-  document.getElementById('dex-windlbl').textContent=arrowChar(d.windD)+' '+windDir(d.windD)+' · '+d.windLabel;
+  document.getElementById('dex-windlbl').textContent=arrowChar(d.windD)+' '+windDir(d.windD);
   document.getElementById('dayExpand').classList.add('open');
 }
 function closeDayExpand(e){

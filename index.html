@@ -1240,7 +1240,7 @@ function fmtDayFull(iso){const d=new Date(iso),t=new Date();if(d.toDateString()=
 
 // ── TIDE CARDS (simple high/low display) ──
 // ── TIDE CARDS + GRAPH ──────────────────────────────────────────────────────
-function buildTideCards(tidePoints){
+function buildTideCards(tidePoints, continuousPoints){
   if(!tidePoints||tidePoints.length<1){
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">Tide data unavailable</div></div>';
   }
@@ -1327,9 +1327,12 @@ function buildTideCards(tidePoints){
   const graphId='tideGraph_'+Date.now();
   const eventsJson=encodeURIComponent(JSON.stringify(allEvents));
   const cardTsJson=encodeURIComponent(JSON.stringify(events.map(function(e){return e.ts;})));
+  const contJson=continuousPoints&&continuousPoints.length>0
+    ?encodeURIComponent(JSON.stringify(continuousPoints.map(function(p){return{ts:p.ts,h:p.height};})))
+    :'';
   return'<div class="tide-block">'
     +'<div class="tide-simple-grid" style="grid-template-columns:repeat('+events.length+',1fr);">'+cards+'</div>'
-    +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'" data-cardts="'+cardTsJson+'"></canvas>'
+    +'<canvas class="tide-graph-canvas" id="'+graphId+'" data-events="'+eventsJson+'" data-cardts="'+cardTsJson+'" data-cont="'+contJson+'"></canvas>'
     +'</div>';
 }
 
@@ -1378,50 +1381,86 @@ function drawTideGraph(canvasId){
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
 
-  // One event before/after card window for smooth curve entry/exit
+  // ── Determine time window from card events ──────────────────────────────
   const allSorted=allEvents.slice().sort(function(a,b){return a.ts-b.ts;});
-  const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
-  const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
-  const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+1);
+  const tFirst=cardEvents[0].ts, tLast=cardEvents[nCards-1].ts, tRange=tLast-tFirst||1;
 
-  // Map first/last card centres to canvas edges so curve runs full width
-  // Inner cards keep their DOM-measured centres
   const edgeCentres=cardCentres.slice();
   edgeCentres[0]=0;
   edgeCentres[nCards-1]=W;
+  function tToX(ts){ return edgeCentres[0]+(ts-tFirst)/tRange*(edgeCentres[nCards-1]-edgeCentres[0]); }
 
-  const tFirst=cardEvents[0].ts,tLast=cardEvents[nCards-1].ts,tRange=tLast-tFirst||1;
-  const xFirst=edgeCentres[0],xLast=edgeCentres[nCards-1];
-  function eventX(e){
-    const idx=cardEvents.findIndex(function(c){return c.ts===e.ts;});
-    if(idx>=0)return edgeCentres[idx];
-    return xFirst+(e.ts-tFirst)/tRange*(xLast-xFirst);
-  }
+  // ── Try continuous data first ─────────────────────────────────────────────
+  const contRaw=canvas.dataset.cont;
+  let pts=[];
 
-  const allH=curveEvents.map(function(e){return e.height;});
-  const hMin=Math.min.apply(null,allH)*0.75;
-  const hMax=Math.max.apply(null,allH)*1.12;
-  const hRange=hMax-hMin||1;
-  const PAD={t:38,b:36};
-  const gH=H-PAD.t-PAD.b;
-  function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
-
-  // Cosine curve through curveEvents
-  const pts=[];
-  const STEPS=80;
-  for(let i=0;i<curveEvents.length-1;i++){
-    const e0=curveEvents[i],e1=curveEvents[i+1];
-    const x0=eventX(e0),x1=eventX(e1);
-    for(let s=0;s<=STEPS;s++){
-      const frac=s/STEPS;
-      pts.push({
-        x:x0+(x1-x0)*frac,
-        y:ty(e0.height+(e1.height-e0.height)*(0.5-0.5*Math.cos(frac*Math.PI))),
-        ts:e0.ts+(e1.ts-e0.ts)*frac
-      });
+  if(contRaw&&contRaw.length>2){
+    // Real 20-min resolution data from IMI-TidePrediction
+    const contAll=JSON.parse(decodeURIComponent(contRaw));
+    // Clip to card window with small margin
+    const margin=3600000;
+    const contClip=contAll.filter(function(p){return p.ts>=tFirst-margin&&p.ts<=tLast+margin;});
+    const allH=contClip.map(function(p){return p.h;});
+    const hMin=Math.min.apply(null,allH)*0.75;
+    const hMax=Math.max.apply(null,allH)*1.12;
+    const hRange=hMax-hMin||1;
+    const PAD={t:38,b:36};
+    const gH=H-PAD.t-PAD.b;
+    function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
+    pts=contClip.map(function(p){
+      return{x:tToX(p.ts), y:ty(p.h), ts:p.ts};
+    });
+  } else {
+    // ── Fallback: cosine interpolation through HIGH/LOW events ────────────
+    const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
+    const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
+    const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+2);
+    const allH=curveEvents.map(function(e){return e.height;});
+    const hMin=Math.min.apply(null,allH)*0.75;
+    const hMax=Math.max.apply(null,allH)*1.12;
+    const hRange=hMax-hMin||1;
+    const PAD={t:38,b:36};
+    const gH=H-PAD.t-PAD.b;
+    function ty(h){return PAD.t+gH*(1-(h-hMin)/hRange);}
+    const STEPS=80;
+    for(let i=0;i<curveEvents.length-1;i++){
+      const e0=curveEvents[i],e1=curveEvents[i+1];
+      const x0=tToX(e0.ts),x1=tToX(e1.ts);
+      for(let s=0;s<=STEPS;s++){
+        const frac=s/STEPS;
+        pts.push({
+          x:x0+(x1-x0)*frac,
+          y:ty(e0.height+(e1.height-e0.height)*(0.5-0.5*Math.cos(frac*Math.PI))),
+          ts:e0.ts+(e1.ts-e0.ts)*frac
+        });
+      }
     }
   }
   if(!pts.length)return;
+  // Outer-scope PAD (used for NOW line and dot-plotting y coordinates)
+  const PAD={t:38,b:36};
+  const gH=H-PAD.t-PAD.b;
+  // ty: convert tide height → canvas y. Derive scale from pts y-range.
+  const pYs=pts.map(function(p){return p.y;});
+  const yBottom=Math.max.apply(null,pYs); // high y = low on screen
+  const yTop=Math.min.apply(null,pYs);
+  const ySpan=yBottom-yTop||1;
+  // pxPerUnit: needed to map card-event heights → y positions for dots
+  // We reconstruct hMin/hMax from the pts themselves
+  const hMinOuter=0, hMaxOuter=1; // placeholders — ty via direct lookup below
+  // yFromTs: interpolate y-position on the pts curve for a given timestamp
+  function yFromTs(ts){
+    if(!pts.length) return PAD.t+gH*0.5;
+    if(ts<=pts[0].ts) return pts[0].y;
+    if(ts>=pts[pts.length-1].ts) return pts[pts.length-1].y;
+    for(let i=0;i<pts.length-1;i++){
+      if(pts[i].ts<=ts&&pts[i+1].ts>=ts){
+        const f=(ts-pts[i].ts)/(pts[i+1].ts-pts[i].ts);
+        return pts[i].y+(pts[i+1].y-pts[i].y)*f;
+      }
+    }
+    return pts[pts.length-1].y;
+  }
 
   // Fill gradient
   const grad=ctx.createLinearGradient(0,PAD.t,0,PAD.t+gH);
@@ -1474,8 +1513,8 @@ function drawTideGraph(canvasId){
   ctx.textAlign='center';
   cardEvents.forEach(function(e,i){
     const x=cardCentres[i];
-    const y=ty(e.height);
-    const isHigh=e.type==='high';
+    const y=yFromTs(e.ts);
+    const isHigh=e.type==='high'||e.type==='HIGH';
     const col=isHigh?'rgba(100,180,255,0.95)':'rgba(180,210,255,0.6)';
     // Dot
     ctx.beginPath();
@@ -1817,6 +1856,74 @@ async function fetchTidePredictions(stationID){
   }
 }
 
+// ── CONTINUOUS TIDE FETCH (IMI-TidePrediction, 20-min resolution) ──
+async function fetchTideContinuous(stationID){
+  const LOG='[Quiver TidesCont]';
+  try{
+    const from=new Date(Date.now()-2*3600000).toISOString().slice(0,19)+'Z';
+    const to  =new Date(Date.now()+50*3600000).toISOString().slice(0,19)+'Z'; // ~2 days
+    const url='https://erddap.marine.ie/erddap/tabledap/IMI-TidePrediction.csv'
+      +'?time,Water_Level'
+      +'&stationID=%22'+encodeURIComponent(stationID)+'%22'
+      +'&time%3E='+encodeURIComponent(from)
+      +'&time%3C='+encodeURIComponent(to)
+      +'&orderBy(%22time%22)';
+    console.log(LOG,'Fetching continuous:',url);
+    const r=await fetch(url);
+    if(!r.ok){ console.warn(LOG,'HTTP',r.status); return null; }
+    const text=await r.text();
+    const lines=text.trim().split('\n');
+    // Line 0: headers, Line 1: units, Lines 2+: data
+    if(lines.length<3){ console.warn(LOG,'Too few lines:',lines.length); return null; }
+    const points=[];
+    for(let i=2;i<lines.length;i++){
+      const parts=lines[i].split(',');
+      if(parts.length<2) continue;
+      const t=parts[0].trim();
+      const h=parseFloat(parts[1]);
+      if(!t||isNaN(h)) continue;
+      points.push({time:t, height:h, ts:new Date(t).getTime()});
+    }
+    console.log(LOG,'Parsed',points.length,'continuous points');
+    return points.length>10 ? points : null;
+  }catch(e){
+    console.error('[Quiver TidesCont] error:',e);
+    return null;
+  }
+}
+
+// Detect HIGH/LOW events from dense continuous tide data
+function detectTideEvents(points){
+  if(!points||points.length<6) return [];
+  const W=4; // window: 4 points each side = ~80 min
+  const events=[];
+  for(let i=W;i<points.length-W;i++){
+    const h=points[i].height;
+    let isHigh=true, isLow=true;
+    for(let j=1;j<=W;j++){
+      if(points[i-j].height>=h) isHigh=false;
+      if(points[i-j].height<=h) isLow=false;
+      if(points[i+j].height>=h) isHigh=false;
+      if(points[i+j].height<=h) isLow=false;
+    }
+    if(isHigh) events.push({type:'HIGH', time:points[i].time, height:h, ts:points[i].ts});
+    else if(isLow) events.push({type:'LOW', time:points[i].time, height:h, ts:points[i].ts});
+  }
+  // Deduplicate: keep only the best event within 90-min windows
+  const deduped=[];
+  events.forEach(function(e){
+    const last=deduped[deduped.length-1];
+    if(last && Math.abs(e.ts-last.ts)<90*60000 && e.type===last.type){
+      // Keep whichever is more extreme
+      if(e.type==='HIGH'&&e.height>last.height) deduped[deduped.length-1]=e;
+      if(e.type==='LOW' &&e.height<last.height) deduped[deduped.length-1]=e;
+    } else {
+      deduped.push(e);
+    }
+  });
+  return deduped;
+}
+
 // ── M2 BUOY FETCH ──
 async function fetchM2Buoy(){
   try{
@@ -1853,10 +1960,11 @@ async function load(){
   app.innerHTML='<div class="status">Loading forecast...</div>';
   try{
     const isDublin=spot.useBuoy;
-    const[mr,wr,tideR,dots,buoy]=await Promise.all([
+    const[mr,wr,tideR,tideContR,dots,buoy]=await Promise.all([
       fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
       fetch('https://api.open-meteo.com/v1/forecast?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wind_speed_10m,wind_direction_10m&daily=wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
       fetchTidePredictions(spot.tideStation||'Galway'),
+      fetchTideContinuous(spot.tideStation||'Galway'),
       fetchDotRatings(),
       isDublin?fetchM2Buoy():Promise.resolve(null)
     ]);
@@ -1894,13 +2002,27 @@ async function load(){
       slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
     }
 
-    // Tide data — tideR is already processed [{time,height,type}] from fetchTidePredictions
-    let tidePoints = tideR || [];
-    if(tidePoints.length < 2){
-      console.warn('[Quiver Tides] Falling back to synthetic tides (got',tidePoints.length,'points from MI)');
-      tidePoints = generateSyntheticTides(spot.lat, spot.lng);
+    // Tide data — prefer continuous 20-min data, fall back to HIGH/LOW events, then synthetic
+    let tidePoints;
+    let tideContinuous = null;
+    if(tideContR && tideContR.length > 10){
+      console.log('[Quiver Tides] Using',tideContR.length,'continuous points from IMI-TidePrediction');
+      tideContinuous = tideContR; // store for graph
+      // Build HIGH/LOW events from continuous data for the cards & surf report
+      const detectedEvents = detectTideEvents(tideContR);
+      if(detectedEvents.length >= 2){
+        tidePoints = detectedEvents;
+        console.log('[Quiver Tides] Detected',detectedEvents.length,'HIGH/LOW events from continuous data');
+      } else {
+        tidePoints = tideR || [];
+        console.warn('[Quiver Tides] Continuous event detection insufficient, using HighLow API');
+      }
+    } else if(tideR && tideR.length >= 2){
+      console.log('[Quiver Tides] Using',tideR.length,'MI HighLow events (no continuous data)');
+      tidePoints = tideR;
     } else {
-      console.log('[Quiver Tides] Using',tidePoints.length,'MI predicted tide events');
+      console.warn('[Quiver Tides] Falling back to synthetic tides');
+      tidePoints = generateSyntheticTides(spot.lat, spot.lng);
     }
 
     const days=daily.time.map(function(t,i){return{time:t,h:daily.wave_height_max[i]||0,p:daily.wave_period_max[i]||0,dir:daily.wave_direction_dominant[i]||0};});
@@ -2095,7 +2217,7 @@ async function load(){
       +'<div class="forecast-cards">'+mobileCards+'</div>'
 
       +'<div class="sec-label">Tides · Today</div>'
-      +buildTideCards(tidePoints)
+      +buildTideCards(tidePoints,tideContinuous)
 
       +'<div class="sec-label">First &amp; Last Light</div>'
       +'<div class="light-grid">'

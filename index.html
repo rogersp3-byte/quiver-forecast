@@ -220,16 +220,16 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* FORECAST TABLE — MOBILE CARDS */
 .forecast-table{width:100%;border-collapse:collapse;}
-.forecast-table th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);padding:8px 10px;text-align:left;border-bottom:1px solid var(--faint);}
+.forecast-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);padding:10px 12px;text-align:left;border-bottom:1px solid var(--faint);}
 .forecast-table th:not(:first-child){text-align:center;}
 .forecast-row{border-bottom:1px solid rgba(255,255,255,0.05);transition:background 0.15s;border-left:3px solid transparent;}
 .forecast-row:hover{background:var(--surface2);}
 .forecast-row.good,.forecast-row.great{border-left-color:var(--good);}
 .forecast-row.fair{border-left-color:var(--fair);}
 .forecast-row.poor{border-left-color:var(--poor);}
-.forecast-row td{padding:14px 10px;vertical-align:middle;}
-.row-time{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1px;color:rgba(255,255,255,0.85);white-space:nowrap;font-weight:500;}
-.row-height{font-size:18px;letter-spacing:-0.5px;text-align:center;}
+.forecast-row td{padding:16px 12px;vertical-align:middle;}
+.row-time{font-family:'DM Mono',monospace;font-size:15px;letter-spacing:1px;color:#fff;white-space:nowrap;font-weight:700;}
+.row-height{font-size:22px;letter-spacing:-0.5px;text-align:center;}
 .row-height.good,.row-height.great{color:var(--good);}
 .row-height.fair{color:var(--fair);}
 .row-height.poor{color:var(--poor);}
@@ -243,11 +243,11 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
 .col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;}
-.col-dir{font-size:24px;line-height:1;margin-bottom:3px;font-weight:900;}
-.col-compass{font-size:13px;letter-spacing:0.5px;color:rgba(255,255,255,0.95);font-weight:700;}
-.col-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;letter-spacing:0.3px;}
-.col-wind .col-compass{color:rgba(255,255,255,0.85);}
-.col-wind .col-sub{color:rgba(255,255,255,0.55);}
+.col-dir{font-size:30px;line-height:1;margin-bottom:4px;font-weight:900;}
+.col-compass{font-size:16px;letter-spacing:0.5px;color:#fff;font-weight:700;}
+.col-sub{font-size:14px;color:rgba(255,255,255,0.85);margin-top:3px;letter-spacing:0.3px;}
+.col-wind .col-compass{color:#fff;}
+.col-wind .col-sub{color:rgba(255,255,255,0.85);}
 .col-no-data{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
 /* 16 DAY TABLE */
@@ -287,9 +287,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .fc-height.poor{color:var(--poor);}
 .fc-col{font-family:'DM Mono',monospace;text-align:center;}
 .fc-col-arrow{font-size:22px;line-height:1;margin-bottom:2px;font-weight:900;}
-.fc-col-dir{font-size:10px;letter-spacing:0.3px;color:rgba(255,255,255,0.8);}
-.fc-col-sub{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;}
-.fc-col.fc-wind .fc-col-dir{color:rgba(255,255,255,0.5);}
+.fc-col-dir{font-size:13px;letter-spacing:0.3px;color:#fff;font-weight:700;}
+.fc-col-sub{font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px;}
+.fc-col.fc-wind .fc-col-dir{color:rgba(255,255,255,0.85);}
 .fc-col-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-bottom:3px;}
 
 /* 7 DAY — ENHANCED */

@@ -243,7 +243,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
 .col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;}
-.col-dir{font-size:15px;line-height:1;margin-bottom:3px;}
+.col-dir{font-size:24px;line-height:1;margin-bottom:3px;font-weight:900;}
 .col-compass{font-size:11px;letter-spacing:0.5px;color:rgba(255,255,255,0.85);}
 .col-sub{font-size:10px;color:rgba(255,255,255,0.38);margin-top:2px;letter-spacing:0.3px;}
 .col-wind .col-compass{color:rgba(255,255,255,0.55);}
@@ -266,6 +266,13 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .sixteen-row.today-row{background:rgba(245,200,0,0.03);}
 .sixteen-wrap{background:var(--surface);overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .sixteen-table{min-width:420px;}
+.sixteen-cards{display:none;gap:4px;flex-direction:column;}
+.sx-card{background:var(--surface);padding:14px 16px;border-left:3px solid transparent;display:grid;grid-template-columns:72px 1fr 1fr 1fr;align-items:center;gap:8px;}
+.sx-card.great,.sx-card.good{border-left-color:var(--good);}
+.sx-card.fair{border-left-color:var(--fair);}
+.sx-card.poor{border-left-color:var(--poor);}
+.sx-time{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:rgba(255,255,255,0.5);}
+.sx-day{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:2px;}
 
 /* MOBILE FORECAST CARDS */
 .forecast-cards{display:none;gap:4px;flex-direction:column;}
@@ -279,7 +286,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .fc-height.fair{color:var(--fair);}
 .fc-height.poor{color:var(--poor);}
 .fc-col{font-family:'DM Mono',monospace;text-align:center;}
-.fc-col-arrow{font-size:14px;line-height:1;margin-bottom:2px;}
+.fc-col-arrow{font-size:22px;line-height:1;margin-bottom:2px;font-weight:900;}
 .fc-col-dir{font-size:10px;letter-spacing:0.3px;color:rgba(255,255,255,0.8);}
 .fc-col-sub{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;}
 .fc-col.fc-wind .fc-col-dir{color:rgba(255,255,255,0.5);}
@@ -439,6 +446,8 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   /* Hide table on mobile, show cards */
   .forecast-table-wrap{display:none;}
   .forecast-cards{display:flex;}
+  .sixteen-wrap{display:none;}
+  .sixteen-cards{display:flex;}
   .spot-btn{font-size:8px;padding:10px 3px;}
   #searchPage{padding:28px 18px;}
   .globe-wrap{width:150px;height:150px;margin-bottom:28px;}
@@ -891,6 +900,19 @@ function dirArrowSVG(deg,color){
 }
 function waveEnergy(h,t){return Math.round((1025*9.81*9.81*h*h*t)/(32*Math.PI*1000));}
 function isOffshore(wd,spot){const d=((wd-spot.beachFacing)+360)%360;return d>90&&d<270;}
+function windRelative(wd,spot){
+  const d=((wd-spot.beachFacing)+360)%360;
+  if(d>90&&d<270) return 'Offshore';
+  if(d<=45||d>=315) return 'Onshore';
+  return 'Cross-shore';
+}
+function windStrength(ws){
+  if(ws<5)  return 'Calm';
+  if(ws<12) return 'Light';
+  if(ws<20) return 'Moderate';
+  if(ws<30) return 'Fresh';
+  return 'Strong';
+}
 function swellInWindow(sd,spot){const lo=spot.swellWindow[0],hi=spot.swellWindow[1];return lo<=hi?sd>=lo&&sd<=hi:sd>=lo||sd<=hi;}
 function skillThresholds(skill){
   return{beginner:{minH:0.3,maxH:1.0,minP:6},intermediate:{minH:0.5,maxH:1.8,minP:7},advanced:{minH:0.8,maxH:3.5,minP:8},expert:{minH:1.2,maxH:99,minP:9}}[skill]||{minH:0.5,maxH:99,minP:7};
@@ -1078,10 +1100,10 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       const mult=spot.ftMult||0.7;
       const ftH=(s.h*mult*3.281).toFixed(1);
       const mH=(s.h*mult).toFixed(1);
-      const windStr=isOffshore(s.wd,spot)?windDir(s.wd)+' offshore':windDir(s.wd)+' onshore';
+      const windStr=windDir(s.wd)+' '+windRelative(s.wd,spot).toLowerCase();
       const periodStr=s.p?s.p.toFixed(0)+'s':'—';
       const swDirStr=windDir(s.swDir!=null?s.swDir:s.waveDir);
-      return ftH+'ft ('+mH+'m) @ '+periodStr+' '+swDirStr+', '+windStr;
+      return ftH+'ft @ '+periodStr+', '+swDirStr+' swell, '+windStrength(s.ws)+' '+windRelative(s.wd,spot).toLowerCase()+' wind';
     }
 
     // Helper: next future tide event string
@@ -1902,10 +1924,44 @@ async function load(){
       return '<tr class="sixteen-row '+dr16+(isToday16?' today-row':'')+'">'
         +'<td><div class="row-time">'+dayLabel+'</div><div class="row-day">'+dateLabel+'</div></td>'
         +'<td><div class="row-height '+dr16+'">'+displayH(dH)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
-        +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.4)">'+dH.toFixed(1)+'<span class="row-unit">m</span></div></td>'
+        
         +'<td class="col-swell"><div class="col-dir">'+arrowChar(dDir)+'</div><div class="col-compass">'+windDir(dDir)+'</div><div class="col-sub">'+dP.toFixed(0)+'s</div></td>'
         +'<td class="col-wind"><div class="col-dir">'+arrowChar(dWindD)+'</div><div class="col-compass">'+windDir(dWindD)+'</div><div class="col-sub">'+dWindS.toFixed(0)+'mph</div></td>'
         +'</tr>';
+    }).join('');
+
+    // 7-day mobile cards (same layout as fc-card)
+    const sixteenCards=daily.time.slice(0,7).map(function(t,i){
+      const dH=daily.wave_height_max[i]||0;
+      const dP=daily.wave_period_max[i]||0;
+      const dDir=daily.wave_direction_dominant[i]||0;
+      const dWindS=dailyWindS[i]||0;
+      const dWindD=dailyWindD[i]||0;
+      const windDiff=((dWindD-spot.beachFacing)+360)%360;
+      const isOff=windDiff>90&&windDiff<270;
+      const effWind=isOff?Math.min(dWindS*0.4,dWindS):dWindS;
+      const dr=rate(dH,effWind,dP,skill);
+      const isToday=new Date(t).toDateString()===today16;
+      const dateObj=new Date(t);
+      const dayLabel=isToday?'Today':dateObj.toLocaleDateString('en-IE',{weekday:'short'});
+      const dateLabel=dateObj.toLocaleDateString('en-IE',{day:'numeric',month:'short'});
+      const wRel=windRelative(dWindD,spot);
+      return '<div class="sx-card '+dr+'">'
+        +'<div><div class="sx-time">'+(isToday?'<span style="color:rgba(245,200,0,0.85)">'+dayLabel+'</span>':dayLabel)+'</div><div class="sx-day">'+dateLabel+'</div></div>'
+        +'<div class="fc-height '+dr+'">'+displayH(dH)+'<span style="font-size:10px;opacity:0.4">'+displayUnit()+'</span></div>'
+        +'<div class="fc-col">'
+          +'<div class="fc-col-label">Swell</div>'
+          +'<div class="fc-col-arrow">'+arrowChar(dDir)+'</div>'
+          +'<div class="fc-col-dir">'+windDir(dDir)+'</div>'
+          +'<div class="fc-col-sub">'+dP.toFixed(0)+'s</div>'
+        +'</div>'
+        +'<div class="fc-col fc-wind">'
+          +'<div class="fc-col-label">Wind</div>'
+          +'<div class="fc-col-arrow">'+arrowChar(dWindD)+'</div>'
+          +'<div class="fc-col-dir">'+wRel+'</div>'
+          +'<div class="fc-col-sub">'+dWindS.toFixed(0)+'mph</div>'
+        +'</div>'
+        +'</div>';
     }).join('');
 
     // Table rows
@@ -1920,7 +1976,7 @@ async function load(){
       return '<tr class="forecast-row '+sr+'">'
         +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
         +'<td><div class="row-height '+sr+'">'+displayH(s.h)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
-        +'<td><div class="row-height" style="font-size:14px;color:rgba(255,255,255,0.4)">'+s.h.toFixed(1)+'<span class="row-unit">m</span></div></td>'
+        
         +'<td class="col-swell"><div class="col-dir">'+arrowChar(dir)+'</div><div class="col-compass">'+windDir(dir)+'</div><div class="col-sub">'+(s.swP||s.p).toFixed(0)+'s</div></td>'
         +'<td class="col-wind"><div class="col-dir">'+arrowChar(s.wd)+'</div><div class="col-compass">'+windDir(s.wd)+'</div><div class="col-sub">'+s.ws.toFixed(0)+'mph</div></td>'
         +'</tr>';
@@ -1966,7 +2022,7 @@ async function load(){
       const isOffshoreDay=windDiff>90&&windDiff<270;
       const effectiveWind=isOffshoreDay?Math.min(dayWindS*0.4,dayWindS):dayWindS;
       const dr=rate(d.h,effectiveWind,d.p,skill);
-      const windLabel=isOffshoreDay?'Offshore':'Onshore';
+      const windLabel=windRelative(dayWindD,spot);
       // encode data into onclick
       const dataStr=encodeURIComponent(JSON.stringify({
         time:d.time,h:d.h,p:d.p,dir:d.dir,
@@ -2051,9 +2107,10 @@ async function load(){
 
       +'<div class="sec-label">7 Day Forecast</div>'
       +'<div class="sixteen-wrap"><table class="sixteen-table">'
-        +'<thead><tr><th>Day</th><th>Wave</th><th>Hs</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
+        +'<thead><tr><th>Day</th><th>Wave</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
         +'<tbody>'+sixteenRows+'</tbody>'
       +'</table></div>'
+      +'<div class="sixteen-cards">'+sixteenCards+'</div>'
 
       +'<div class="sec-label">About This Break</div>'
       +'<div class="spot-info">'

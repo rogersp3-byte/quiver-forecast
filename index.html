@@ -1960,11 +1960,10 @@ async function load(){
   app.innerHTML='<div class="status">Loading forecast...</div>';
   try{
     const isDublin=spot.useBuoy;
-    const[mr,wr,tideR,tideContR,dots,buoy]=await Promise.all([
+    const[mr,wr,tideR,dots,buoy]=await Promise.all([
       fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
       fetch('https://api.open-meteo.com/v1/forecast?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wind_speed_10m,wind_direction_10m&daily=wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
       fetchTidePredictions(spot.tideStation||'Galway'),
-      fetchTideContinuous(spot.tideStation||'Galway'),
       fetchDotRatings(),
       isDublin?fetchM2Buoy():Promise.resolve(null)
     ]);
@@ -2002,27 +2001,13 @@ async function load(){
       slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
     }
 
-    // Tide data — prefer continuous 20-min data, fall back to HIGH/LOW events, then synthetic
-    let tidePoints;
-    let tideContinuous = null;
-    if(tideContR && tideContR.length > 10){
-      console.log('[Quiver Tides] Using',tideContR.length,'continuous points from IMI-TidePrediction');
-      tideContinuous = tideContR; // store for graph
-      // Build HIGH/LOW events from continuous data for the cards & surf report
-      const detectedEvents = detectTideEvents(tideContR);
-      if(detectedEvents.length >= 2){
-        tidePoints = detectedEvents;
-        console.log('[Quiver Tides] Detected',detectedEvents.length,'HIGH/LOW events from continuous data');
-      } else {
-        tidePoints = tideR || [];
-        console.warn('[Quiver Tides] Continuous event detection insufficient, using HighLow API');
-      }
-    } else if(tideR && tideR.length >= 2){
-      console.log('[Quiver Tides] Using',tideR.length,'MI HighLow events (no continuous data)');
-      tidePoints = tideR;
-    } else {
-      console.warn('[Quiver Tides] Falling back to synthetic tides');
+    // Tide data — use MI HIGH/LOW predictions, fall back to synthetic
+    let tidePoints = tideR || [];
+    if(tidePoints.length < 2){
+      console.warn('[Quiver Tides] Falling back to synthetic tides (got',tidePoints.length,'points from MI)');
       tidePoints = generateSyntheticTides(spot.lat, spot.lng);
+    } else {
+      console.log('[Quiver Tides] Using',tidePoints.length,'MI predicted tide events');
     }
 
     const days=daily.time.map(function(t,i){return{time:t,h:daily.wave_height_max[i]||0,p:daily.wave_period_max[i]||0,dir:daily.wave_direction_dominant[i]||0};});
@@ -2217,7 +2202,7 @@ async function load(){
       +'<div class="forecast-cards">'+mobileCards+'</div>'
 
       +'<div class="sec-label">Tides · Today</div>'
-      +buildTideCards(tidePoints,tideContinuous)
+      +buildTideCards(tidePoints)
 
       +'<div class="sec-label">First &amp; Last Light</div>'
       +'<div class="light-grid">'

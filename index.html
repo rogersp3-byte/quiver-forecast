@@ -220,15 +220,15 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 /* FORECAST TABLE — MOBILE CARDS */
 .forecast-table{width:100%;border-collapse:collapse;}
-.forecast-table th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--faint);}
+.forecast-table th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);padding:8px 10px;text-align:left;border-bottom:1px solid var(--faint);}
 .forecast-table th:not(:first-child){text-align:center;}
 .forecast-row{border-bottom:1px solid rgba(255,255,255,0.05);transition:background 0.15s;border-left:3px solid transparent;}
 .forecast-row:hover{background:var(--surface2);}
 .forecast-row.good,.forecast-row.great{border-left-color:var(--good);}
 .forecast-row.fair{border-left-color:var(--fair);}
 .forecast-row.poor{border-left-color:var(--poor);}
-.forecast-row td{padding:11px 10px;vertical-align:middle;}
-.row-time{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.5);white-space:nowrap;}
+.forecast-row td{padding:14px 10px;vertical-align:middle;}
+.row-time{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1px;color:rgba(255,255,255,0.85);white-space:nowrap;font-weight:500;}
 .row-height{font-size:18px;letter-spacing:-0.5px;text-align:center;}
 .row-height.good,.row-height.great{color:var(--good);}
 .row-height.fair{color:var(--fair);}
@@ -244,10 +244,10 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 /* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
 .col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;}
 .col-dir{font-size:24px;line-height:1;margin-bottom:3px;font-weight:900;}
-.col-compass{font-size:11px;letter-spacing:0.5px;color:rgba(255,255,255,0.85);}
-.col-sub{font-size:10px;color:rgba(255,255,255,0.38);margin-top:2px;letter-spacing:0.3px;}
-.col-wind .col-compass{color:rgba(255,255,255,0.55);}
-.col-wind .col-sub{color:rgba(255,255,255,0.32);}
+.col-compass{font-size:13px;letter-spacing:0.5px;color:rgba(255,255,255,0.95);font-weight:700;}
+.col-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;letter-spacing:0.3px;}
+.col-wind .col-compass{color:rgba(255,255,255,0.85);}
+.col-wind .col-sub{color:rgba(255,255,255,0.55);}
 .col-no-data{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
 /* 16 DAY TABLE */
@@ -1098,12 +1098,14 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     // Helper: build raw numbers string from a slot
     function rawNumbers(s){
       const mult=spot.ftMult||0.7;
-      const ftH=(s.h*mult*3.281).toFixed(1);
-      const mH=(s.h*mult).toFixed(1);
-      const windStr=windDir(s.wd)+' '+windRelative(s.wd,spot).toLowerCase();
+      const ftMid=s.h*mult*3.281;
+      // ±20% range, rounded to nearest 0.5ft
+      const ftLo=(Math.round((ftMid*0.8)*2)/2).toFixed(0);
+      const ftHi=(Math.round((ftMid*1.2)*2)/2).toFixed(0);
+      const rangeStr=ftLo===ftHi?ftLo+'ft':ftLo+'-'+ftHi+'ft';
       const periodStr=s.p?s.p.toFixed(0)+'s':'—';
       const swDirStr=windDir(s.swDir!=null?s.swDir:s.waveDir);
-      return ftH+'ft @ '+periodStr+', '+swDirStr+' swell, '+windStrength(s.ws)+' '+windRelative(s.wd,spot).toLowerCase()+' wind';
+      return rangeStr+' @ '+periodStr+', '+swDirStr+' swell, '+windStrength(s.ws)+' '+windRelative(s.wd,spot).toLowerCase()+' wind';
     }
 
     // Helper: next future tide event string
@@ -2087,7 +2089,7 @@ async function load(){
 
       +'<div class="sec-label">Next 24 Hours</div>'
       +'<div class="forecast-table-wrap"><table class="forecast-table">'
-        +'<thead><tr><th>Time</th><th>Wave</th><th>Hs</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
+        +'<thead><tr><th>Time</th><th>Wave</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
         +'<tbody>'+tableRows+'</tbody>'
       +'</table></div>'
       +'<div class="forecast-cards">'+mobileCards+'</div>'

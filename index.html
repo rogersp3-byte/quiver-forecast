@@ -259,15 +259,15 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .row-tag.work{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);}
 
 /* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
-.col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;padding:10px 6px;}
+.col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;padding:10px 8px;}
 .col-inline{display:flex;align-items:center;justify-content:center;gap:5px;}
-.col-dir{font-size:16px;line-height:1;font-weight:900;}
-.col-compass{font-size:14px;letter-spacing:0.5px;color:#fff;font-weight:700;}
-.col-val{font-size:14px;font-weight:700;letter-spacing:0.3px;}
-.col-unit{font-size:10px;color:rgba(255,255,255,0.45);margin-left:1px;}
-.wind-light{color:#22c55e;}
-.wind-moderate{color:#f5c800;}
-.wind-strong{color:#ef4444;}
+.col-dir{font-size:15px;line-height:1;}
+.col-compass{font-size:14px;letter-spacing:0.5px;color:rgba(255,255,255,0.7);font-weight:400;}
+.col-val{font-size:14px;font-weight:700;letter-spacing:0.3px;color:#fff;}
+.col-unit{font-size:10px;color:rgba(255,255,255,0.35);margin-left:1px;}
+.wind-light{color:#22c55e !important;}
+.wind-moderate{color:#f5c800 !important;}
+.wind-strong{color:#ef4444 !important;}
 .col-no-data{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
 /* 16 DAY TABLE */
@@ -915,6 +915,10 @@ function buildSelector(dotRatings){
 // ── HELPERS ──
 function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
 function arrowChar(d){return['↓','↙','←','↖','↑','↗','→','↘'][Math.round(d/45)%8];}
+// Thin outline arrows for swell direction
+function swellArrow(d){return['⇩','⇙','⇦','⇖','⇧','⇗','⇨','⇘'][Math.round(d/45)%8];}
+// Solid filled arrows for wind direction  
+function windArrow(d){return['▼','◣','◀','◤','▲','◥','▶','◢'][Math.round(d/45)%8];}
 function dirArrowSVG(deg,color){
   return '<div class="dir-arrow"><svg viewBox="0 0 24 24" style="transform:rotate('+(deg+180)+'deg)" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></div>';
 }
@@ -2059,9 +2063,9 @@ async function load(){
         +'<td><div class="row-time">'+dayLabel+'</div><div class="row-day">'+dateLabel+'</div></td>'
         +'<td><div class="row-height '+dr16+'">'+displayH(dH)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         
-        +'<td class="col-swell"><div class="col-inline"><span class="col-dir">'+arrowChar(dDir)+'</span><span class="col-compass">'+windDir(dDir)+'</span></div></td>'
+        +'<td class="col-swell"><div class="col-inline"><span class="col-dir">'+swellArrow(dDir)+'</span><span class="col-compass">'+windDir(dDir)+'</span></div></td>'
         +'<td class="col-swell"><span class="col-val">'+dP.toFixed(0)+'</span><span class="col-unit">s</span></td>'
-        +'<td class="col-wind"><div class="col-inline"><span class="col-dir">'+arrowChar(dWindD)+'</span><span class="col-compass">'+windDir(dWindD)+'</span></div></td>'
+        +'<td class="col-wind"><div class="col-inline"><span class="col-dir">'+windArrow(dWindD)+'</span><span class="col-compass">'+windDir(dWindD)+'</span></div></td>'
         +'<td class="col-wind"><span class="col-val '+windClass(dWindS)+'">'+dWindS.toFixed(0)+'</span><span class="col-unit">mph</span></td>'
         +'</tr>';
     }).join('');
@@ -2112,9 +2116,9 @@ async function load(){
         +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
         +'<td><div class="row-height '+sr+'">'+displayH(s.h)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         
-        +'<td class="col-swell"><div class="col-inline"><span class="col-dir">'+arrowChar(dir)+'</span><span class="col-compass">'+windDir(dir)+'</span></div></td>'
+        +'<td class="col-swell"><div class="col-inline"><span class="col-dir">'+swellArrow(dir)+'</span><span class="col-compass">'+windDir(dir)+'</span></div></td>'
         +'<td class="col-swell"><span class="col-val">'+(s.swP||s.p).toFixed(0)+'</span><span class="col-unit">s</span></td>'
-        +'<td class="col-wind"><div class="col-inline"><span class="col-dir">'+arrowChar(s.wd)+'</span><span class="col-compass">'+windDir(s.wd)+'</span></div></td>'
+        +'<td class="col-wind"><div class="col-inline"><span class="col-dir">'+windArrow(s.wd)+'</span><span class="col-compass">'+windDir(s.wd)+'</span></div></td>'
         +'<td class="col-wind"><span class="col-val '+windClass(s.ws)+'">'+s.ws.toFixed(0)+'</span><span class="col-unit">mph</span></td>'
         +'</tr>';
     }).join('');

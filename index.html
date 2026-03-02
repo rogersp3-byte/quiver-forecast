@@ -259,12 +259,15 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .row-tag.work{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);}
 
 /* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
-.col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;}
-.col-dir{font-size:30px;line-height:1;margin-bottom:4px;font-weight:900;}
-.col-compass{font-size:16px;letter-spacing:0.5px;color:#fff;font-weight:700;}
-.col-sub{font-size:14px;color:rgba(255,255,255,0.85);margin-top:3px;letter-spacing:0.3px;}
-.col-wind .col-compass{color:#fff;}
-.col-wind .col-sub{color:rgba(255,255,255,0.85);}
+.col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;padding:10px 6px;}
+.col-inline{display:flex;align-items:center;justify-content:center;gap:5px;}
+.col-dir{font-size:16px;line-height:1;font-weight:900;}
+.col-compass{font-size:14px;letter-spacing:0.5px;color:#fff;font-weight:700;}
+.col-val{font-size:14px;font-weight:700;letter-spacing:0.3px;}
+.col-unit{font-size:10px;color:rgba(255,255,255,0.45);margin-left:1px;}
+.wind-light{color:#22c55e;}
+.wind-moderate{color:#f5c800;}
+.wind-strong{color:#ef4444;}
 .col-no-data{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
 /* 16 DAY TABLE */
@@ -441,9 +444,9 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 #swipeHint-inner{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);writing-mode:vertical-rl;text-orientation:mixed;}
 
 /* MOBILE BOTTOM NAV */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.97);border-top:1px solid rgba(255,255,255,0.1);z-index:500;padding:10px 0 max(10px,env(safe-area-inset-bottom));backdrop-filter:blur(12px);}
-.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.15s;padding:4px 0;}
-.bottom-nav-item svg{width:20px;height:20px;}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.97);border-top:1px solid rgba(255,255,255,0.1);z-index:500;padding:14px 0 max(20px,env(safe-area-inset-bottom));backdrop-filter:blur(12px);}
+.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.15s;padding:4px 0;}
+.bottom-nav-item svg{width:22px;height:22px;}
 .bottom-nav-item:hover,.bottom-nav-item.active{color:#fff;}
 .bottom-nav-item.active svg{stroke:#f5c800;}
 
@@ -453,7 +456,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 @media(max-width:640px){
   .bottom-nav{display:flex;}
   .main-nav{display:none!important;}
-  body{padding-bottom:72px;}
+  body{padding-bottom:88px;}
   .current-grid{grid-template-columns:repeat(2,1fr);}
   .current-grid-bottom{grid-template-columns:repeat(2,1fr);}
   header{padding:14px 18px;}
@@ -929,6 +932,11 @@ function windStrength(ws){
   if(ws<20) return 'Moderate';
   if(ws<30) return 'Fresh';
   return 'Strong';
+}
+function windClass(ws){
+  if(ws<=10) return 'wind-light';
+  if(ws<=20) return 'wind-moderate';
+  return 'wind-strong';
 }
 function swellInWindow(sd,spot){const lo=spot.swellWindow[0],hi=spot.swellWindow[1];return lo<=hi?sd>=lo&&sd<=hi:sd>=lo||sd<=hi;}
 function skillThresholds(skill){
@@ -2051,10 +2059,10 @@ async function load(){
         +'<td><div class="row-time">'+dayLabel+'</div><div class="row-day">'+dateLabel+'</div></td>'
         +'<td><div class="row-height '+dr16+'">'+displayH(dH)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         
-        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dDir)+'</div><div class="col-compass">'+windDir(dDir)+'</div></td>'
-        +'<td class="col-swell"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+dP.toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">s</span></div></td>'
-        +'<td class="col-wind"><div class="col-dir">'+arrowChar(dWindD)+'</div><div class="col-compass">'+windDir(dWindD)+'</div></td>'
-        +'<td class="col-wind"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+dWindS.toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">mph</span></div></td>'
+        +'<td class="col-swell"><div class="col-inline"><span class="col-dir">'+arrowChar(dDir)+'</span><span class="col-compass">'+windDir(dDir)+'</span></div></td>'
+        +'<td class="col-swell"><span class="col-val">'+dP.toFixed(0)+'</span><span class="col-unit">s</span></td>'
+        +'<td class="col-wind"><div class="col-inline"><span class="col-dir">'+arrowChar(dWindD)+'</span><span class="col-compass">'+windDir(dWindD)+'</span></div></td>'
+        +'<td class="col-wind"><span class="col-val '+windClass(dWindS)+'">'+dWindS.toFixed(0)+'</span><span class="col-unit">mph</span></td>'
         +'</tr>';
     }).join('');
 
@@ -2104,10 +2112,10 @@ async function load(){
         +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
         +'<td><div class="row-height '+sr+'">'+displayH(s.h)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         
-        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dir)+'</div><div class="col-compass">'+windDir(dir)+'</div></td>'
-        +'<td class="col-swell"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+(s.swP||s.p).toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">s</span></div></td>'
-        +'<td class="col-wind"><div class="col-dir">'+arrowChar(s.wd)+'</div><div class="col-compass">'+windDir(s.wd)+'</div></td>'
-        +'<td class="col-wind"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+s.ws.toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">mph</span></div></td>'
+        +'<td class="col-swell"><div class="col-inline"><span class="col-dir">'+arrowChar(dir)+'</span><span class="col-compass">'+windDir(dir)+'</span></div></td>'
+        +'<td class="col-swell"><span class="col-val">'+(s.swP||s.p).toFixed(0)+'</span><span class="col-unit">s</span></td>'
+        +'<td class="col-wind"><div class="col-inline"><span class="col-dir">'+arrowChar(s.wd)+'</span><span class="col-compass">'+windDir(s.wd)+'</span></div></td>'
+        +'<td class="col-wind"><span class="col-val '+windClass(s.ws)+'">'+s.ws.toFixed(0)+'</span><span class="col-unit">mph</span></td>'
         +'</tr>';
     }).join('');
 

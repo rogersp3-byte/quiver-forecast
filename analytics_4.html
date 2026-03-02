@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiver — Analytics HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;
+  --white:#fff;--muted:rgba(255,255,255,0.35);--faint:rgba(255,255,255,0.07);
+  --good:#22c55e;--fair:#f5c800;--poor:#ef4444;--accent:#f5c800;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--white);font-family:'Archivo Black',sans-serif;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.06;mix-blend-mode:overlay;}
+
+/* ── AUTH ── */
+#authScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.auth-box{max-width:340px;width:100%;text-align:center;}
+.auth-title{font-size:32px;letter-spacing:-1px;margin-bottom:6px;}
+.auth-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:40px;}
+.auth-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:'DM Mono',monospace;font-size:14px;padding:16px 18px;outline:none;text-align:center;letter-spacing:4px;margin-bottom:12px;transition:border-color 0.2s;}
+.auth-input:focus{border-color:rgba(255,255,255,0.4);}
+.auth-btn{width:100%;background:#fff;color:#0a0a0a;border:none;font-family:'Archivo Black',sans-serif;font-size:12px;letter-spacing:1px;padding:16px;cursor:pointer;transition:opacity 0.15s;}
+.auth-btn:hover{opacity:0.88;}
+.auth-err{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--poor);margin-top:12px;display:none;}
+
+/* ── LAYOUT ── */
+#dashboard{display:none !important;}
+#dashboard.visible{display:block !important;}
+header{padding:20px 32px;border-bottom:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;}
+.hdr-title{font-size:18px;letter-spacing:2px;}
+.hdr-sub{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.hdr-right{display:flex;align-items:center;gap:16px;}
+.sync-btn{background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;cursor:pointer;transition:all 0.15s;}
+.sync-btn:hover{border-color:rgba(255,255,255,0.35);color:#fff;}
+.last-sync{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(255,255,255,0.2);}
+main{max-width:1200px;margin:0 auto;padding:32px 32px 80px;}
+
+/* ── SETUP BANNER ── */
+.setup-banner{background:rgba(245,200,0,0.06);border:1px solid rgba(245,200,0,0.2);padding:20px 24px;margin-bottom:32px;}
+.setup-banner-title{font-size:13px;letter-spacing:1px;margin-bottom:8px;}
+.setup-banner p{font-family:'DM Mono',monospace;font-size:10px;line-height:1.8;color:rgba(255,255,255,0.55);}
+.setup-banner a{color:var(--accent);text-decoration:none;}
+.setup-banner a:hover{text-decoration:underline;}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.stat-grid{grid-template-columns:1fr;}}
+.stat-card{background:var(--surface);border:1px solid var(--faint);padding:20px 22px;}
+.stat-val{font-size:36px;letter-spacing:-1px;margin-bottom:4px;}
+.stat-val.good{color:var(--good);}
+.stat-val.fair{color:var(--fair);}
+.stat-val.poor{color:var(--poor);}
+.stat-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.stat-sub{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);margin-top:6px;}
+
+/* ── SECTION HEADERS ── */
+.section-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--faint);}
+.section-title{font-size:14px;letter-spacing:1px;}
+.section-meta{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+/* ── BAR CHART ── */
+.bar-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:32px;}
+.bar-row{display:flex;align-items:center;gap:12px;}
+.bar-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.5);width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:28px;background:rgba(255,255,255,0.04);position:relative;}
+.bar-fill{height:100%;transition:width 0.6s ease;display:flex;align-items:center;padding-left:10px;}
+.bar-fill.good{background:rgba(34,197,94,0.25);}
+.bar-fill.poor{background:rgba(239,68,68,0.2);}
+.bar-fill-text{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.6);}
+.bar-count{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);width:40px;text-align:right;flex-shrink:0;}
+
+/* ── COMMENTS TABLE ── */
+.comments-wrap{margin-bottom:32px;}
+.comment-row{border-bottom:1px solid var(--faint);padding:14px 0;display:grid;grid-template-columns:130px 90px 1fr 100px;gap:12px;align-items:start;}
+.comment-row:last-child{border-bottom:none;}
+.comment-spot{font-size:11px;letter-spacing:0.5px;color:#fff;}
+.comment-rating{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;}
+.comment-rating.up{color:var(--good);}
+.comment-rating.down{color:var(--poor);}
+.comment-text{font-family:'DM Mono',monospace;font-size:10px;line-height:1.6;color:rgba(255,255,255,0.5);}
+.comment-time{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(255,255,255,0.2);text-align:right;}
+.comment-header{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.2);padding-bottom:10px;border-bottom:1px solid var(--faint);display:grid;grid-template-columns:130px 90px 1fr 100px;gap:12px;margin-bottom:4px;}
+@media(max-width:600px){
+  .comment-row,.comment-header{grid-template-columns:1fr 70px;gap:8px;}
+  .comment-spot,.comment-rating{font-size:10px;}
+  .comment-time{display:none;}
+}
+
+/* ── ACCURACY RING ── */
+.accuracy-wrap{display:flex;align-items:center;gap:32px;margin-bottom:32px;background:var(--surface);border:1px solid var(--faint);padding:24px;}
+.accuracy-ring-wrap{position:relative;width:100px;height:100px;flex-shrink:0;}
+.accuracy-ring-wrap svg{transform:rotate(-90deg);}
+.accuracy-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;letter-spacing:-1px;}
+.accuracy-detail{flex:1;}
+.accuracy-title{font-size:14px;letter-spacing:1px;margin-bottom:8px;}
+.accuracy-breakdown{display:flex;gap:24px;flex-wrap:wrap;}
+.acc-item{text-align:center;}
+.acc-num{font-size:24px;letter-spacing:-0.5px;}
+.acc-num.good{color:var(--good);}
+.acc-num.poor{color:var(--poor);}
+.acc-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-state p{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-top:12px;}
+
+/* ── SHEET LINK ── */
+.sheet-link{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);text-decoration:none;border:1px solid rgba(245,200,0,0.2);padding:8px 16px;transition:all 0.15s;}
+.sheet-link:hover{background:rgba(245,200,0,0.06);}
+</style>
+</head>
+<body>
+
+<!-- ── AUTH SCREEN ── -->
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-title">QUIVER</div>
+    <div class="auth-sub">Analytics HQ</div>
+    <input class="auth-input" id="pwInput" type="password" placeholder="••••••••" 
+           onkeydown="if(event.key==='Enter')checkAuth()"/>
+    <button class="auth-btn" onclick="checkAuth()">Enter →</button>
+    <div class="auth-err" id="authErr">Incorrect password</div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dashboard">
+  <header>
+    <div>
+      <div class="hdr-title">ANALYTICS HQ</div>
+      <div class="hdr-sub">Quiver Forecast Feedback</div>
+    </div>
+    <div class="hdr-right">
+      <span class="last-sync" id="lastSync">—</span>
+      <button class="sync-btn" onclick="loadData()">↻ Refresh</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Setup banner — shown until Google Sheets API is configured -->
+    <div class="setup-banner" id="setupBanner">
+      <div class="setup-banner-title">⚡ One-time setup required</div>
+      <p>
+        To pull live data from your Google Sheet, you need to publish it and paste the CSV URL below.<br><br>
+        In Google Sheets: <strong>File → Share → Publish to web → Sheet 1 → CSV → Publish</strong>.<br>
+        Then paste the URL into the <code>SHEET_CSV_URL</code> constant at the top of this page's script.
+        <br><br>
+        Until then, this dashboard shows <strong>demo data</strong> so you can see the layout.
+        Your form submissions are still being recorded in Google Sheets — this just visualises them.
+        <br><br>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNPyFvpTLtd4HwnCyQbXLwjkb_nRv3CjgmFlMaSpf-DU1_Ww/viewform" target="_blank">View your Google Form ↗</a>
+      </p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stat-grid" id="statGrid">
+      <div class="stat-card"><div class="stat-val" id="statTotal">—</div><div class="stat-label">Total Responses</div><div class="stat-sub">All time</div></div>
+      <div class="stat-card"><div class="stat-val good" id="statPct">—</div><div class="stat-label">Accuracy Rate</div><div class="stat-sub">Thumbs up %</div></div>
+      <div class="stat-card"><div class="stat-val" id="statSpots">—</div><div class="stat-label">Spots Rated</div><div class="stat-sub">Unique breaks</div></div>
+      <div class="stat-card"><div class="stat-val fair" id="statRecent">—</div><div class="stat-label">This Week</div><div class="stat-sub">Responses</div></div>
+    </div>
+
+    <!-- Accuracy ring + breakdown -->
+    <div class="section-hdr"><div class="section-title">Overall Accuracy</div></div>
+    <div class="accuracy-wrap" id="accuracyWrap">
+      <div class="accuracy-ring-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#22c55e" stroke-width="10"
+                  stroke-dasharray="251.2" id="ringArc" stroke-dashoffset="251.2" stroke-linecap="round"/>
+        </svg>
+        <div class="accuracy-pct" id="ringPct">—</div>
+      </div>
+      <div class="accuracy-detail">
+        <div class="accuracy-title">Forecast Accuracy</div>
+        <div class="accuracy-breakdown">
+          <div class="acc-item"><div class="acc-num good" id="accUp">—</div><div class="acc-lbl">👍 Accurate</div></div>
+          <div class="acc-item"><div class="acc-num poor" id="accDown">—</div><div class="acc-lbl">👎 Inaccurate</div></div>
+          <div class="acc-item"><div class="acc-num" id="accTotal">—</div><div class="acc-lbl">Total</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-spot accuracy bars -->
+    <div class="section-hdr">
+      <div class="section-title">Accuracy by Spot</div>
+      <div class="section-meta" id="spotMeta">—</div>
+    </div>
+    <div class="bar-grid" id="spotBars"></div>
+
+    <!-- Comments / negative feedback -->
+    <div class="section-hdr">
+      <div class="section-title">User Comments</div>
+      <a class="sheet-link" id="sheetLink" href="https://docs.google.com/spreadsheets/d/1MfJPoXEoIE-gwcinVpIgNrtTjl_Q1gba7z0x3DH2ki0" target="_blank">Open in Sheets ↗</a>
+    </div>
+    <div class="comments-wrap" id="commentsWrap">
+      <div class="empty-state"><p>No comments yet</p></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2AfU00feAC7-o1_iOm6J-cvEnHfE_H0KTUAzMSzNy7hnMVg9IjMO6Fg9YqIz_dY5_m7sAkC9Ihpfc/pub?gid=1961612269&single=true&output=csv';
+const PASSWORD = 'quiver2025';
+
+function checkAuth() {
+  var val = document.getElementById('pwInput').value;
+  if (val === PASSWORD) {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('dashboard').classList.add('visible');
+    loadData();
+  } else {
+    document.getElementById('authErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+function getDemoData() {
+  return [
+    {spot:'Spanish Point', rating:'Thumbs up', comment:'', timestamp:'09:30, 24 Feb'},
+    {spot:'Lahinch', rating:'Thumbs up', comment:'', timestamp:'11:15, 24 Feb'},
+    {spot:'Lahinch', rating:'Thumbs down', comment:'Wind was way stronger than shown, blown out by 9am', timestamp:'09:45, 23 Feb'},
+    {spot:'Doughmore', rating:'Thumbs up', comment:'', timestamp:'14:20, 23 Feb'},
+    {spot:'Spanish Point', rating:'Thumbs up', comment:'', timestamp:'08:00, 22 Feb'},
+    {spot:'White Rock', rating:'Thumbs down', comment:'Period was much shorter, more choppy than forecast', timestamp:'17:30, 22 Feb'},
+    {spot:'Bundoran Peak', rating:'Thumbs up', comment:'', timestamp:'06:45, 21 Feb'},
+    {spot:'Crab Island', rating:'Thumbs up', comment:'', timestamp:'10:10, 21 Feb'},
+    {spot:'Strandhill', rating:'Thumbs up', comment:'', timestamp:'08:30, 20 Feb'},
+    {spot:'Lahinch', rating:'Thumbs up', comment:'', timestamp:'07:00, 20 Feb'},
+    {spot:'White Rock', rating:'Thumbs up', comment:'', timestamp:'16:45, 19 Feb'},
+    {spot:'Spanish Point', rating:'Thumbs down', comment:'Swell direction was wrong, not working at all', timestamp:'09:00, 18 Feb'}
+  ];
+}
+
+function parseCSV(text) {
+  var lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  // Parse headers dynamically to find correct columns
+  var headers = splitCSVLine(lines[0]).map(function(h){ return h.toLowerCase(); });
+  var tsIdx   = headers.findIndex(function(h){ return h.includes('timestamp') || h.includes('time'); });
+  var spotIdx = headers.findIndex(function(h){ return h.includes('spot') || h.includes('break') || h.includes('location'); });
+  var rateIdx = headers.findIndex(function(h){ return h.includes('rating') || h.includes('thumb') || h.includes('accurate') || h.includes('forecast'); });
+  var commIdx = headers.findIndex(function(h){ return h.includes('comment') || h.includes('note') || h.includes('feedback'); });
+  if (tsIdx   < 0) tsIdx   = 0;
+  if (spotIdx < 0) spotIdx = 1;
+  if (rateIdx < 0) rateIdx = 2;
+  if (commIdx < 0) commIdx = 3;
+  return lines.slice(1).map(function(line) {
+    var cols = splitCSVLine(line);
+    return { timestamp: cols[tsIdx]||'', spot: cols[spotIdx]||'', rating: cols[rateIdx]||'', comment: cols[commIdx]||'' };
+  }).filter(function(r) { return r.spot && r.spot.trim().length > 0; });
+}
+
+function splitCSVLine(line) {
+  var cols = [], cur = '', inQ = false;
+  for (var i = 0; i < line.length; i++) {
+    var c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+    else { cur += c; }
+  }
+  cols.push(cur.trim());
+  return cols;
+}
+
+function render(rows) {
+  var isDemo = !SHEET_CSV_URL || rows === getDemoData();
+  document.getElementById('setupBanner').style.display = 'none';
+
+  var thumbsUp   = rows.filter(function(r){ return r.rating && r.rating.toLowerCase().indexOf('up') > -1; }).length;
+  var thumbsDown = rows.filter(function(r){ return r.rating && r.rating.toLowerCase().indexOf('down') > -1; }).length;
+  var total = thumbsUp + thumbsDown;
+  var pct = total > 0 ? Math.round((thumbsUp / total) * 100) : 0;
+
+  var uniqueSpots = [];
+  rows.forEach(function(r) { if (r.spot && uniqueSpots.indexOf(r.spot) === -1) uniqueSpots.push(r.spot); });
+  // Count responses from the last 7 days
+  var now = new Date();
+  var weekAgo = new Date(now - 7*24*60*60*1000);
+  var recentCount = rows.filter(function(r){
+    if (!r.timestamp) return false;
+    var d = new Date(r.timestamp);
+    return !isNaN(d) && d >= weekAgo;
+  }).length;
+
+  document.getElementById('statTotal').textContent = rows.length;
+  document.getElementById('statPct').textContent = pct + '%';
+  document.getElementById('statPct').className = 'stat-val ' + (pct >= 70 ? 'good' : pct >= 50 ? 'fair' : 'poor');
+  document.getElementById('statSpots').textContent = uniqueSpots.length;
+  document.getElementById('statRecent').textContent = recentCount;
+
+  var circumference = 251.2;
+  var offset = circumference - (pct / 100) * circumference;
+  var arc = document.getElementById('ringArc');
+  if (arc) {
+    arc.style.strokeDashoffset = offset;
+    arc.style.stroke = pct >= 70 ? '#22c55e' : pct >= 50 ? '#f5c800' : '#ef4444';
+  }
+  document.getElementById('ringPct').textContent = pct + '%';
+  document.getElementById('accUp').textContent = thumbsUp;
+  document.getElementById('accDown').textContent = thumbsDown;
+  document.getElementById('accTotal').textContent = total;
+
+  var spotMap = {};
+  rows.forEach(function(r) {
+    if (!r.spot) return;
+    if (!spotMap[r.spot]) spotMap[r.spot] = {up: 0, down: 0};
+    if (r.rating.toLowerCase().indexOf('up') > -1) spotMap[r.spot].up++;
+    else spotMap[r.spot].down++;
+  });
+
+  var spotsSorted = Object.keys(spotMap).map(function(name) {
+    return {name: name, up: spotMap[name].up, down: spotMap[name].down};
+  }).sort(function(a, b) { return (b.up + b.down) - (a.up + a.down); });
+
+  document.getElementById('spotMeta').textContent = spotsSorted.length + ' spots rated';
+
+  var barsEl = document.getElementById('spotBars');
+  if (spotsSorted.length === 0) {
+    barsEl.innerHTML = '<div class="empty-state"><p>No spot data yet</p></div>';
+  } else {
+    var barsHTML = '';
+    spotsSorted.forEach(function(s) {
+      var spotTotal = s.up + s.down;
+      var spotPct = Math.round((s.up / spotTotal) * 100);
+      var cls = spotPct >= 60 ? 'good' : 'poor';
+      barsHTML += '<div class="bar-row">';
+      barsHTML += '<div class="bar-label">' + s.name + '</div>';
+      barsHTML += '<div class="bar-track">';
+      barsHTML += '<div class="bar-fill ' + cls + '" style="width:' + spotPct + '%">';
+      barsHTML += '<span class="bar-fill-text">' + spotPct + '%</span>';
+      barsHTML += '</div></div>';
+      barsHTML += '<div class="bar-count">' + spotTotal + '</div>';
+      barsHTML += '</div>';
+    });
+    barsEl.innerHTML = barsHTML;
+  }
+
+  var withComments = rows.filter(function(r) {
+    return r.comment && r.comment.trim() && r.comment !== 'Skipped' && r.comment !== 'No comment';
+  }).reverse();
+
+  var commentsEl = document.getElementById('commentsWrap');
+  if (withComments.length === 0) {
+    commentsEl.innerHTML = '<div class="empty-state"><p>No comments yet</p></div>';
+  } else {
+    var html = '<div class="comment-header"><span>Spot</span><span>Rating</span><span>Comment</span><span>Time</span></div>';
+    withComments.forEach(function(r) {
+      var isUp = r.rating.toLowerCase().indexOf('up') > -1;
+      html += '<div class="comment-row">';
+      html += '<div class="comment-spot">' + r.spot + '</div>';
+      html += '<div class="comment-rating ' + (isUp ? 'up' : 'down') + '">' + (isUp ? 'Accurate' : 'Inaccurate') + '</div>';
+      html += '<div class="comment-text">' + r.comment + '</div>';
+      html += '<div class="comment-time">' + r.timestamp + '</div>';
+      html += '</div>';
+    });
+    commentsEl.innerHTML = html;
+  }
+
+  document.getElementById('lastSync').textContent = 'Last synced ' + new Date().toLocaleTimeString('en-IE', {hour:'2-digit', minute:'2-digit'});
+}
+
+async function loadData() {
+  if (!SHEET_CSV_URL) {
+    render(getDemoData());
+    return;
+  }
+  try {
+    var res = await fetch(SHEET_CSV_URL + '&t=' + Date.now());
+    var text = await res.text();
+    render(parseCSV(text));
+  } catch(e) {
+    console.error('Sheet fetch failed:', e);
+    document.getElementById('setupBanner').style.display = 'block';
+    document.getElementById('setupBanner').innerHTML = '<div class="setup-banner-title">⚠ Could not load sheet data</div><p>Error: ' + e.message + '<br><br>Check that your sheet is published to web as CSV. <a href="https://docs.google.com/spreadsheets/d/1MfJPoXEoIE-gwcinVpIgNrtTjl_Q1gba7z0x3DH2ki0" target="_blank">Open sheet ↗</a></p>';
+    render(getDemoData());
+  }
+}
+</script>
+</body>
+</html>

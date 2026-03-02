@@ -2051,8 +2051,10 @@ async function load(){
         +'<td><div class="row-time">'+dayLabel+'</div><div class="row-day">'+dateLabel+'</div></td>'
         +'<td><div class="row-height '+dr16+'">'+displayH(dH)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         
-        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dDir)+'</div><div class="col-compass">'+windDir(dDir)+'</div><div class="col-sub">'+dP.toFixed(0)+'s</div></td>'
-        +'<td class="col-wind"><div class="col-dir">'+arrowChar(dWindD)+'</div><div class="col-compass">'+windDir(dWindD)+'</div><div class="col-sub">'+dWindS.toFixed(0)+'mph</div></td>'
+        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dDir)+'</div><div class="col-compass">'+windDir(dDir)+'</div></td>'
+        +'<td class="col-swell"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+dP.toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">s</span></div></td>'
+        +'<td class="col-wind"><div class="col-dir">'+arrowChar(dWindD)+'</div><div class="col-compass">'+windDir(dWindD)+'</div></td>'
+        +'<td class="col-wind"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+dWindS.toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">mph</span></div></td>'
         +'</tr>';
     }).join('');
 
@@ -2102,8 +2104,10 @@ async function load(){
         +'<td><div class="row-time">'+fmtT(s.time)+(tag?'<br>'+tag:'')+'</div></td>'
         +'<td><div class="row-height '+sr+'">'+displayH(s.h)+'<span class="row-unit">'+displayUnit()+'</span></div></td>'
         
-        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dir)+'</div><div class="col-compass">'+windDir(dir)+'</div><div class="col-sub">'+(s.swP||s.p).toFixed(0)+'s</div></td>'
-        +'<td class="col-wind"><div class="col-dir">'+arrowChar(s.wd)+'</div><div class="col-compass">'+windDir(s.wd)+'</div><div class="col-sub">'+s.ws.toFixed(0)+'mph</div></td>'
+        +'<td class="col-swell"><div class="col-dir">'+arrowChar(dir)+'</div><div class="col-compass">'+windDir(dir)+'</div></td>'
+        +'<td class="col-swell"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+(s.swP||s.p).toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">s</span></div></td>'
+        +'<td class="col-wind"><div class="col-dir">'+arrowChar(s.wd)+'</div><div class="col-compass">'+windDir(s.wd)+'</div></td>'
+        +'<td class="col-wind"><div class="col-compass" style="font-size:18px;padding-top:6px;">'+s.ws.toFixed(0)+'<span style="font-size:10px;color:rgba(255,255,255,0.5);">mph</span></div></td>'
         +'</tr>';
     }).join('');
 
@@ -2213,7 +2217,7 @@ async function load(){
 
       +'<div class="sec-label">Next 24 Hours</div>'
       +'<div class="forecast-table-wrap"><table class="forecast-table">'
-        +'<thead><tr><th>Time</th><th>Wave</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
+        +'<thead><tr><th>Time</th><th>Wave</th><th style="text-align:center">Swell Dir</th><th style="text-align:center">Period</th><th style="text-align:center">Wind Dir</th><th style="text-align:center">Wind Spd</th></tr></thead>'
         +'<tbody>'+tableRows+'</tbody>'
       +'</table></div>'
       +'<div class="forecast-cards">'+mobileCards+'</div>'
@@ -2232,7 +2236,7 @@ async function load(){
 
       +'<div class="sec-label">7 Day Forecast</div>'
       +'<div class="sixteen-wrap"><table class="sixteen-table">'
-        +'<thead><tr><th>Day</th><th>Wave</th><th style="text-align:center">Swell</th><th style="text-align:center">Wind</th></tr></thead>'
+        +'<thead><tr><th>Day</th><th>Wave</th><th style="text-align:center">Swell Dir</th><th style="text-align:center">Period</th><th style="text-align:center">Wind Dir</th><th style="text-align:center">Wind Spd</th></tr></thead>'
         +'<tbody>'+sixteenRows+'</tbody>'
       +'</table></div>'
       +'<div class="sixteen-cards">'+sixteenCards+'</div>'

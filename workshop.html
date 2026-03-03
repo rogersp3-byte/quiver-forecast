@@ -4,23 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>Quiver — Workshop</title>
-<!-- PWA -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0f0f0f">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Quiver">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log('SW registered:', reg.scope))
-        .catch(err => console.log('SW error:', err));
-    });
-  }
-</script>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -347,23 +330,23 @@ header{
 .bottom-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   background:rgba(8,8,8,0.97);border-top:1px solid rgba(255,255,255,0.08);
-  z-index:500;padding:10px 0 max(10px,env(safe-area-inset-bottom));
+  z-index:500;padding:14px 0 max(20px,env(safe-area-inset-bottom));
   backdrop-filter:blur(12px);
 }
 .bottom-nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
   color:rgba(255,255,255,0.3);text-decoration:none;
   font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;
   text-transform:uppercase;padding:4px 0;transition:color 0.15s;
 }
-.bottom-nav-item svg{width:20px;height:20px;}
+.bottom-nav-item svg{width:22px;height:22px;}
 .bottom-nav-item:hover,.bottom-nav-item.active{color:#fff;}
 .bottom-nav-item.active svg{stroke:#f5c800;}
 
 @media(max-width:640px){
   .bottom-nav{display:flex;}
   .main-nav{display:none!important;}
-  body{padding-bottom:72px;}
+  body{padding-bottom:88px;}
   .chat-msgs{max-height:calc(100vh - 290px);}
   .nokia-img{height:120px;}.face-img{width:110px;height:110px;}
   .chat-wrap,.landing{padding-left:18px;padding-right:18px;}
@@ -657,12 +640,6 @@ function renderChat(ws){
       <div class="chat-msgs" id="chatMsgs"></div>
 
       <div class="chat-input-area">
-        <div class="sug-chips" id="sugChips">
-          <div class="sug-chip" onclick="useSug(this)">What drills can I do on land?</div>
-          <div class="sug-chip" onclick="useSug(this)">Is my board right for me?</div>
-          <div class="sug-chip" onclick="useSug(this)">How do I read a lineup?</div>
-          <div class="sug-chip" onclick="useSug(this)">Find me a shaper in Ireland</div>
-        </div>
         <div class="input-row">
           <input class="chat-input" id="chatInput"
             placeholder="Ask Core Lord anything..."
@@ -675,19 +652,11 @@ function renderChat(ws){
   `;
 }
 
-function useSug(el){
-  document.getElementById('sugChips').style.display='none';
-  const inp=document.getElementById('chatInput');
-  if(inp){inp.value=el.textContent.trim();inp.focus();}
-}
-
 async function sendMsg(){
   const inp=document.getElementById('chatInput');
   const text=inp?.value.trim();
   if(!text)return;
   inp.value='';
-  const chips=document.getElementById('sugChips');
-  if(chips)chips.style.display='none';
   msgs.push({role:'user',content:text});
   appendMsg('user',text);
   await fetchReply();

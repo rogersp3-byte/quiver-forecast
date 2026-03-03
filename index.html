@@ -244,7 +244,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .forecast-row.good,.forecast-row.great{border-left-color:var(--good);}
 .forecast-row.fair{border-left-color:var(--fair);}
 .forecast-row.poor{border-left-color:var(--poor);}
-.forecast-row td{padding:14px 12px;vertical-align:middle;}
+.forecast-row td{padding:12px 10px;vertical-align:middle;}
 .row-time{font-family:'DM Mono',monospace;font-size:15px;letter-spacing:1px;color:#fff;white-space:nowrap;font-weight:700;}
 .row-height{font-size:22px;letter-spacing:-0.5px;text-align:center;}
 .row-height.good,.row-height.great{color:var(--good);}
@@ -580,6 +580,7 @@ const ALL_SPOTS = [
   {id:'bundoran', name:'Bundoran Peak',       shortName:'The Peak',    region:'Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.477222, lng:-8.277778, beachFacing:247, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Reef break',   useBuoy:false, tidePreference:'any',     tideStation:'Killybegs'},
   {id:'whiterock',name:'White Rock',          shortName:'White Rock',  region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.266083, lng:-6.105183, beachFacing:90,  swellWindow:[135,180], level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
   {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
+  {id:'ragu',     name:'Ragu',                shortName:'Ragu',        region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.289781, lng:-6.115210, beachFacing:90,  swellWindow:[135,225],  level:'Intermediate and above',   waveType:'Reef break',   useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
 
   // ── LAHINCH REEFS ──
   {id:'cornish',  name:'Cornish',             shortName:'Cornish',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.929472, lng:-9.349553, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},

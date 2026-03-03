@@ -306,7 +306,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .fc-height.fair{color:var(--fair);}
 .fc-height.poor{color:var(--poor);}
 .fc-col{font-family:'DM Mono',monospace;text-align:center;}
-.fc-col-arrow{font-size:22px;line-height:1;margin-bottom:2px;font-weight:900;}
+.fc-col-arrow{line-height:1;margin-bottom:4px;display:flex;justify-content:center;align-items:center;height:22px;}
 .fc-col-dir{font-size:13px;letter-spacing:0.3px;color:#fff;font-weight:700;}
 .fc-col-sub{font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px;}
 .fc-col.fc-wind .fc-col-dir{color:rgba(255,255,255,0.85);}
@@ -915,10 +915,16 @@ function buildSelector(dotRatings){
 // ── HELPERS ──
 function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
 function arrowChar(d){return['↓','↙','←','↖','↑','↗','→','↘'][Math.round(d/45)%8];}
-// Thin outline arrows for swell direction
-function swellArrow(d){return['⇩','⇙','⇦','⇖','⇧','⇗','⇨','⇘'][Math.round(d/45)%8];}
-// Solid filled arrows for wind direction  
-function windArrow(d){return['▼','◣','◀','◤','▲','◥','▶','◢'][Math.round(d/45)%8];}
+// Blue thin needle SVG for swell direction
+function swellArrow(d){
+  const deg=(Math.round(d/45)*45);
+  return '<svg width="16" height="16" viewBox="0 0 18 18" style="transform:rotate('+deg+'deg);vertical-align:middle;display:inline-block"><line x1="9" y1="15" x2="9" y2="4" stroke="#7dd3fc" stroke-width="1.5" stroke-linecap="round"/><polygon points="9,2 7,7 11,7" fill="#7dd3fc"/></svg>';
+}
+// Yellow teardrop needle SVG for wind direction
+function windArrow(d){
+  const deg=(Math.round(d/45)*45);
+  return '<svg width="16" height="16" viewBox="0 0 18 18" style="transform:rotate('+deg+'deg);vertical-align:middle;display:inline-block"><polygon points="9,2 6,16 9,13 12,16" fill="#f5c800"/></svg>';
+}
 function dirArrowSVG(deg,color){
   return '<div class="dir-arrow"><svg viewBox="0 0 24 24" style="transform:rotate('+(deg+180)+'deg)" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></div>';
 }
@@ -2090,13 +2096,13 @@ async function load(){
         +'<div class="fc-height '+dr+'">'+displayH(dH)+'<span style="font-size:10px;opacity:0.4">'+displayUnit()+'</span></div>'
         +'<div class="fc-col">'
           +'<div class="fc-col-label">Swell</div>'
-          +'<div class="fc-col-arrow">'+arrowChar(dDir)+'</div>'
+          +'<div class="fc-col-arrow">'+swellArrow(dDir)+'</div>'
           +'<div class="fc-col-dir">'+windDir(dDir)+'</div>'
           +'<div class="fc-col-sub">'+dP.toFixed(0)+'s</div>'
         +'</div>'
         +'<div class="fc-col fc-wind">'
           +'<div class="fc-col-label">Wind</div>'
-          +'<div class="fc-col-arrow">'+arrowChar(dWindD)+'</div>'
+          +'<div class="fc-col-arrow">'+windArrow(dWindD)+'</div>'
           +'<div class="fc-col-dir">'+windDir(dWindD)+'</div>'
           +'<div class="fc-col-sub">'+dWindS.toFixed(0)+'mph</div>'
         +'</div>'
@@ -2139,13 +2145,13 @@ async function load(){
         +'<div class="fc-height '+sr+'">'+displayH(s.h)+'<span style="font-size:10px;opacity:0.4">'+displayUnit()+'</span></div>'
         +'<div class="fc-col">'
           +'<div class="fc-col-label">Swell</div>'
-          +'<div class="fc-col-arrow">'+arrowChar(dir)+'</div>'
+          +'<div class="fc-col-arrow">'+swellArrow(dir)+'</div>'
           +'<div class="fc-col-dir">'+windDir(dir)+'</div>'
           +'<div class="fc-col-sub">'+(s.swP||s.p).toFixed(0)+'s</div>'
         +'</div>'
         +'<div class="fc-col fc-wind">'
           +'<div class="fc-col-label">Wind</div>'
-          +'<div class="fc-col-arrow">'+arrowChar(s.wd)+'</div>'
+          +'<div class="fc-col-arrow">'+windArrow(s.wd)+'</div>'
           +'<div class="fc-col-dir">'+windDir(s.wd)+'</div>'
           +'<div class="fc-col-sub">'+s.ws.toFixed(0)+'mph</div>'
         +'</div>'
@@ -2174,8 +2180,8 @@ async function load(){
         +'<div class="day-name">'+(isToday?'<span style="color:rgba(245,200,0,0.8)">Today</span>':fmtDayFull(d.time))+'</div>'
         +'<div class="day-height">'+displayH(d.h)+'<span class="day-unit">'+displayUnit()+'</span></div>'
         +'<span class="day-badge">'+rateLabel(dr)+'</span>'
-        +'<div class="day-detail">'+arrowChar(d.dir)+' '+windDir(d.dir)+'<br>'+d.p.toFixed(0)+'s<br>'
-          +'<span style="color:rgba(255,255,255,0.5)">'+arrowChar(dayWindD)+' '+dayWindS.toFixed(0)+'mph</span>'
+        +'<div class="day-detail">'+swellArrow(d.dir)+' '+windDir(d.dir)+'<br>'+d.p.toFixed(0)+'s<br>'
+          +'<span style="color:rgba(255,255,255,0.5)">'+windArrow(dayWindD)+' '+dayWindS.toFixed(0)+'mph</span>'
         +'</div>'
         +'</div>';
     }).join('');
@@ -2186,7 +2192,7 @@ async function load(){
         +'<div style="font-family:\'DM Mono\',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-right:8px;">Secondary Swell</div>'
         +'<div class="swell-sec-item"><div class="swell-sec-label">Height</div><div class="swell-sec-val">'+cSw2H.toFixed(1)+'<span style="font-size:11px;opacity:0.4">m</span></div></div>'
         +'<div class="swell-sec-item"><div class="swell-sec-label">Period</div><div class="swell-sec-val">'+cSw2P.toFixed(0)+'<span style="font-size:11px;opacity:0.4">s</span></div></div>'
-        +'<div class="swell-sec-item"><div class="swell-sec-label">Direction</div><div class="swell-sec-val">'+arrowChar(cSw2D)+' '+windDir(cSw2D)+'</div></div>'
+        +'<div class="swell-sec-item"><div class="swell-sec-label">Direction</div><div class="swell-sec-val">'+swellArrow(cSw2D)+' '+windDir(cSw2D)+'</div></div>'
         +'</div>'
       :'';
 
@@ -2345,9 +2351,9 @@ function openDayExpand(el){
   document.getElementById('dex-h').innerHTML=displayH(d.h)+'<span class="dei-unit">'+displayUnit()+'</span>';
   document.getElementById('dex-hsub').textContent=d.h.toFixed(1)+'m significant height';
   document.getElementById('dex-p').innerHTML=d.p.toFixed(0)+'<span class="dei-unit">s</span>';
-  document.getElementById('dex-dir').textContent=arrowChar(d.dir)+' '+windDir(d.dir);
+  document.getElementById('dex-dir').textContent=swellArrow(d.dir)+' '+windDir(d.dir);
   document.getElementById('dex-wind').innerHTML=d.windS.toFixed(0)+'<span class="dei-unit">mph</span>';
-  document.getElementById('dex-windlbl').textContent=arrowChar(d.windD)+' '+windDir(d.windD);
+  document.getElementById('dex-windlbl').innerHTML=windArrow(d.windD)+' '+windDir(d.windD);
   document.getElementById('dayExpand').classList.add('open');
 }
 function closeDayExpand(e){

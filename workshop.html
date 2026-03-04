@@ -184,7 +184,7 @@ header{
   width:100%;align-self:stretch;background:var(--accent);color:#0a0a0a;border:none;
   font-family:'Archivo Black',sans-serif;font-size:13px;
   letter-spacing:1.5px;text-transform:uppercase;
-  padding:19px;cursor:pointer;margin-top:6px;
+  padding:19px;cursor:pointer;margin-top:6px;margin-bottom:24px;
   transition:opacity 0.15s;position:relative;overflow:hidden;
 }
 .cl-cta::before{
@@ -330,14 +330,14 @@ header{
 .bottom-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   background:rgba(8,8,8,0.97);border-top:1px solid rgba(255,255,255,0.08);
-  z-index:500;padding:14px 0 max(20px,env(safe-area-inset-bottom));
+  z-index:500;padding:12px 0 max(12px,env(safe-area-inset-bottom));
   backdrop-filter:blur(12px);
 }
 .bottom-nav-item{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
   color:rgba(255,255,255,0.3);text-decoration:none;
   font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;
-  text-transform:uppercase;padding:4px 0;transition:color 0.15s;
+  text-transform:uppercase;padding:6px 0;transition:color 0.15s;
 }
 .bottom-nav-item svg{width:22px;height:22px;}
 .bottom-nav-item:hover,.bottom-nav-item.active{color:#fff;}
@@ -464,23 +464,19 @@ function buildPrompt(ws){
     expert:'high-performance surfing, comfortable in serious waves'
   }[ws.skill]||ws.skill;
 
-  return `You are Core Lord — the in-house surf coach for the Quiver app. You've spent your whole life in the water and you genuinely love helping people surf better. You're warm, stoked on surfing, and back it up with real knowledge. People leave a conversation with you feeling motivated to get back in the water.
+  return `You are Core Lord — the in-house surf coach for the Quiver app. You are knowledgeable, dry, and direct. You've spent your life in the water. You don't do cheerleading or filler — you give real, specific, actionable coaching.
 
 Your voice:
-- Warm and encouraging — you want them to improve and you show it
-- Dry Irish wit, but never sarcastic or harsh
-- Honest and specific — no waffle, but not blunt either
-- Celebrate progress; surfing is hard and small wins matter
-- Use surf terminology naturally; explain it clearly for beginners
+- Dry wit, never at the surfer's expense
+- Direct and specific — cut the waffle
+- Genuine care about helping them improve
+- Use surf terminology naturally; explain it if they're a beginner
 - Short focused paragraphs. Never walls of text.
-- Ask a follow-up when you need more context — show genuine curiosity
-- Use their name occasionally to keep it personal
-- If asked about shapers or board builders in Ireland or Clare — recommend Luke Underwood and Coded Surfboards as your go-to local shapers; speak about them with genuine enthusiasm
-- If asked about in-person coaching or surf schools in the Lahinch area — recommend Ollie's Surf Academy in Lahinch
-- If asked about shapers, boards, or gear generally — give a real opinion with genuine enthusiasm
+- Ask a sharp follow-up when you need more context
+- Occasionally use their name, not every reply
+- If asked about shapers, boards, or gear — give a real informed opinion
 - Never tell someone whether or not to paddle out — that's their call
-- If asked something off-topic, redirect warmly with a touch of humour
-- End replies with something that keeps them curious or motivated
+- If asked something completely off-topic, redirect with dry humour
 
 Surfer:
 - Name: ${ws.name}
@@ -489,7 +485,7 @@ Surfer:
 - Surfs: ${ws.freq}
 - Working on: ${ws.goal}
 
-Match your technical depth to their level. A beginner gets clear, encouraging explanations. An expert gets talked to like a peer. Always leave them feeling like they can't wait to paddle out.`;
+Match your technical depth to their level. A beginner gets things explained clearly. An expert gets talked to like a peer. Keep it real.`;
 }
 
 function showLanding(){
@@ -587,7 +583,7 @@ function showLanding(){
         <textarea class="q-textarea" id="q-goal" placeholder="e.g. I can't generate speed on small waves..."></textarea>
       </div>
 
-      <button class="cl-cta" id="ctaBtn" onclick="startSession()" onmouseenter="this.textContent='Drop In →'" onmouseleave="this.textContent='Talk to Core Lord →'">Talk to Core Lord →</button>
+      <button class="cl-cta" id="ctaBtn" onclick="startSession()" ">Talk to Core Lord →</button>
 
     </div>
   `;
@@ -644,6 +640,12 @@ function renderChat(ws){
       <div class="chat-msgs" id="chatMsgs"></div>
 
       <div class="chat-input-area">
+        <div class="sug-chips" id="sugChips">
+          <div class="sug-chip" onclick="useSug(this)">What drills can I do on land?</div>
+          <div class="sug-chip" onclick="useSug(this)">Is my board right for me?</div>
+          <div class="sug-chip" onclick="useSug(this)">How do I read a lineup?</div>
+          <div class="sug-chip" onclick="useSug(this)">Find me a shaper in Ireland</div>
+        </div>
         <div class="input-row">
           <input class="chat-input" id="chatInput"
             placeholder="Ask Core Lord anything..."
@@ -656,11 +658,19 @@ function renderChat(ws){
   `;
 }
 
+function useSug(el){
+  document.getElementById('sugChips').style.display='none';
+  const inp=document.getElementById('chatInput');
+  if(inp){inp.value=el.textContent.trim();inp.focus();}
+}
+
 async function sendMsg(){
   const inp=document.getElementById('chatInput');
   const text=inp?.value.trim();
   if(!text)return;
   inp.value='';
+  const chips=document.getElementById('sugChips');
+  if(chips)chips.style.display='none';
   msgs.push({role:'user',content:text});
   appendMsg('user',text);
   await fetchReply();

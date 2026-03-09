@@ -168,6 +168,26 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .save-spot-btn.saved{border-color:rgba(245,200,0,0.5);color:rgba(245,200,0,0.9);background:rgba(245,200,0,0.06);}
 .save-spot-btn .star{font-size:11px;}
 
+/* DATE NAV */
+.date-nav{display:flex;align-items:center;max-width:900px;margin:0 auto;border-top:1px solid var(--faint);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.date-nav::-webkit-scrollbar{display:none;}
+.date-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 14px;background:none;border:none;border-right:1px solid var(--faint);color:var(--muted);cursor:pointer;transition:all 0.15s;white-space:nowrap;position:relative;}
+.date-btn:last-child{border-right:none;}
+.date-btn:hover{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.03);}
+.date-btn.active{color:var(--white);background:rgba(255,255,255,0.06);}
+.date-btn.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--white);}
+.date-btn.today-btn.active{color:rgba(245,200,0,0.9);}
+.date-btn.today-btn.active::after{background:var(--fair);}
+.date-btn.past-btn{color:rgba(255,255,255,0.28);}
+.date-btn.past-btn.active{color:rgba(100,180,255,0.9);background:rgba(100,180,255,0.06);}
+.date-btn.past-btn.active::after{background:rgba(100,180,255,0.7);}
+/* HINDCAST BANNER */
+.hindcast-banner{background:rgba(100,180,255,0.07);border:1px solid rgba(100,180,255,0.2);padding:12px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.hindcast-banner-text{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(100,180,255,0.85);line-height:1.6;}
+.hindcast-banner-text strong{font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:0.5px;}
+.log-session-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;background:rgba(245,200,0,0.08);border:1px solid rgba(245,200,0,0.35);color:rgba(245,200,0,0.9);padding:8px 16px;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.log-session-btn:hover{background:rgba(245,200,0,0.15);border-color:rgba(245,200,0,0.6);}
+
 /* SPOT SELECTOR */
 .spot-selector{display:flex;gap:0;margin-top:24px;border-top:1px solid var(--faint);}
 .spot-btn{flex:1;padding:12px 6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:none;border:none;border-right:1px solid var(--faint);color:var(--muted);cursor:pointer;transition:all 0.15s;text-align:center;position:relative;white-space:nowrap;}
@@ -561,6 +581,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
     </div>
     <div style="max-width:900px;margin:0 auto;">
       <div class="spot-selector" id="spotSelector"></div>
+      <div class="date-nav" id="dateNav"></div>
     </div>
   </div>
   <main class="main">
@@ -843,6 +864,8 @@ function showForecast(){
   updateHero();
   updateSaveBtn();
   buildSelector([]);
+  currentDayOffset=0;
+  buildDateNav();
   load();
 }
 
@@ -1996,14 +2019,59 @@ async function fetchDotRatings(){
 }
 
 // ── MAIN LOAD ──
+// ── DATE NAV (7-day lookback) ──
+let currentDayOffset = 0; // 0 = today, -1 = yesterday, etc.
+
+function buildDateNav(){
+  const nav=document.getElementById('dateNav');if(!nav)return;
+  const today=new Date();
+  let html='';
+  for(let i=-7;i<=0;i++){
+    const d=new Date(today);d.setDate(d.getDate()+i);
+    const isToday=i===0;
+    const label=isToday?'Today':d.toLocaleDateString('en-IE',{weekday:'short',day:'numeric',month:'short'});
+    const cls='date-btn'+(isToday?' today-btn':' past-btn')+(i===currentDayOffset?' active':'');
+    html+='<button class="'+cls+'" onclick="setDayOffset('+i+')">'+label+'</button>';
+  }
+  nav.innerHTML=html;
+}
+
+function setDayOffset(offset){
+  currentDayOffset=offset;
+  buildDateNav();
+  load();
+}
+
+function getTargetDate(){
+  const d=new Date();d.setDate(d.getDate()+currentDayOffset);return d;
+}
+
+function isPastDay(){return currentDayOffset<0;}
+
+function buildHindcastBanner(dateObj){
+  const dateStr=dateObj.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'});
+  return '<div class="hindcast-banner">'
+    +'<div class="hindcast-banner-text"><strong>Hindcast · '+dateStr+'</strong><br>Model data for this date. Surf it? <span style="color:rgba(255,255,255,0.5)">Log it with Core Lord.</span></div>'
+    +'<button class="log-session-btn" onclick="logSessionWithCoreLord()">📋 Log Session</button>'
+    +'</div>';
+}
+
+function logSessionWithCoreLord(){
+  const d=getTargetDate();
+  try{localStorage.setItem('quiver_log_context',JSON.stringify({spot:currentSpot.name,date:d.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'}),fromHindcast:true}));}catch(e){}
+  window.location.href='workshop.html?log=1';
+}
+
 async function load(){
   const app=document.getElementById('app'),profile=getProfile(),skill=(profile&&profile.skill)||'advanced',spot=currentSpot;
-  app.innerHTML='<div class="status">Loading forecast...</div>';
+  app.innerHTML='<div class="status">Loading '+(isPastDay()?'hindcast':'forecast')+'...</div>';
+  const targetDate=getTargetDate();
+  const pastParam=isPastDay()?'&past_days=7&forecast_days=1':'&forecast_days=7';
   try{
-    const isDublin=spot.useBuoy;
+    const isDublin=spot.useBuoy&&!isPastDay();
     const[mr,wr,tideR,dots,buoy]=await Promise.all([
-      fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
-      fetch('https://api.open-meteo.com/v1/forecast?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wind_speed_10m,wind_direction_10m&daily=wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=mph&timezone=Europe%2FDublin&forecast_days=7'),
+      fetch('https://marine-api.open-meteo.com/v1/marine?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,secondary_swell_wave_height,secondary_swell_wave_direction,secondary_swell_wave_period,sea_surface_temperature&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max&wind_speed_unit=mph&timezone=Europe%2FDublin'+pastParam),
+      fetch('https://api.open-meteo.com/v1/forecast?latitude='+spot.lat+'&longitude='+spot.lng+'&hourly=wind_speed_10m,wind_direction_10m&daily=wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=mph&timezone=Europe%2FDublin'+pastParam),
       fetchTidePredictions(spot.tideStation||'Galway'),
       fetchDotRatings(),
       isDublin?fetchM2Buoy():Promise.resolve(null)
@@ -2019,10 +2087,19 @@ async function load(){
     const dailyWindS=w.daily&&w.daily.wind_speed_10m_max||[];
     const dailyWindD=w.daily&&w.daily.wind_direction_10m_dominant||[];
     const now=new Date(),ns=now.toISOString().slice(0,13);
-    let ci=times.findIndex(function(t){return t.startsWith(ns);});if(ci<0)ci=0;
+    // For past days find noon of target date; for today find current hour
+    let ci;
+    if(isPastDay()){
+      const targetStr=targetDate.toISOString().slice(0,10);
+      ci=times.findIndex(function(t){return t.startsWith(targetStr+'T12');});
+      if(ci<0)ci=times.findIndex(function(t){return t.startsWith(targetStr);});
+      if(ci<0)ci=0;
+    }else{
+      ci=times.findIndex(function(t){return t.startsWith(ns);});if(ci<0)ci=0;
+    }
 
     let cH,cD,cP,cWS,cWD,buoyActive=false;
-    if(isDublin&&buoy&&buoy.waveHeight!==null){
+    if(!isPastDay()&&isDublin&&buoy&&buoy.waveHeight!==null){
       cH=buoy.waveHeight;cP=buoy.wavePeriod||wP[ci]||0;cD=wDir[ci]||0;cWS=buoy.windSpeed||wndS[ci]||0;cWD=buoy.windDirection||wndD[ci]||0;buoyActive=true;
     }else{
       cH=wH[ci]||0;cD=wDir[ci]||0;cP=wP[ci]||0;cWS=wndS[ci]||0;cWD=wndD[ci]||0;
@@ -2038,8 +2115,18 @@ async function load(){
     const swellWarnHTML=(!swellGood&&cH>=0.3)?'<div class="swell-warning">Swell direction ('+windDir(cSwD||cD)+') may not be optimal for this break.</div>':'';
 
     const slots=[];
-    for(let i=ci;i<ci+36&&i<times.length;i+=3){
-      slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
+    if(isPastDay()){
+      // Past day: show all hourly slots for the target date
+      const targetStr=targetDate.toISOString().slice(0,10);
+      for(let i=0;i<times.length;i++){
+        if(times[i].startsWith(targetStr)&&wH[i]!=null){
+          slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
+        }
+      }
+    }else{
+      for(let i=ci;i<ci+36&&i<times.length;i+=3){
+        slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
+      }
     }
 
     // Tide data — use MI HIGH/LOW predictions, fall back to synthetic
@@ -2052,7 +2139,7 @@ async function load(){
     }
 
     const days=daily.time.map(function(t,i){return{time:t,h:daily.wave_height_max[i]||0,p:daily.wave_period_max[i]||0,dir:daily.wave_direction_dominant[i]||0};});
-    const surfReportHTML=buildSurfReport(slots,profile,sun,spot,r,read,tidePoints);
+    const surfReportHTML=isPastDay()?buildHindcastBanner(targetDate):buildSurfReport(slots,profile,sun,spot,r,read,tidePoints);
     buildSelector(dots);
 
     // ── 7-day forecast table rows ──
@@ -2256,14 +2343,15 @@ async function load(){
       +'</div>'
 
       +'<div class="sec-label">7 Day Outlook</div>'
-      +'<div class="seven-grid">'+dayCards+'</div>'
+      +'<div class="seven-grid">'+(isPastDay()?'<div style="grid-column:1/-1;font-family:\'DM Mono\',monospace;font-size:10px;color:rgba(255,255,255,0.3);padding:16px;letter-spacing:1px;">7-day outlook available in today\'s forecast →</div>':dayCards)+'</div>'
 
-      +'<div class="sec-label">7 Day Forecast</div>'
+      +(isPastDay()?''
+      :'<div class="sec-label">7 Day Forecast</div>'
       +'<div class="sixteen-wrap"><table class="sixteen-table">'
         +'<thead><tr><th>Day</th><th>Wave</th><th style="text-align:center">Swell Dir</th><th style="text-align:center">Period</th><th style="text-align:center">Wind Dir</th><th style="text-align:center">Wind Spd</th></tr></thead>'
         +'<tbody>'+sixteenRows+'</tbody>'
       +'</table></div>'
-      +'<div class="sixteen-cards">'+sixteenCards+'</div>'
+      +'<div class="sixteen-cards">'+sixteenCards+'</div>')
 
       +'<div class="sec-label">About This Break</div>'
       +'<div class="spot-info">'

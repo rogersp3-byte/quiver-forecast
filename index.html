@@ -600,18 +600,6 @@ const ALL_SPOTS = [
   // ── STRANDHILL ──
   {id:'strandhill', name:'Strandhill',        shortName:'Strandhill',  region:'Sligo',   group:'strandhill',    groupName:'Strandhill',    lat:54.268400, lng:-8.597800, beachFacing:292, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'high',    tideStation:'Sligo'},
 
-  // ── WICKLOW ──
-  {id:'magheramore', name:'Magheramore',      shortName:'Magheramore', region:'Wicklow', group:'wicklow',       groupName:'Wicklow',       lat:52.930267, lng:-6.021939, beachFacing:90,  swellWindow:[45,135],  level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Wicklow', minSwellH:1.5},
-
-  // ── WATERFORD ──
-  {id:'tramore',  name:'Tramore',             shortName:'Tramore',     region:'Waterford',group:'waterford',    groupName:'Waterford',     lat:52.155800, lng:-7.151900, beachFacing:180, swellWindow:[135,247], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Dunmore_East'},
-
-  // ── CORK ──
-  {id:'inchidoney', name:'Inchidoney',        shortName:'Inchidoney',  region:'Cork',    group:'cork',          groupName:'Cork',          lat:51.594258, lng:-8.862969, beachFacing:225, swellWindow:[180,292], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Cork_Harbour'},
-
-  // ── KERRY ──
-  {id:'inch',     name:'Inch Beach',          shortName:'Inch',        region:'Kerry',   group:'kerry',         groupName:'Kerry',         lat:52.133400, lng:-9.998600, beachFacing:270, swellWindow:[225,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Tarbert'},
-  {id:'banna',    name:'Banna Strand',        shortName:'Banna',       region:'Kerry',   group:'kerry',         groupName:'Kerry',         lat:52.338689, lng:-9.837739, beachFacing:270, swellWindow:[225,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Tarbert'},
 ];
 
 function getSpotsInGroup(g){return ALL_SPOTS.filter(s=>s.group===g);}

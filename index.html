@@ -2033,6 +2033,13 @@ async function load(){
     const cSST=sst&&sst[ci]!=null?sst[ci]:null;
     const r=rate(cH,cWS,cP,skill),energy=waveEnergy(cH,cP);
     const read=conditionsRead(cH,cWS,cWD,cSwP,spot);
+    // Expose to Core Lord float widget
+    window.__clForecast={
+      spot:spot.groupName,county:spot.county||'Ireland',type:spot.type||'surf break',
+      waveHeight:cH,wavePeriod:cP,waveDir:windDir(cWD),swellDir:windDir(cSwD||cD),
+      swellPeriod:cSwP,windSpeed:cWS,windDir:windDir(cWD),rating:r,
+      read:read,energy:Math.round(energy)
+    };
     const rColor=r==='good'||r==='great'?'var(--good)':r==='fair'?'var(--fair)':r==='poor'?'var(--poor)':'var(--muted)';
     const sun=getSunTimes(spot.lat,spot.lng,now);
     const swellGood=swellInWindow(cSwD||cD,spot);
@@ -2408,5 +2415,6 @@ setTimeout(initGlobe, 200);
     <span>Trip</span>
   </a>
 </nav>
+<script src="corelord-float.js"></script>
 </body>
 </html>

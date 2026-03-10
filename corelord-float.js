@@ -10,7 +10,7 @@
 
   // ── CONFIG ───────────────────────────────────────
   const CL_IMG = 'https://quiver-forecast.vercel.app/images/Core%20Lord.png';
-  const API_URL = 'https://api.anthropic.com/v1/messages';
+  const API_URL = 'https://quiver-proxy.quiver-ie.workers.dev/chat';
   const MODEL   = 'claude-haiku-4-5-20251001';
 
   // ── HELPERS ──────────────────────────────────────

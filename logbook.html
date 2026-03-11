@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>Quiver — Logbook</title>
+<title>Quiver â Logbook</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -24,7 +24,7 @@ body::after{
   opacity:0.055;mix-blend-mode:overlay;
 }
 
-/* ── HEADER ── */
+/* ââ HEADER ââ */
 header{
   position:relative;z-index:10;padding:18px 28px;
   display:flex;align-items:center;justify-content:space-between;
@@ -40,7 +40,7 @@ header{
 .profile-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid rgba(255,255,255,0.15);padding:7px 14px;cursor:pointer;transition:all 0.15s;}
 .profile-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
 
-/* ── BOTTOM NAV ── */
+/* ââ BOTTOM NAV ââ */
 .bottom-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   background:rgba(8,8,8,0.97);border-top:1px solid rgba(255,255,255,0.08);
@@ -63,13 +63,13 @@ header{
   body{padding-bottom:88px;}
 }
 
-/* ── PAGE LAYOUT ── */
+/* ââ PAGE LAYOUT ââ */
 .page{
   position:relative;z-index:5;
   max-width:960px;margin:0 auto;padding:32px 24px 48px;
 }
 
-/* ── PAGE HEADER ── */
+/* ââ PAGE HEADER ââ */
 .page-header{
   display:flex;align-items:flex-end;justify-content:space-between;
   margin-bottom:32px;
@@ -89,7 +89,7 @@ header{
 }
 .log-session-btn:hover{background:#ffd700;}
 
-/* ── STATS STRIP ── */
+/* ââ STATS STRIP ââ */
 .stats-strip{
   display:grid;grid-template-columns:repeat(4,1fr);
   border:1px solid var(--faint);margin-bottom:32px;
@@ -108,7 +108,7 @@ header{
   text-transform:uppercase;color:var(--muted);
 }
 
-/* ── TABS ── */
+/* ââ TABS ââ */
 .tabs{
   display:flex;border-bottom:1px solid var(--faint);
   margin-bottom:28px;gap:0;
@@ -132,7 +132,7 @@ header{
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
 
-/* ── FILTER ROW ── */
+/* ââ FILTER ROW ââ */
 .filter-row{
   display:flex;align-items:center;gap:10px;
   margin-bottom:24px;flex-wrap:wrap;
@@ -153,9 +153,9 @@ header{
 }
 .filter-chip.active{border-color:var(--accent);color:var(--accent);}
 
-/* ══════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââ
    TICKET STUB SESSION CARD
-══════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââ */
 .session-card{
   display:flex;border:1px solid rgba(255,255,255,0.1);
   margin-bottom:14px;position:relative;
@@ -171,7 +171,7 @@ header{
 @keyframes fadeup{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .session-card:hover{border-color:rgba(255,255,255,0.2);}
 
-/* Left stub — session number only */
+/* Left stub â session number only */
 .stub-left{
   width:52px;flex-shrink:0;
   background:rgba(255,255,255,0.03);
@@ -304,7 +304,7 @@ header{
 .photo-thumb.add-photo:hover{border-color:rgba(255,255,255,0.3);}
 .photo-thumb.add-photo svg{width:16px;height:16px;stroke:var(--muted);}
 
-/* Right stub — duration + privacy */
+/* Right stub â duration + privacy */
 .stub-right{
   width:86px;flex-shrink:0;
   /* Perforation ridge along left edge */
@@ -342,7 +342,7 @@ header{
   color:rgba(255,255,255,0.2);
 }
 
-/* ── FRIENDS FEED CARD ── */
+/* ââ FRIENDS FEED CARD ââ */
 .friend-card{
   border:1px solid rgba(255,255,255,0.08);
   margin-bottom:14px;padding:18px 20px;
@@ -381,7 +381,7 @@ header{
 }
 .react-count{font-size:9px;color:rgba(255,255,255,0.5);}
 
-/* ── STRAVA BAR ── */
+/* ââ STRAVA BAR ââ */
 .strava-bar{
   border:1px solid rgba(255,255,255,0.08);
   padding:16px 20px;margin-bottom:28px;
@@ -404,7 +404,7 @@ header{
 }
 .strava-btn:hover{background:rgba(252,76,2,0.1);}
 
-/* ── EMPTY STATE ── */
+/* ââ EMPTY STATE ââ */
 .empty-state{
   text-align:center;padding:64px 24px;border:1px dashed rgba(255,255,255,0.08);
 }
@@ -415,7 +415,7 @@ header{
   text-transform:uppercase;color:var(--muted);
 }
 
-/* ── LOG SESSION MODAL ── */
+/* ââ LOG SESSION MODAL ââ */
 .modal-backdrop{
   position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;
   display:none;align-items:center;justify-content:center;padding:24px;
@@ -501,7 +501,7 @@ header{
 .btn-save:hover{background:#ffd700;}
 
 
-/* ── ACTIVITY TYPE SELECTOR ── */
+/* ââ ACTIVITY TYPE SELECTOR ââ */
 .activity-selector{
   display:flex;gap:0;margin-bottom:22px;
 }
@@ -529,7 +529,7 @@ header{
 .beach-clean-only{display:none;}
 .beach-clean-only.show{display:block;}
 
-/* ── EVENT BANNER ── */
+/* ââ EVENT BANNER ââ */
 .event-banner{
   border:1px solid rgba(245,200,0,0.2);
   background:rgba(245,200,0,0.04);
@@ -575,7 +575,7 @@ header{
   margin-top:10px;border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;
 }
 
-/* ── BEACH CLEAN CARD VARIANT ── */
+/* ââ BEACH CLEAN CARD VARIANT ââ */
 .session-card.beach-clean-card .stub-left{
   background-image:repeating-linear-gradient(
     to bottom,transparent 0px,transparent 6px,
@@ -590,7 +590,7 @@ header{
   background:rgba(34,197,94,0.06);
 }
 
-/* ── YEAR DIVIDER ── */
+/* ââ YEAR DIVIDER ââ */
 .year-divider{
   display:flex;align-items:center;gap:14px;margin:28px 0 20px;
 }
@@ -656,7 +656,7 @@ header{
 
   <!-- Strava Connect -->
   <div class="strava-bar">
-    <div class="strava-logo">⬡ Strava</div>
+    <div class="strava-logo">â¬¡ Strava</div>
     <div class="strava-text">Connect Strava to auto-sync session duration and activity data</div>
     <button class="strava-btn">Connect</button>
   </div>
@@ -686,24 +686,24 @@ header{
 
     <div class="year-divider"><span>March 2026</span></div>
 
-    <!-- SESSION CARD 1 — firing session -->
+    <!-- SESSION CARD 1 â firing session -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 034 · 2026</div>
+        <div class="session-num">Session 034 Â· 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Spanish Point<br><span style="font-size:13px;color:rgba(255,255,255,0.5);">Inner Reef</span></div>
-              <div class="spot-region">Clare · 52°50'N 9°25'W</div>
+              <div class="spot-region">Clare Â· 52Â°50'N 9Â°25'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star">★</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star">â</span>
             </div>
           </div>
           <div class="conditions-row">
@@ -729,7 +729,7 @@ header{
                       <polygon points="19,10 15,8 15,12" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">→ E</div>
+                  <div class="compass-label">â E</div>
                 </div>
               </div>
             </div>
@@ -739,7 +739,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Mon 9 Mar 2026 · 07:30</div>
+            <div class="session-date">Mon 9 Mar 2026 Â· 07:30</div>
             <div class="session-note">"Best session in months. Clean lined up sets, light offshore the whole time."</div>
           </div>
         </div>
@@ -758,24 +758,24 @@ header{
       </div>
     </div>
 
-    <!-- SESSION CARD 2 — pumping -->
+    <!-- SESSION CARD 2 â pumping -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 033 · 2026</div>
+        <div class="session-num">Session 033 Â· 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Crab Island</div>
-              <div class="spot-region">Clare · 52°56'N 9°27'W</div>
+              <div class="spot-region">Clare Â· 52Â°56'N 9Â°27'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
             </div>
           </div>
           <div class="conditions-row">
@@ -797,12 +797,12 @@ header{
                 <div class="compass-wrap">
                   <div class="compass-ring">
                     <svg width="20" height="20" viewBox="0 0 20 20">
-                      <!-- NW swell ~315° arrow pointing NW -->
+                      <!-- NW swell ~315Â° arrow pointing NW -->
                       <line x1="10" y1="10" x2="16" y2="16" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
                       <polygon points="17,17 13,16 16,13" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">→ SE</div>
+                  <div class="compass-label">â SE</div>
                 </div>
               </div>
             </div>
@@ -812,7 +812,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Sat 7 Mar 2026 · 09:00</div>
+            <div class="session-date">Sat 7 Mar 2026 Â· 09:00</div>
             <div class="session-note">"Solid overhead, fast walls. Proper day out at the island."</div>
           </div>
         </div>
@@ -823,24 +823,24 @@ header{
       </div>
     </div>
 
-    <!-- SESSION CARD 3 — average -->
+    <!-- SESSION CARD 3 â average -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 032 · 2026</div>
+        <div class="session-num">Session 032 Â· 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Lahinch Beach</div>
-              <div class="spot-region">Clare · 52°56'N 9°21'W</div>
+              <div class="spot-region">Clare Â· 52Â°56'N 9Â°21'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star">★</span>
-              <span class="star">★</span>
-              <span class="star">★</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star">â</span>
+              <span class="star">â</span>
+              <span class="star">â</span>
             </div>
           </div>
           <div class="conditions-row">
@@ -862,12 +862,12 @@ header{
                 <div class="compass-wrap">
                   <div class="compass-ring">
                     <svg width="20" height="20" viewBox="0 0 20 20">
-                      <!-- W swell ~270° arrow pointing left -->
+                      <!-- W swell ~270Â° arrow pointing left -->
                       <line x1="10" y1="10" x2="17" y2="10" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
                       <polygon points="19,10 15,8 15,12" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">→ E</div>
+                  <div class="compass-label">â E</div>
                 </div>
               </div>
             </div>
@@ -877,7 +877,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Wed 4 Mar 2026 · 16:00</div>
+            <div class="session-date">Wed 4 Mar 2026 Â· 16:00</div>
             <div class="session-note">"Messy but fun enough. Needed the water time."</div>
           </div>
         </div>
@@ -896,24 +896,24 @@ header{
 
     <div class="year-divider"><span>February 2026</span></div>
 
-    <!-- SESSION CARD 4 — bundoran -->
+    <!-- SESSION CARD 4 â bundoran -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 031 · 2026</div>
+        <div class="session-num">Session 031 Â· 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Bundoran Peak</div>
-              <div class="spot-region">Donegal · 54°28'N 8°17'W</div>
+              <div class="spot-region">Donegal Â· 54Â°28'N 8Â°17'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star filled">★</span>
-              <span class="star">★</span>
-              <span class="star">★</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star filled">â</span>
+              <span class="star">â</span>
+              <span class="star">â</span>
             </div>
           </div>
           <div class="conditions-row">
@@ -935,12 +935,12 @@ header{
                 <div class="compass-wrap">
                   <div class="compass-ring">
                     <svg width="20" height="20" viewBox="0 0 20 20">
-                      <!-- NNW swell ~330° -->
+                      <!-- NNW swell ~330Â° -->
                       <line x1="10" y1="10" x2="15" y2="17" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
                       <polygon points="16,18 12,16 15,13" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">→ SSE</div>
+                  <div class="compass-label">â SSE</div>
                 </div>
               </div>
             </div>
@@ -950,7 +950,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Fri 28 Feb 2026 · 10:00</div>
+            <div class="session-date">Fri 28 Feb 2026 Â· 10:00</div>
             <div class="session-note">"Long drive worth it. Packed out but managed to find a corner."</div>
           </div>
         </div>
@@ -973,8 +973,8 @@ header{
       <div class="friend-header">
         <div class="friend-avatar">CK</div>
         <div>
-          <div class="friend-name">Ciarán Kelly</div>
-          <div class="friend-when">2 hours ago · Spanish Point, Middle Reef</div>
+          <div class="friend-name">CiarÃ¡n Kelly</div>
+          <div class="friend-when">2 hours ago Â· Spanish Point, Middle Reef</div>
         </div>
         <div class="friend-react">
           <span class="react-count">3</span>
@@ -1000,11 +1000,11 @@ header{
                 <div class="spot-region">Clare</div>
               </div>
               <div class="session-rating">
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star">★</span>
+                <span class="star filled">â</span>
+                <span class="star filled">â</span>
+                <span class="star filled">â</span>
+                <span class="star filled">â</span>
+                <span class="star">â</span>
               </div>
             </div>
             <div class="conditions-row" style="padding:8px 0;">
@@ -1031,8 +1031,8 @@ header{
       <div class="friend-header">
         <div class="friend-avatar">SM</div>
         <div>
-          <div class="friend-name">Siobhán Murphy</div>
-          <div class="friend-when">Yesterday · Strandhill</div>
+          <div class="friend-name">SiobhÃ¡n Murphy</div>
+          <div class="friend-when">Yesterday Â· Strandhill</div>
         </div>
         <div class="friend-react">
           <span class="react-count">1</span>
@@ -1057,11 +1057,11 @@ header{
                 <div class="spot-region">Sligo</div>
               </div>
               <div class="session-rating">
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star filled">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
+                <span class="star filled">â</span>
+                <span class="star filled">â</span>
+                <span class="star filled">â</span>
+                <span class="star">â</span>
+                <span class="star">â</span>
               </div>
             </div>
             <div class="conditions-row" style="padding:8px 0;">
@@ -1115,27 +1115,27 @@ header{
         <div class="modal-title">Log Session</div>
         <div class="modal-sub">Session 035 of 2026</div>
       </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()">â</button>
     </div>
     <div class="modal-body">
 
       <!-- Activity type -->
       <div class="activity-selector" id="activitySelector">
         <button class="activity-opt active" onclick="setActivity('surf',this)">
-          <span class="activity-icon">🏄</span>
+          <span class="activity-icon">ð</span>
           Surf
         </button>
         <button class="activity-opt" onclick="setActivity('paddle',this)">
-          <span class="activity-icon">🚣</span>
+          <span class="activity-icon">ð£</span>
           Paddle
         </button>
         <button class="activity-opt beach-clean-opt" onclick="setActivity('beach-clean',this)">
-          <span class="activity-icon">🧹</span>
+          <span class="activity-icon">ð§¹</span>
           Beach Clean
         </button>
       </div>
 
-      <div class="auto-filled" id="autoFillNote">✓ Conditions auto-filled from today's forecast</div>
+      <div class="auto-filled" id="autoFillNote">â Conditions auto-filled from today's forecast</div>
 
       <div class="field-row">
         <div class="field">
@@ -1151,9 +1151,9 @@ header{
       <div class="field">
         <label class="field-label">Spot</label>
         <select>
-          <option>Spanish Point — Inner Reef</option>
-          <option>Spanish Point — Middle Reef</option>
-          <option>Spanish Point — Beach</option>
+          <option>Spanish Point â Inner Reef</option>
+          <option>Spanish Point â Middle Reef</option>
+          <option>Spanish Point â Beach</option>
           <option>Lahinch Beach</option>
           <option>Crab Island</option>
           <option>Bundoran Peak</option>
@@ -1264,7 +1264,7 @@ document.querySelectorAll('.filter-chip').forEach(chip => {
 <script src="events.js"></script>
 <script src="corelord-float.js"></script>
 <script>
-// ── ACTIVITY SELECTOR ──
+// ââ ACTIVITY SELECTOR ââ
 let currentActivity = 'surf';
 
 function setActivity(type, btn) {
@@ -1287,7 +1287,7 @@ function setActivity(type, btn) {
   document.getElementById('autoFillNote').style.display = isClean ? 'none' : '';
 }
 
-// ── EVENTS BANNER ──
+// ââ EVENTS BANNER ââ
 // Detect county from saved spots or default to Clare
 function getUserCounty() {
   try {

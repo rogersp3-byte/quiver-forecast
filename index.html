@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>Quiver — Forecast</title>
+<title>Quiver â Forecast</title>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0f0f0f">
@@ -76,7 +76,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .search-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.18);color:var(--white);font-family:'DM Mono',monospace;font-size:16px;padding:18px 22px;outline:none;letter-spacing:1px;transition:border-color 0.2s;}
 .search-input:focus{border-color:rgba(255,255,255,0.45);}
 .search-input::placeholder{color:rgba(255,255,255,0.25);}
-/* ── SEARCH RESULTS DROPDOWN ── */
+/* ââ SEARCH RESULTS DROPDOWN ââ */
 .search-results{
   position:absolute;top:calc(100% + 1px);left:0;right:0;
   background:#111;border:1px solid rgba(255,255,255,0.14);border-top:none;
@@ -102,7 +102,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 /* SAVED SPOTS */
 .saved-spots-section{width:100%;max-width:520px;margin-top:24px;}
 .saved-spots-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.saved-spots-label::before{content:'★';color:rgba(245,200,0,0.5);font-size:10px;}
+.saved-spots-label::before{content:'â';color:rgba(245,200,0,0.5);font-size:10px;}
 .saved-spots-list{display:flex;flex-wrap:wrap;gap:6px;}
 .saved-spot-chip{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;background:rgba(245,200,0,0.07);border:1px solid rgba(245,200,0,0.2);color:rgba(245,200,0,0.8);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;}
 .saved-spot-chip:hover{background:rgba(245,200,0,0.12);border-color:rgba(245,200,0,0.4);}
@@ -235,7 +235,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .graph-wrap{background:var(--surface);padding:24px 20px 16px;margin-bottom:4px;overflow:hidden;}
 .graph-canvas{width:100%;height:140px;display:block;}
 
-/* FORECAST TABLE — MOBILE CARDS */
+/* FORECAST TABLE â MOBILE CARDS */
 .forecast-table{width:100%;border-collapse:collapse;}
 .forecast-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);padding:12px 12px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);}
 .forecast-table th:not(:first-child){text-align:center;}
@@ -258,7 +258,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .row-tag.dusk{background:rgba(255,160,60,0.15);color:rgba(255,180,80,0.8);}
 .row-tag.work{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);}
 
-/* SWELL + WIND COLUMNS — shared by 24h and 16-day tables */
+/* SWELL + WIND COLUMNS â shared by 24h and 16-day tables */
 .col-swell,.col-wind{font-family:'DM Mono',monospace;text-align:center;vertical-align:middle;padding:10px 8px;}
 .col-inline{display:flex;align-items:center;justify-content:center;gap:5px;}
 .col-dir{font-size:15px;line-height:1;}
@@ -312,7 +312,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .fc-col.fc-wind .fc-col-dir{color:rgba(255,255,255,0.85);}
 .fc-col-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-bottom:3px;}
 
-/* 7 DAY — ENHANCED */
+/* 7 DAY â ENHANCED */
 .seven-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .day-card{background:var(--surface);padding:10px 4px;text-align:center;border-top:2px solid transparent;position:relative;box-sizing:border-box;overflow:hidden;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;min-width:0;}
 .day-card.great,.day-card.good{border-top-color:var(--good);}
@@ -378,7 +378,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .day-card.poor .day-badge{color:var(--poor);border-color:rgba(239,68,68,0.3);}
 .day-detail{display:none;}
 
-/* TIDE — unified container */
+/* TIDE â unified container */
 .tide-block{background:var(--surface);margin-bottom:4px;}
 .tide-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);}
 .tide-simple-card{padding:16px 10px;display:grid;grid-template-rows:20px 16px 14px 32px 18px;align-items:center;justify-items:center;gap:0;text-align:center;background:var(--surface);border-right:1px solid rgba(255,255,255,0.06);}
@@ -400,7 +400,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .tide-time{font-size:20px;letter-spacing:-0.5px;}
 .tide-ht{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
 
-/* CHANGE SPOT BUTTON — prominent */
+/* CHANGE SPOT BUTTON â prominent */
 .change-spot-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.75);padding:12px 22px;cursor:pointer;transition:all 0.2s;margin-top:4px;}
 .change-spot-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.6);color:#fff;}
 .change-spot-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;}
@@ -475,7 +475,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   .seven-grid{grid-template-columns:repeat(4,1fr);gap:3px;}
 }
 
-/* ── EVENT BANNER ── */
+/* ââ EVENT BANNER ââ */
 .event-banner{
   border:1px solid rgba(245,200,0,0.2);
   background:rgba(245,200,0,0.04);
@@ -532,22 +532,22 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
     <div class="field">
       <label class="field-label">Skill Level</label>
       <select id="p-skill">
-        <option value="beginner">Beginner — still learning to stand up</option>
-        <option value="intermediate">Intermediate — comfortable on green waves</option>
-        <option value="advanced" selected>Advanced — surfing most conditions</option>
-        <option value="expert">Expert — I'm a hell man and will charge anything</option>
+        <option value="beginner">Beginner â still learning to stand up</option>
+        <option value="intermediate">Intermediate â comfortable on green waves</option>
+        <option value="advanced" selected>Advanced â surfing most conditions</option>
+        <option value="expert">Expert â I'm a hell man and will charge anything</option>
       </select>
     </div>
     <div class="field">
       <label class="field-label">Work Schedule</label>
       <select id="p-work">
-        <option value="9to5" selected>9–5 weekdays (weekends free)</option>
+        <option value="9to5" selected>9â5 weekdays (weekends free)</option>
         <option value="flexible">Flexible / remote</option>
-        <option value="shift">Shift work — varies</option>
+        <option value="shift">Shift work â varies</option>
         <option value="retired">Retired / student</option>
       </select>
     </div>
-    <button class="modal-btn" onclick="saveProfile()">Save →</button>
+    <button class="modal-btn" onclick="saveProfile()">Save â</button>
   </div>
 </div>
 
@@ -578,7 +578,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   </div>
 
   <button class="spot-index-btn" id="spotIndexBtn" onclick="toggleSpotIndex()">
-    See spot index <span class="sib-arrow">↓</span>
+    See spot index <span class="sib-arrow">â</span>
   </button>
   <div class="spot-index" id="spotIndex"></div>
 
@@ -590,11 +590,11 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 
 <!-- FORECAST PAGE -->
 <div id="forecastPage">
-  <div id="swipeHint"><div id="swipeHint-inner">← back</div></div>
+  <div id="swipeHint"><div id="swipeHint-inner">â back</div></div>
   <div class="hero">
     <div class="hero-inner">
       <div class="area-name" id="heroRegion">Ireland</div>
-      <div class="break-name" id="heroName">—</div>
+      <div class="break-name" id="heroName">â</div>
       <div class="break-loc" id="heroLoc"></div>
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
         <div class="unit-toggle">
@@ -602,7 +602,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
           <button class="unit-btn" id="btnM" onclick="setUnit('m')">m</button>
         </div>
         <button class="save-spot-btn" id="saveSpotBtn" onclick="toggleSaveSpot()">
-          <span class="star">☆</span><span id="saveSpotLabel">Save Spot</span>
+          <span class="star">â</span><span id="saveSpotLabel">Save Spot</span>
         </button>
       </div>
     </div>
@@ -617,7 +617,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 </div>
 
 <script>
-// ── ALL SPOTS ──
+// ââ ALL SPOTS ââ
 const ALL_SPOTS = [
   // tideStation: nearest Marine Institute IMI_TidePrediction_HighLow station ID
   {id:'beach',    name:'Spanish Point Beach', shortName:'Beach',       region:'Clare',   group:'spanish-point', groupName:'Spanish Point', lat:52.841486, lng:-9.435728, beachFacing:270, swellWindow:[247,315], level:'Beginner to intermediate', waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Kilrush'},
@@ -630,21 +630,21 @@ const ALL_SPOTS = [
   {id:'killiney', name:'Killiney',            shortName:'Killiney',    region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.256386, lng:-6.111353, beachFacing:90,  swellWindow:[0,60],    level:'All levels',               waveType:'Beach break',  useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
   {id:'ragu',     name:'Ragu',                shortName:'Ragu',        region:'Dublin',  group:'dublin-south',  groupName:'Dublin South',  lat:53.289781, lng:-6.115210, beachFacing:90,  swellWindow:[135,225],  level:'Intermediate and above',   waveType:'Reef break',   useBuoy:true,  tidePreference:'low',     tideStation:'Dublin_Port', minSwellH:2.0},
 
-  // ── LAHINCH REEFS ──
+  // ââ LAHINCH REEFS ââ
   {id:'cornish',  name:'Cornish',             shortName:'Cornish',     region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.929472, lng:-9.349553, beachFacing:270, swellWindow:[225,315], level:'Intermediate and above',   waveType:'Beach break',  useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
   {id:'cregg',    name:'Cregg Reef',          shortName:'Cregg Reef',  region:'Clare',   group:'lahinch',       groupName:'Lahinch',       lat:52.923233, lng:-9.354639, beachFacing:270, swellWindow:[225,315], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Lahinch_MODELLED'},
   {id:'crab',     name:'Crab Island',         shortName:'Crab Island', region:'Clare',   group:'doolin',        groupName:'Doolin',        lat:53.007700, lng:-9.277500, beachFacing:300, swellWindow:[247,337], level:'Advanced and above',       waveType:'Reef break',   useBuoy:false, tidePreference:'mid',     tideStation:'Kilrush', ftMult:0.8},
 
-  // ── DUNFANAGHY ──
+  // ââ DUNFANAGHY ââ
   {id:'dunfanaghy', name:'Dunfanaghy Beach',  shortName:'Dunfanaghy',  region:'Donegal', group:'dunfanaghy',    groupName:'Dunfanaghy',    lat:55.179400, lng:-7.969700, beachFacing:315, swellWindow:[247,360], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'any',     tideStation:'Killybegs'},
 
-  // ── BUNDORAN ──
+  // ââ BUNDORAN ââ
   {id:'tullan',   name:'Tullan Strand',       shortName:'Tullan',      region:'Donegal', group:'bundoran',      groupName:'Bundoran',      lat:54.494700, lng:-8.266700, beachFacing:270, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'low-mid', tideStation:'Killybegs'},
 
-  // ── ROSSKNOWLAGH ──
+  // ââ ROSSKNOWLAGH ââ
   {id:'rossnowlagh', name:'Rossnowlagh',      shortName:'Rossnowlagh', region:'Donegal', group:'rossnowlagh',   groupName:'Rossnowlagh',   lat:54.551967, lng:-8.213653, beachFacing:247, swellWindow:[202,315], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'mid-high',tideStation:'Killybegs'},
 
-  // ── STRANDHILL ──
+  // ââ STRANDHILL ââ
   {id:'strandhill', name:'Strandhill',        shortName:'Strandhill',  region:'Sligo',   group:'strandhill',    groupName:'Strandhill',    lat:54.268400, lng:-8.597800, beachFacing:292, swellWindow:[247,340], level:'All levels',               waveType:'Beach break',  useBuoy:false, tidePreference:'high',    tideStation:'Sligo'},
 
 ];
@@ -667,7 +667,7 @@ function displayH(hs, mult){
 }
 function displayUnit(){return currentUnit==='ft'?'ft':'m';}
 
-// ── SAVED SPOTS ──
+// ââ SAVED SPOTS ââ
 function getSavedSpots(){
   try{return JSON.parse(localStorage.getItem('quiver_saved'))||[];}
   catch(e){return[];}
@@ -688,7 +688,7 @@ function updateSaveBtn(){
   if(!btn||!lbl)return;
   const saved=isSpotSaved(currentSpot.id);
   btn.classList.toggle('saved',saved);
-  btn.querySelector('.star').textContent=saved?'★':'☆';
+  btn.querySelector('.star').textContent=saved?'â':'â';
   lbl.textContent=saved?'Saved':'Save Spot';
 }
 function renderSavedSpots(){
@@ -702,8 +702,8 @@ function renderSavedSpots(){
     const s=ALL_SPOTS.find(x=>x.id===id);
     if(!s)return'';
     return'<div class="saved-spot-chip" onclick="selectSpot(\''+id+'\')">'
-      +'<span>★</span>'+s.groupName
-      +'<span class="chip-remove" onclick="event.stopPropagation();removeSaved(\''+id+'\')">×</span>'
+      +'<span>â</span>'+s.groupName
+      +'<span class="chip-remove" onclick="event.stopPropagation();removeSaved(\''+id+'\')">Ã</span>'
       +'</div>';
   }).join('');
 }
@@ -713,7 +713,7 @@ function removeSaved(id){
   renderSavedSpots();
 }
 
-// ── PROFILE ──
+// ââ PROFILE ââ
 function getProfile(){
   try{const p=JSON.parse(localStorage.getItem('quiver_profile'));return p&&p.skill?p:null;}
   catch(e){return null;}
@@ -741,7 +741,7 @@ function openModal(){
 }
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
 
-// ── SWIPE TO GO BACK ──
+// ââ SWIPE TO GO BACK ââ
 (function(){
   let startX=0,startY=0,tracking=false;
   const fp=document.getElementById('forecastPage');
@@ -766,7 +766,7 @@ document.getElementById('modal').addEventListener('click',function(e){if(e.targe
   },{passive:true});
 })();
 
-// ── SEARCH HELPERS ──
+// ââ SEARCH HELPERS ââ
 const REGION_ORDER=['Clare','Donegal','Sligo','Kerry','Cork','Waterford','Wicklow','Dublin'];
 
 function groupSpotsByRegion(spots){
@@ -793,8 +793,8 @@ function renderSpotRows(spots){
     if(regions.length>1)h+='<div class="sr-region-header">'+region+'</div>';
     byRegion[region].forEach(s=>{
       const gs=getSpotsInGroup(s.group);
-      const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' · ');
-      const saved=isSpotSaved(s.id)?'<span class="sri-saved">★</span>':'';
+      const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' Â· ');
+      const saved=isSpotSaved(s.id)?'<span class="sri-saved">â</span>':'';
       h+='<div class="search-result-item" onmousedown="selectSpot(\''+s.id+'\')">'+
         '<span class="sri-name">'+saved+s.groupName+'</span>'+
         (meta?'<span class="sri-meta">'+meta+'</span>':'')+
@@ -811,8 +811,8 @@ function renderIndexRows(spots){
     h+='<div class="si-region">'+region+'</div>';
     byRegion[region].forEach(s=>{
       const gs=getSpotsInGroup(s.group);
-      const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' · ');
-      const saved=isSpotSaved(s.id)?'★ ':'';
+      const meta=[gs.length>1?gs.length+' breaks':'',s.waveType].filter(Boolean).join(' Â· ');
+      const saved=isSpotSaved(s.id)?'â ':'';
       h+='<div class="si-spot" onmousedown="selectSpot(\''+s.id+'\')">'+
         '<span class="si-spot-name">'+saved+s.groupName+'</span>'+
         (meta?'<span class="si-spot-meta">'+meta+'</span>':'')+
@@ -822,14 +822,14 @@ function renderIndexRows(spots){
   return h;
 }
 
-// ── SEARCH ──
+// ââ SEARCH ââ
 let _searchFocusIdx=-1;
 
 function onSearch(val){
   const q=val.trim().toLowerCase();
   _searchFocusIdx=-1;
   const res=document.getElementById('searchResults');
-  // Empty — hide dropdown cleanly
+  // Empty â hide dropdown cleanly
   if(!q){res.classList.remove('show');res.innerHTML='';return;}
   const matches=ALL_SPOTS.filter(s=>(s.name+' '+s.groupName+' '+s.region).toLowerCase().includes(q));
   if(!matches.length){
@@ -851,7 +851,7 @@ function onSearchKey(e){
   if(_searchFocusIdx>=0)items[_searchFocusIdx].scrollIntoView({block:'nearest'});
 }
 
-// ── SPOT INDEX ──
+// ââ SPOT INDEX ââ
 function toggleSpotIndex(){
   const panel=document.getElementById('spotIndex');
   const btn=document.getElementById('spotIndexBtn');
@@ -903,7 +903,7 @@ function shareSpot(){
   // Use native share sheet on mobile if available
   if(navigator.share){
     navigator.share({
-      title:'Quiver — '+currentSpot.groupName+' Forecast',
+      title:'Quiver â '+currentSpot.groupName+' Forecast',
       text:'Check the surf forecast for '+currentSpot.groupName+' on Quiver',
       url:url
     }).catch(function(){});
@@ -928,8 +928,8 @@ function updateHero(){
   const words=s.groupName.toUpperCase().split(' ');
   const mid=Math.ceil(words.length/2);
   document.getElementById('heroName').innerHTML=words.length>1?words.slice(0,mid).join(' ')+'<br>'+words.slice(mid).join(' '):words[0];
-  document.getElementById('heroRegion').textContent=s.region+' · Ireland';
-  document.getElementById('heroLoc').textContent=s.lat.toFixed(4)+'° N, '+Math.abs(s.lng).toFixed(4)+'° W';
+  document.getElementById('heroRegion').textContent=s.region+' Â· Ireland';
+  document.getElementById('heroLoc').textContent=s.lat.toFixed(4)+'Â° N, '+Math.abs(s.lng).toFixed(4)+'Â° W';
 }
 
 function switchSpot(id){
@@ -949,10 +949,10 @@ function buildSelector(dotRatings){
   }).join('');
 }
 
-// ── HELPERS ──
+// ââ HELPERS ââ
 function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];}
-function arrowChar(d){return['↓','↙','←','↖','↑','↗','→','↘'][Math.round(d/45)%8];}
-// Blue needle for swell — +180 so arrow points direction of travel
+function arrowChar(d){return['â','â','â','â','â','â','â','â'][Math.round(d/45)%8];}
+// Blue needle for swell â +180 so arrow points direction of travel
 function swellArrow(d){
   const deg=((Math.round(d/45)*45)+180)%360;
   return ['<svg width="18" height="18" viewBox="0 0 18 18" style="transform:rotate(',deg,'deg);display:inline-block;vertical-align:middle;margin-right:2px">',
@@ -960,7 +960,7 @@ function swellArrow(d){
     '<polygon points="9,2 5.5,8 12.5,8" fill="#7dd3fc"/>',
     '</svg>'].join('');
 }
-// Yellow teardrop for wind — +180 so arrow points direction of travel
+// Yellow teardrop for wind â +180 so arrow points direction of travel
 function windArrow(d){
   const deg=((Math.round(d/45)*45)+180)%360;
   return ['<svg width="18" height="18" viewBox="0 0 18 18" style="transform:rotate(',deg,'deg);display:inline-block;vertical-align:middle;margin-right:2px">',
@@ -999,15 +999,15 @@ function rate(h,w,p,skill){
   if(h<0.3)return'flat';
   const sOk=h>=t.minH&&h<=t.maxH;
   // Base rating from height + wind
-  // Wind thresholds in mph (applied to effective wind — already discounted for offshore)
+  // Wind thresholds in mph (applied to effective wind â already discounted for offshore)
   let r;
   if(sOk&&w<10)r='great';
   else if(sOk&&w<18)r='good';
   else if(sOk&&w<22)r='fair';
   else r='poor';
-  // Period adjustment — soft signal, not a hard cutoff
+  // Period adjustment â soft signal, not a hard cutoff
   // >=10s: no penalty
-  // 7-9s:  cap at good (great→good), still surfable
+  // 7-9s:  cap at good (greatâgood), still surfable
   // <7s:   drop one level (choppy wind swell)
   if(p<7){
     if(r==='great')r='fair';
@@ -1028,22 +1028,22 @@ function windDesc(ws,wd,spot){
   if(isOff){
     if(ws<12)return'light '+wDir+' offshore';
     if(ws<18)return'moderate '+wDir+' offshore';
-    if(ws<25)return'fresh '+wDir+' offshore — may get feathery';
-    return'strong '+wDir+' offshore — could be too much';
+    if(ws<25)return'fresh '+wDir+' offshore â may get feathery';
+    return'strong '+wDir+' offshore â could be too much';
   }
   if(isOn){
-    if(ws<12)return'light '+wDir+' onshore — minimal impact';
-    if(ws<18)return'moderate '+wDir+' onshore — expect some chop';
-    if(ws<25)return'fresh '+wDir+' onshore — likely messy';
-    return'strong '+wDir+' onshore — very messy, probably unsurfable';
+    if(ws<12)return'light '+wDir+' onshore â minimal impact';
+    if(ws<18)return'moderate '+wDir+' onshore â expect some chop';
+    if(ws<25)return'fresh '+wDir+' onshore â likely messy';
+    return'strong '+wDir+' onshore â very messy, probably unsurfable';
   }
   const co=(diff>90&&diff<=135)||(diff>=225&&diff<270);
   if(co){
-    if(ws<12)return wDir+' cross-offshore — light texture';
-    return wDir+' cross-offshore — choppy on one side';
+    if(ws<12)return wDir+' cross-offshore â light texture';
+    return wDir+' cross-offshore â choppy on one side';
   }
-  if(ws<12)return wDir+' cross-onshore — light';
-  return wDir+' cross-onshore — choppy faces';
+  if(ws<12)return wDir+' cross-onshore â light';
+  return wDir+' cross-onshore â choppy faces';
 }
 function conditionsRead(h,ws,wd,swP,spot){
   if(h<0.3)return'Waves too small to surf.';
@@ -1051,9 +1051,9 @@ function conditionsRead(h,ws,wd,swP,spot){
   if(h>=2.5)parts.push('solid '+h.toFixed(1)+'m');
   else if(h>=1.2)parts.push(h.toFixed(1)+'m');
   else parts.push('small '+h.toFixed(1)+'m');
-  if(swP>=14)parts.push('very long period — likely good shape');
+  if(swP>=14)parts.push('very long period â likely good shape');
   else if(swP>=10)parts.push(swP.toFixed(0)+'s period');
-  else if(swP<7)parts.push('short period — likely choppy');
+  else if(swP<7)parts.push('short period â likely choppy');
   parts.push(windDesc(ws,wd,spot));
   return parts.join('. ')+'.';
 }
@@ -1150,7 +1150,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
 
   const ac=currentRating==='good'||currentRating==='great'?'good-card':currentRating==='fair'?'fair-card':currentRating==='poor'?'poor-card':'flat-card';
 
-  // ── ADVANCED / EXPERT: raw conditions readout instead of window ──
+  // ââ ADVANCED / EXPERT: raw conditions readout instead of window ââ
   if(skill==='advanced'||skill==='expert'){
     // Determine reference slot: if daylight use current, else use first light tomorrow
     const nowHour=now.getHours()+now.getMinutes()/60;
@@ -1176,20 +1176,20 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
     function rawNumbers(s){
       const mult=spot.ftMult||0.7;
       const ftMid=s.h*mult*3.281;
-      // ±20% range, rounded to nearest 0.5ft
+      // Â±20% range, rounded to nearest 0.5ft
       const ftLo=(Math.round((ftMid*0.8)*2)/2).toFixed(0);
       const ftHi=(Math.round((ftMid*1.2)*2)/2).toFixed(0);
       const rangeStr=ftLo===ftHi?ftLo+'ft':ftLo+'-'+ftHi+'ft';
-      const periodStr=s.p?s.p.toFixed(0)+'s':'—';
+      const periodStr=s.p?s.p.toFixed(0)+'s':'â';
       const swDirStr=windDir(s.swDir!=null?s.swDir:s.waveDir);
       return rangeStr+' @ '+periodStr+', '+swDirStr+' swell, '+windStrength(s.ws)+' '+windRelative(s.wd,spot).toLowerCase()+' wind';
     }
 
     // Helper: next future tide event string
     function nextTideStr(){
-      if(!tidePoints||!tidePoints.length) return'—';
+      if(!tidePoints||!tidePoints.length) return'â';
       const nowMs=now.getTime();
-      // ── Derive the same merged high/low events that buildTideCards uses ──
+      // ââ Derive the same merged high/low events that buildTideCards uses ââ
       const hasTags=tidePoints[0]&&(tidePoints[0].type==='HIGH'||tidePoints[0].type==='LOW');
       let highs=[];
       if(hasTags){
@@ -1197,7 +1197,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
           .map(function(tp){return{type:'high',time:tp.time,height:tp.height,ts:new Date(tp.time).getTime()};})
           .sort(function(a,b){return a.ts-b.ts;});
       }
-      if(!highs.length) return'—';
+      if(!highs.length) return'â';
       // Derive lows as midpoints between consecutive highs (same as buildTideCards)
       const lows=[];
       for(let i=0;i<highs.length-1;i++){
@@ -1216,31 +1216,31 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       const allEvents=highs.concat(lows).sort(function(a,b){return a.ts-b.ts;});
       // Pick next future event
       const next=allEvents.filter(function(e){return e.ts>nowMs;}).sort(function(a,b){return a.ts-b.ts;})[0];
-      if(!next) return'—';
+      if(!next) return'â';
       const tLabel=next.type==='high'?'High':'Low';
       const tHeight=next.height!=null?next.height.toFixed(1)+'m':'';
       return tLabel+(tHeight?' '+tHeight:'')+' at '+fmtT(next.time);
     }
 
-    // ── NOW section: always current conditions ──
+    // ââ NOW section: always current conditions ââ
     const nowLine=rawNumbers(slots[0]||refSlot||{h:0,p:0,wd:0,swDir:null,waveDir:0,ws:0});
 
-    // ── NEXT section: smart — depends on time of day and current rating ──
+    // ââ NEXT section: smart â depends on time of day and current rating ââ
     let nextLabel='Next';
-    let nextLine='—';
+    let nextLine='â';
     let nextTide=nextTideStr();
 
     if(!isDaytime){
-      // After dark → first light tomorrow
+      // After dark â first light tomorrow
       nextLabel='First light';
       if(refSlot) nextLine=rawNumbers(refSlot);
     } else if(currentRating==='good'||currentRating==='great'){
-      // Currently good → next label, raw numbers for current slot
+      // Currently good â next label, raw numbers for current slot
       nextLabel='On now';
       nextLine=rawNumbers(slots[0]||refSlot||{h:0,p:0,wd:0,swDir:null,waveDir:0,ws:0});
       nextTide=nextTideStr();
     } else {
-      // Daytime but not great → find next better slot later today
+      // Daytime but not great â find next better slot later today
       const laterSlots=slots.slice(1); // skip current hour
       const nextGood=laterSlots.filter(function(s){
         const h=new Date(s.time).getHours()+new Date(s.time).getMinutes()/60;
@@ -1254,16 +1254,16 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       if(nextGood){
         const sd=new Date(nextGood.time);
         const dn=sd.toDateString()===now.toDateString()?'Today':'Tomorrow';
-        nextLabel='Next · '+dn+' '+fmtT(nextGood.time);
+        nextLabel='Next Â· '+dn+' '+fmtT(nextGood.time);
         nextLine=rawNumbers(nextGood);
       } else {
         nextLabel='Next';
-        nextLine='—';
+        nextLine='â';
       }
     }
 
     return'<div class="surf-report-card '+ac+'">'
-      +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
+      +'<div class="surf-report-label">'+name+'\'s Surf Report Â· '+spot.shortName+'</div>'
       +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
       +'<div class="surf-report-window" style="margin-bottom:0">'
         +'<div class="surf-report-window-label">Now</div>'
@@ -1272,12 +1272,12 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
       +'<div class="surf-report-window">'
         +'<div class="surf-report-window-label">'+nextLabel+'</div>'
         +'<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.3px;margin-bottom:6px;">'+nextLine+'</div>'
-        +(nextTide&&nextTide!=='—'?'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+nextTide+'</div>':'')
+        +(nextTide&&nextTide!=='â'?'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.45);">'+nextTide+'</div>':'')
       +'</div>'
       +'</div>';
   }
 
-  // ── BEGINNER / INTERMEDIATE: NOW + NEXT window recommendation ──
+  // ââ BEGINNER / INTERMEDIATE: NOW + NEXT window recommendation ââ
   const best=scored.filter(function(s){return s.sc>=5&&s.gS&&s.tideOk;}).sort(function(a,b){return b.sc-a.sc;})[0];
   let windowText='';
   const tidePrefLabel=tidePreferenceLabel(spot.tidePreference||'any');
@@ -1304,7 +1304,7 @@ function buildSurfReport(slots,profile,sun,spot,currentRating,currentRead,tidePo
   })(slots[0]):'';
 
   return'<div class="surf-report-card '+ac+'">'
-    +'<div class="surf-report-label">'+name+'\'s Surf Report · '+spot.shortName+'</div>'
+    +'<div class="surf-report-label">'+name+'\'s Surf Report Â· '+spot.shortName+'</div>'
     +'<span class="badge badge-'+currentRating+'" style="margin-bottom:12px">'+rateLabel(currentRating)+'</span>'
     +(nowRead?'<div class="surf-report-window" style="margin-bottom:0"><div class="surf-report-window-label">Now</div><div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(255,255,255,0.75);letter-spacing:0.3px;">'+nowRead+'</div></div>':'')
     +(windowText?'<div class="surf-report-window"><div class="surf-report-window-label">Next</div>'+windowText+'</div>':'')
@@ -1315,8 +1315,8 @@ function fmtT(iso){return new Date(iso).toLocaleTimeString('en-IE',{hour:'2-digi
 function fmtDay(iso){const d=new Date(iso),t=new Date(),tm=new Date();tm.setDate(tm.getDate()+1);if(d.toDateString()===t.toDateString())return'Today';if(d.toDateString()===tm.toDateString())return'Tmrw';return d.toLocaleDateString('en-IE',{weekday:'short'});}
 function fmtDayFull(iso){const d=new Date(iso),t=new Date();if(d.toDateString()===t.toDateString())return'Today';return d.toLocaleDateString('en-IE',{weekday:'short'});}
 
-// ── TIDE CARDS (simple high/low display) ──
-// ── TIDE CARDS + GRAPH ──────────────────────────────────────────────────────
+// ââ TIDE CARDS (simple high/low display) ââ
+// ââ TIDE CARDS + GRAPH ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function buildTideCards(tidePoints, continuousPoints){
   if(!tidePoints||tidePoints.length<1){
     return'<div class="tide-simple-grid"><div class="tide-simple-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:2px;">Tide data unavailable</div></div>';
@@ -1324,7 +1324,7 @@ function buildTideCards(tidePoints, continuousPoints){
   const now=Date.now();
   const cutoff=now+96*3600000;
 
-  // ── Extract HIGH tide events ──────────────────────────────────────────────
+  // ââ Extract HIGH tide events ââââââââââââââââââââââââââââââââââââââââââââââ
   let highs=[];
   const hasTags=tidePoints[0]&&tidePoints[0].type&&
     (tidePoints[0].type==='HIGH'||tidePoints[0].type==='LOW');
@@ -1349,7 +1349,7 @@ function buildTideCards(tidePoints, continuousPoints){
     }
   }
 
-  // ── Derive LOW tides as midpoint between consecutive highs ────────────────
+  // ââ Derive LOW tides as midpoint between consecutive highs ââââââââââââââââ
   const lows=[];
   for(let i=0;i<highs.length-1;i++){
     const t0=highs[i].ts, t1=highs[i+1].ts;
@@ -1369,7 +1369,7 @@ function buildTideCards(tidePoints, continuousPoints){
     lows.push({type:'low',time:midIso,height:lowH,ts:midTs});
   }
 
-  // ── Merge, sort, window ───────────────────────────────────────────────────
+  // ââ Merge, sort, window âââââââââââââââââââââââââââââââââââââââââââââââââââ
   const allEvents=highs.map(function(h){return{type:'high',time:h.time,height:h.height,ts:h.ts};})
     .concat(lows)
     .sort(function(a,b){return a.ts-b.ts;})
@@ -1383,7 +1383,7 @@ function buildTideCards(tidePoints, continuousPoints){
   const future=allEvents.filter(function(e){return e.ts>=now;}).slice(0,3);
   const events=past.concat(future);
 
-  // ── Cards: fixed grid rows so every row aligns across all cards ───────────
+  // ââ Cards: fixed grid rows so every row aligns across all cards âââââââââââ
   const cards=events.map(function(e){
     const isHigh=e.type==='high';
     const d=new Date(e.time);
@@ -1399,7 +1399,7 @@ function buildTideCards(tidePoints, continuousPoints){
       +'</div>';
   }).join('');
 
-  // ── Graph: passes all events (wider window) to the draw function ──────────
+  // ââ Graph: passes all events (wider window) to the draw function ââââââââââ
   // Store events on the canvas via a data attribute after render
   const graphId='tideGraph_'+Date.now();
   const eventsJson=encodeURIComponent(JSON.stringify(allEvents));
@@ -1430,7 +1430,7 @@ function drawTideGraph(canvasId){
   const nCards=cardEvents.length;
   if(nCards<2)return;
 
-  // ── Read actual card centre x-positions from DOM ─────────────────────────
+  // ââ Read actual card centre x-positions from DOM âââââââââââââââââââââââââ
   // The grid is the previous sibling of the canvas inside .tide-block
   const grid=canvas.previousElementSibling;
   const canvasLeft=canvas.getBoundingClientRect().left;
@@ -1458,7 +1458,7 @@ function drawTideGraph(canvasId){
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
 
-  // ── Determine time window from card events ──────────────────────────────
+  // ââ Determine time window from card events ââââââââââââââââââââââââââââââ
   const allSorted=allEvents.slice().sort(function(a,b){return a.ts-b.ts;});
   const tFirst=cardEvents[0].ts, tLast=cardEvents[nCards-1].ts, tRange=tLast-tFirst||1;
 
@@ -1467,7 +1467,7 @@ function drawTideGraph(canvasId){
   edgeCentres[nCards-1]=W;
   function tToX(ts){ return edgeCentres[0]+(ts-tFirst)/tRange*(edgeCentres[nCards-1]-edgeCentres[0]); }
 
-  // ── Try continuous data first ─────────────────────────────────────────────
+  // ââ Try continuous data first âââââââââââââââââââââââââââââââââââââââââââââ
   const contRaw=canvas.dataset.cont;
   let pts=[];
 
@@ -1488,7 +1488,7 @@ function drawTideGraph(canvasId){
       return{x:tToX(p.ts), y:ty(p.h), ts:p.ts};
     });
   } else {
-    // ── Fallback: cosine interpolation through HIGH/LOW events ────────────
+    // ââ Fallback: cosine interpolation through HIGH/LOW events ââââââââââââ
     const firstIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[0].ts;});
     const lastIdx=allSorted.findIndex(function(e){return e.ts===cardEvents[nCards-1].ts;});
     const curveEvents=allSorted.slice(Math.max(0,firstIdx-1),lastIdx+2);
@@ -1517,14 +1517,14 @@ function drawTideGraph(canvasId){
   // Outer-scope PAD (used for NOW line and dot-plotting y coordinates)
   const PAD={t:38,b:36};
   const gH=H-PAD.t-PAD.b;
-  // ty: convert tide height → canvas y. Derive scale from pts y-range.
+  // ty: convert tide height â canvas y. Derive scale from pts y-range.
   const pYs=pts.map(function(p){return p.y;});
   const yBottom=Math.max.apply(null,pYs); // high y = low on screen
   const yTop=Math.min.apply(null,pYs);
   const ySpan=yBottom-yTop||1;
-  // pxPerUnit: needed to map card-event heights → y positions for dots
+  // pxPerUnit: needed to map card-event heights â y positions for dots
   // We reconstruct hMin/hMax from the pts themselves
-  const hMinOuter=0, hMaxOuter=1; // placeholders — ty via direct lookup below
+  const hMinOuter=0, hMaxOuter=1; // placeholders â ty via direct lookup below
   // yFromTs: interpolate y-position on the pts curve for a given timestamp
   function yFromTs(ts){
     if(!pts.length) return PAD.t+gH*0.5;
@@ -1560,7 +1560,7 @@ function drawTideGraph(canvasId){
   ctx.lineWidth=1.5;
   ctx.stroke();
 
-  // Now line — interpolated along curve
+  // Now line â interpolated along curve
   if(now>=pts[0].ts&&now<=pts[pts.length-1].ts){
     let nowX=null;
     for(let i=0;i<pts.length-1;i++){
@@ -1620,7 +1620,7 @@ function drawTideGraph(canvasId){
 function svgTideHigh(){return'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg>';}
 function svgTideLow(){return'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(180,210,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>';}
 
-// ── GLOBE ──
+// ââ GLOBE ââ
 let globeInterval=null;
 let globeAngle=0;
 const GLOBE_SPEED=0.004;
@@ -1646,7 +1646,7 @@ function initGlobe(){
   ctx.scale(dpr,dpr);
   const cx=S/2, cy=S/2, R=S/2-2;
 
-  // ── VHS GLITCH state ──
+  // ââ VHS GLITCH state ââ
   let glitchFrames=0, glitchTotal=0, glitchActive=false;
   let glitchBars=[];
   function scheduleGlitch(){
@@ -1670,7 +1670,7 @@ function initGlobe(){
   }
   scheduleGlitch();
 
-  // ── Orthographic projection ──
+  // ââ Orthographic projection ââ
   function project(latDeg,lonDeg,rotAngle){
     const lat=latDeg*Math.PI/180;
     const lon=lonDeg*Math.PI/180+rotAngle;
@@ -1680,20 +1680,20 @@ function initGlobe(){
     return{x,y,visible};
   }
 
-  // ── Draw actual brand logo image centred on globe ──
+  // ââ Draw actual brand logo image centred on globe ââ
   function drawLogoOnGlobe(logoImg){
     ctx.save();
     ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.clip();
 
-    // Semi-transparent dark wash — grid shows through subtly
+    // Semi-transparent dark wash â grid shows through subtly
     ctx.fillStyle='rgba(10,8,2,0.58)';
     ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.fill();
 
     if(logoImg){
-      // Logo is 1127×840px: W/H ratio ≈ 1.342
-      // Fit inside the inscribed square of the circle (side = R*√2)
+      // Logo is 1127Ã840px: W/H ratio â 1.342
+      // Fit inside the inscribed square of the circle (side = R*â2)
       const inscribed=R*Math.sqrt(2)*0.88; // use 88% so a little breathing room
-      const logoAR=logoImg.naturalWidth/logoImg.naturalHeight; // ≈1.342
+      const logoAR=logoImg.naturalWidth/logoImg.naturalHeight; // â1.342
       let lw,lh;
       if(logoAR>1){lw=inscribed;lh=inscribed/logoAR;}
       else{lh=inscribed;lw=inscribed*logoAR;}
@@ -1702,7 +1702,7 @@ function initGlobe(){
     ctx.restore();
   }
 
-  // ── VHS glitch overlay ──
+  // ââ VHS glitch overlay ââ
   function drawGlitch(){
     if(!glitchActive)return;
     ctx.save();
@@ -1854,25 +1854,25 @@ function drawGraph(canvas,times,heights,periods,skill){
   }
 }
 
-// ── SVG ICONS ──
+// ââ SVG ICONS ââ
 function svgSunrise(){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 16 12 12 16 16"/></svg>';}
 function svgSunset(){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,160,60,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.93 7.93l2.83 2.83M2 14h4M18 12a6 6 0 11-12 0"/><path d="M20 14h2M18.36 7.64l-1.42 1.42M5 19h14"/><polyline points="8 12 12 16 16 12"/></svg>';}
 
-// ── MARINE INSTITUTE TIDE PREDICTION FETCH ──
+// ââ MARINE INSTITUTE TIDE PREDICTION FETCH ââ
 // Uses IMI_TidePrediction_HighLow: predicted high/low tides, 2 years ahead, always populated.
 // Falls back to synthetic harmonics if unavailable.
 async function fetchTidePredictions(stationID){
   const LOG='[Quiver Tides]';
   try{
     const from=new Date(Date.now()-6*3600000).toISOString().slice(0,19)+'Z';
-    const to=new Date(Date.now()+90*3600000).toISOString().slice(0,19)+'Z';  // 4 days ahead — ensures multiple full tidal cycles
+    const to=new Date(Date.now()+90*3600000).toISOString().slice(0,19)+'Z';  // 4 days ahead â ensures multiple full tidal cycles
     const url='https://erddap.marine.ie/erddap/tabledap/IMI_TidePrediction_HighLow.json'
       +'?time,Water_Level_ODM,tide_time_category'
       +'&stationID=%22'+encodeURIComponent(stationID)+'%22'
       +'&time%3E='+encodeURIComponent(from)
       +'&time%3C='+encodeURIComponent(to)
       +'&orderBy(%22time%22)';
-    console.log(LOG,'Fetching:',stationID,'→',url);
+    console.log(LOG,'Fetching:',stationID,'â',url);
     const r=await fetch(url);
     if(!r.ok){
       console.warn(LOG,'HTTP',r.status,'for station',stationID);
@@ -1886,7 +1886,7 @@ async function fetchTidePredictions(stationID){
     const timeIdx  = cols.indexOf('time')>=0               ? cols.indexOf('time')               : 0;
     const heightIdx= cols.indexOf('Water_Level_ODM')>=0    ? cols.indexOf('Water_Level_ODM')    : 1;
     const typeIdx  = cols.indexOf('tide_time_category')>=0 ? cols.indexOf('tide_time_category') : 2;
-    console.log(LOG,'Using column indices — time:'+timeIdx+' height:'+heightIdx+' type:'+typeIdx);
+    console.log(LOG,'Using column indices â time:'+timeIdx+' height:'+heightIdx+' type:'+typeIdx);
     const rows=(j.table&&j.table.rows)||[];
     console.log(LOG,'Row count:',rows.length);
     if(rows.length>0){
@@ -1906,7 +1906,7 @@ async function fetchTidePredictions(stationID){
       // Exact matches
       if(s==='HIGH'||s==='HIGH WATER'||s==='HW'||s==='H'||s==='1') return 'HIGH';
       if(s==='LOW' ||s==='LOW WATER' ||s==='LW'||s==='L'||s==='0') return 'LOW';
-      // Contains match — catches "High Water Stand", "Low Water Slack" etc.
+      // Contains match â catches "High Water Stand", "Low Water Slack" etc.
       if(s.includes('HIGH')) return 'HIGH';
       if(s.includes('LOW'))  return 'LOW';
       // First-letter fallback
@@ -1933,7 +1933,7 @@ async function fetchTidePredictions(stationID){
   }
 }
 
-// ── CONTINUOUS TIDE FETCH (IMI-TidePrediction, 20-min resolution) ──
+// ââ CONTINUOUS TIDE FETCH (IMI-TidePrediction, 20-min resolution) ââ
 async function fetchTideContinuous(stationID){
   const LOG='[Quiver TidesCont]';
   try{
@@ -2001,7 +2001,7 @@ function detectTideEvents(points){
   return deduped;
 }
 
-// ── M2 BUOY FETCH ──
+// ââ M2 BUOY FETCH ââ
 async function fetchM2Buoy(){
   try{
     const from=new Date(Date.now()-3*3600000).toISOString().slice(0,19)+'Z';
@@ -2031,7 +2031,7 @@ async function fetchDotRatings(){
   }));
 }
 
-// ── MAIN LOAD ──
+// ââ MAIN LOAD ââ
 async function load(){
   const app=document.getElementById('app'),profile=getProfile(),skill=(profile&&profile.skill)||'advanced',spot=currentSpot;
   app.innerHTML='<div class="status">Loading forecast...</div>';
@@ -2102,7 +2102,7 @@ async function load(){
       slots.push({time:times[i],h:wH[i]||0,p:wP[i]||0,waveDir:wDir[i]||0,swDir:swD[i]!=null?swD[i]:null,swP:swP[i]||0,ws:wndS[i]||0,wd:wndD[i]||0});
     }
 
-    // Tide data — use MI HIGH/LOW predictions, fall back to synthetic
+    // Tide data â use MI HIGH/LOW predictions, fall back to synthetic
     let tidePoints = tideR || [];
     if(tidePoints.length < 2){
       console.warn('[Quiver Tides] Falling back to synthetic tides (got',tidePoints.length,'points from MI)');
@@ -2115,7 +2115,7 @@ async function load(){
     const surfReportHTML=buildSurfReport(slots,profile,sun,spot,r,read,tidePoints);
     buildSelector(dots);
 
-    // ── 7-day forecast table rows ──
+    // ââ 7-day forecast table rows ââ
     const today16=new Date().toDateString();
     const sixteenRows=daily.time.slice(0,7).map(function(t,i){
       const dH=daily.wave_height_max[i]||0;
@@ -2224,7 +2224,7 @@ async function load(){
         +'</div>';
     }).join('');
 
-    // Enhanced 7-day cards — includes wind speed (first 7 days only)
+    // Enhanced 7-day cards â includes wind speed (first 7 days only)
     const today=new Date().toDateString();
     const dayCards=days.slice(0,7).map(function(d,i){
       const isToday=new Date(d.time).toDateString()===today;
@@ -2263,15 +2263,15 @@ async function load(){
       :'';
 
     const buoyBadge=buoyActive?'&nbsp;<span class="buoy-tag">M2 Buoy</span>':'';
-    const buoyDataNote=buoyActive?' · M2 Buoy data':'';
-    const buoyInfoItem=spot.useBuoy?'<div class="spot-info-item"><div class="spot-info-label">Live Data</div><div class="spot-info-val">M2 Buoy · Irish Sea</div></div>':'';
+    const buoyDataNote=buoyActive?' Â· M2 Buoy data':'';
+    const buoyInfoItem=spot.useBuoy?'<div class="spot-info-item"><div class="spot-info-label">Live Data</div><div class="spot-info-val">M2 Buoy Â· Irish Sea</div></div>':'';
     const waveDisplay=displayH(cH);
     const waveU=displayUnit();
     const waveSub=currentUnit==='ft'?'Est. face height':'Significant height (Hs)';
 
-    // Water temp item — clean, consistent
+    // Water temp item â clean, consistent
     const sstBlock=cSST!==null
-      ?'<div><div class="c-val" style="font-size:clamp(20px,2.5vw,28px);">'+cSST.toFixed(1)+'<span class="c-unit">°C</span></div><div class="c-lbl">Water Temp</div><div class="c-sub">Sea surface</div></div>'
+      ?'<div><div class="c-val" style="font-size:clamp(20px,2.5vw,28px);">'+cSST.toFixed(1)+'<span class="c-unit">Â°C</span></div><div class="c-lbl">Water Temp</div><div class="c-sub">Sea surface</div></div>'
       :'';
 
     app.innerHTML=
@@ -2279,7 +2279,7 @@ async function load(){
       +surfReportHTML
 
       +'<div class="current-card">'
-        +'<div class="card-label">Now · '+now.toLocaleDateString('en-IE',{weekday:'long'})+' '+fmtT(now.toISOString())+buoyDataNote+'</div>'
+        +'<div class="card-label">Now Â· '+now.toLocaleDateString('en-IE',{weekday:'long'})+' '+fmtT(now.toISOString())+buoyDataNote+'</div>'
         +'<div class="current-grid">'
           +'<div><div class="c-val">'+waveDisplay+'<span class="c-unit">'+waveU+'</span></div><div class="c-lbl">Wave Height</div><div class="c-sub">'+waveSub+'</div></div>'
           +'<div><div class="c-val">'+cH.toFixed(1)+'<span class="c-unit">m</span></div><div class="c-lbl">Swell Height</div><div class="c-sub">Hs open ocean</div></div>'
@@ -2306,7 +2306,7 @@ async function load(){
       +'</table></div>'
       +'<div class="forecast-cards">'+mobileCards+'</div>'
 
-      +'<div class="sec-label">Tides · Today</div>'
+      +'<div class="sec-label">Tides Â· Today</div>'
       +buildTideCards(tidePoints)
 
       +'<div class="sec-label">First &amp; Last Light</div>'
@@ -2343,21 +2343,21 @@ async function load(){
         +'</button>'
       +'</div>'
 
-      +'<div class="feedback-widget" id="feedbackWidget">'        +'<div class="feedback-question" id="feedbackQuestion">'          +'<span class="feedback-label">Was this forecast accurate?</span>'          +'<div class="feedback-btns">'            +'<button class="feedback-btn" onclick="submitFeedback(true)" title="Accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>'            +'<button class="feedback-btn" onclick="submitFeedback(false)" title="Not accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg></button>'          +'</div>'        +'</div>'        +'<div class="feedback-comment" id="feedbackComment" style="display:none;">'          +'<div class="feedback-label" style="margin-bottom:10px;">What was off? (optional)</div>'          +'<textarea class="feedback-textarea" id="feedbackText" placeholder="e.g. Wind was much stronger, waves were smaller than shown..." rows="3"></textarea>'          +'<div style="display:flex;gap:8px;margin-top:8px;">'            +'<button class="feedback-submit" onclick="sendFeedbackComment()">Send feedback</button>'            +'<button class="feedback-skip" onclick="dismissFeedback()">Skip</button>'          +'</div>'        +'</div>'        +'<div class="feedback-thanks" id="feedbackThanks" style="display:none;">'          +'<span class="feedback-thanks-text">Thanks &#128587;</span>'        +'</div>'      +'</div>'      +'<div class="disclaimer">'  +'Quiver should be used alongside your own local knowledge of the wave.<br>'  +'Wave &amp; swell data: Open-Meteo Marine API &nbsp;·&nbsp; Wind data: Open-Meteo Forecast API<br>'  +'Tide predictions &amp; buoy data: Marine Institute Ireland &amp; Met Éireann'  +'</div>';
+      +'<div class="feedback-widget" id="feedbackWidget">'        +'<div class="feedback-question" id="feedbackQuestion">'          +'<span class="feedback-label">Was this forecast accurate?</span>'          +'<div class="feedback-btns">'            +'<button class="feedback-btn" onclick="submitFeedback(true)" title="Accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>'            +'<button class="feedback-btn" onclick="submitFeedback(false)" title="Not accurate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg></button>'          +'</div>'        +'</div>'        +'<div class="feedback-comment" id="feedbackComment" style="display:none;">'          +'<div class="feedback-label" style="margin-bottom:10px;">What was off? (optional)</div>'          +'<textarea class="feedback-textarea" id="feedbackText" placeholder="e.g. Wind was much stronger, waves were smaller than shown..." rows="3"></textarea>'          +'<div style="display:flex;gap:8px;margin-top:8px;">'            +'<button class="feedback-submit" onclick="sendFeedbackComment()">Send feedback</button>'            +'<button class="feedback-skip" onclick="dismissFeedback()">Skip</button>'          +'</div>'        +'</div>'        +'<div class="feedback-thanks" id="feedbackThanks" style="display:none;">'          +'<span class="feedback-thanks-text">Thanks &#128587;</span>'        +'</div>'      +'</div>'      +'<div class="disclaimer">'  +'Quiver should be used alongside your own local knowledge of the wave.<br>'  +'Wave &amp; swell data: Open-Meteo Marine API &nbsp;Â·&nbsp; Wind data: Open-Meteo Forecast API<br>'  +'Tide predictions &amp; buoy data: Marine Institute Ireland &amp; Met Ãireann'  +'</div>';
 
     requestAnimationFrame(function(){
       const sg=document.getElementById('swellGraph');
       if(sg)drawGraph(sg,times,wH,wP,skill);
-      // Tide graph — find by class since ID includes timestamp
+      // Tide graph â find by class since ID includes timestamp
       const tg=document.querySelector('.tide-graph-canvas');
       if(tg)drawTideGraph(tg.id);
     });
   }catch(e){
-    app.innerHTML='<div class="status error">Couldn\'t load — '+e.message+'</div>';
+    app.innerHTML='<div class="status error">Couldn\'t load â '+e.message+'</div>';
   }
 }
 
-// ── FORECAST FEEDBACK ────────────────────────────────────────────────────────
+// ââ FORECAST FEEDBACK ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const GFORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfNPyFvpTLtd4HwnCyQbXLwjkb_nRv3CjgmFlMaSpf-DU1_Ww/formResponse';
 const GFORM_FIELDS = { spot: 'entry.1372464224', rating: 'entry.675922232', comment: 'entry.1928536649', timestamp: 'entry.2072292078' };
 
@@ -2369,7 +2369,7 @@ function postToGForm(spot, rating, comment){
   body.append(GFORM_FIELDS.rating, rating);
   body.append(GFORM_FIELDS.comment, comment || '');
   body.append(GFORM_FIELDS.timestamp, ts);
-  // Silent fire-and-forget — CORS will block response but submission still lands
+  // Silent fire-and-forget â CORS will block response but submission still lands
   fetch(GFORM_URL, { method:'POST', mode:'no-cors', body }).catch(function(){});
 }
 
@@ -2405,13 +2405,13 @@ function dismissFeedback(){
   document.getElementById('feedbackThanks').style.display = 'block';
 }
 
-// ── DAY EXPAND ──
+// ââ DAY EXPAND ââ
 function openDayExpand(el){
   var dataStr=el.dataset.day;
   const d=JSON.parse(decodeURIComponent(dataStr));
   const rColors={great:'var(--good)',good:'var(--good)',fair:'var(--fair)',poor:'var(--poor)',flat:'rgba(255,255,255,0.4)'};
   const date=new Date(d.time);
-  const dateLabel=d.isToday?'Today — '+date.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'}):date.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'});
+  const dateLabel=d.isToday?'Today â '+date.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'}):date.toLocaleDateString('en-IE',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('dex-date').textContent=dateLabel;
   document.getElementById('dex-rating').innerHTML='<span style="color:'+rColors[d.rating]+'">'+rateLabel(d.rating).toUpperCase()+'</span>';
   document.getElementById('dex-h').innerHTML=displayH(d.h)+'<span class="dei-unit">'+displayUnit()+'</span>';
@@ -2427,7 +2427,7 @@ function closeDayExpand(e){
     document.getElementById('dayExpand').classList.remove('open');
 }
 
-// ── INIT ──
+// ââ INIT ââ
 renderSavedSpots();
 // Init globe after fonts have loaded (slight delay so Archivo Black is ready)
 setTimeout(initGlobe, 200);
@@ -2442,7 +2442,7 @@ setTimeout(initGlobe, 200);
 
 <div class="day-expand" id="dayExpand" onclick="closeDayExpand(event)">
   <div class="day-expand-card">
-    <button class="day-expand-close" onclick="document.getElementById('dayExpand').classList.remove('open')">✕ Close</button>
+    <button class="day-expand-close" onclick="document.getElementById('dayExpand').classList.remove('open')">â Close</button>
     <div class="day-expand-date" id="dex-date"></div>
     <div class="day-expand-rating" id="dex-rating"></div>
     <div class="day-expand-grid">

@@ -216,10 +216,10 @@ header{
   display:flex;gap:2px;flex-shrink:0;margin-top:2px;
 }
 .star{
-  font-size:13px;color:rgba(255,255,255,0.15);line-height:1;
+  width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;
   user-select:none;
 }
-.star.filled{color:var(--accent);}
+.star.filled{}
 
 /* Compass arrow */
 .compass-wrap{
@@ -656,7 +656,7 @@ header{
 
   <!-- Strava Connect -->
   <div class="strava-bar">
-    <div class="strava-logo">â¬¡ Strava</div>
+    <div class="strava-logo"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg> Strava</div>
     <div class="strava-text">Connect Strava to auto-sync session duration and activity data</div>
     <button class="strava-btn">Connect</button>
   </div>
@@ -689,21 +689,21 @@ header{
     <!-- SESSION CARD 1 â firing session -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 034 Â· 2026</div>
+        <div class="session-num">Session 034 · 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Spanish Point<br><span style="font-size:13px;color:rgba(255,255,255,0.5);">Inner Reef</span></div>
-              <div class="spot-region">Clare Â· 52Â°50'N 9Â°25'W</div>
+              <div class="spot-region">Clare · 52°50'N 9°25'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star">â</span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
             </div>
           </div>
           <div class="conditions-row">
@@ -729,7 +729,7 @@ header{
                       <polygon points="19,10 15,8 15,12" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">â E</div>
+                  <div class="compass-label">&rarr; E</div>
                 </div>
               </div>
             </div>
@@ -739,7 +739,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Mon 9 Mar 2026 Â· 07:30</div>
+            <div class="session-date">Mon 9 Mar 2026 · 07:30</div>
             <div class="session-note">"Best session in months. Clean lined up sets, light offshore the whole time."</div>
           </div>
         </div>
@@ -761,21 +761,21 @@ header{
     <!-- SESSION CARD 2 â pumping -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 033 Â· 2026</div>
+        <div class="session-num">Session 033 · 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Crab Island</div>
-              <div class="spot-region">Clare Â· 52Â°56'N 9Â°27'W</div>
+              <div class="spot-region">Clare · 52°56'N 9°27'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
             </div>
           </div>
           <div class="conditions-row">
@@ -797,12 +797,12 @@ header{
                 <div class="compass-wrap">
                   <div class="compass-ring">
                     <svg width="20" height="20" viewBox="0 0 20 20">
-                      <!-- NW swell ~315Â° arrow pointing NW -->
+                      <!-- NW swell ~315° arrow pointing NW -->
                       <line x1="10" y1="10" x2="16" y2="16" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
                       <polygon points="17,17 13,16 16,13" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">â SE</div>
+                  <div class="compass-label">&#x2198; SE</div>
                 </div>
               </div>
             </div>
@@ -812,7 +812,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Sat 7 Mar 2026 Â· 09:00</div>
+            <div class="session-date">Sat 7 Mar 2026 · 09:00</div>
             <div class="session-note">"Solid overhead, fast walls. Proper day out at the island."</div>
           </div>
         </div>
@@ -826,21 +826,21 @@ header{
     <!-- SESSION CARD 3 â average -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 032 Â· 2026</div>
+        <div class="session-num">Session 032 · 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Lahinch Beach</div>
-              <div class="spot-region">Clare Â· 52Â°56'N 9Â°21'W</div>
+              <div class="spot-region">Clare · 52°56'N 9°21'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star">â</span>
-              <span class="star">â</span>
-              <span class="star">â</span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
             </div>
           </div>
           <div class="conditions-row">
@@ -862,12 +862,12 @@ header{
                 <div class="compass-wrap">
                   <div class="compass-ring">
                     <svg width="20" height="20" viewBox="0 0 20 20">
-                      <!-- W swell ~270Â° arrow pointing left -->
+                      <!-- W swell ~270° arrow pointing left -->
                       <line x1="10" y1="10" x2="17" y2="10" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
                       <polygon points="19,10 15,8 15,12" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">â E</div>
+                  <div class="compass-label">&rarr; E</div>
                 </div>
               </div>
             </div>
@@ -877,7 +877,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Wed 4 Mar 2026 Â· 16:00</div>
+            <div class="session-date">Wed 4 Mar 2026 · 16:00</div>
             <div class="session-note">"Messy but fun enough. Needed the water time."</div>
           </div>
         </div>
@@ -899,21 +899,21 @@ header{
     <!-- SESSION CARD 4 â bundoran -->
     <div class="session-card">
       <div class="stub-left">
-        <div class="session-num">Session 031 Â· 2026</div>
+        <div class="session-num">Session 031 · 2026</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div class="stub-main">
           <div class="stub-top">
             <div>
               <div class="spot-name">Bundoran Peak</div>
-              <div class="spot-region">Donegal Â· 54Â°28'N 8Â°17'W</div>
+              <div class="spot-region">Donegal · 54°28'N 8°17'W</div>
             </div>
             <div class="session-rating">
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star filled">â</span>
-              <span class="star">â</span>
-              <span class="star">â</span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
             </div>
           </div>
           <div class="conditions-row">
@@ -935,12 +935,12 @@ header{
                 <div class="compass-wrap">
                   <div class="compass-ring">
                     <svg width="20" height="20" viewBox="0 0 20 20">
-                      <!-- NNW swell ~330Â° -->
+                      <!-- NNW swell ~330° -->
                       <line x1="10" y1="10" x2="15" y2="17" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
                       <polygon points="16,18 12,16 15,13" fill="#f5c800"/>
                     </svg>
                   </div>
-                  <div class="compass-label">â SSE</div>
+                  <div class="compass-label">&#x2198; SSE</div>
                 </div>
               </div>
             </div>
@@ -950,7 +950,7 @@ header{
             </div>
           </div>
           <div class="stub-bottom">
-            <div class="session-date">Fri 28 Feb 2026 Â· 10:00</div>
+            <div class="session-date">Fri 28 Feb 2026 · 10:00</div>
             <div class="session-note">"Long drive worth it. Packed out but managed to find a corner."</div>
           </div>
         </div>
@@ -973,8 +973,8 @@ header{
       <div class="friend-header">
         <div class="friend-avatar">CK</div>
         <div>
-          <div class="friend-name">CiarÃ¡n Kelly</div>
-          <div class="friend-when">2 hours ago Â· Spanish Point, Middle Reef</div>
+          <div class="friend-name">Ciarán Kelly</div>
+          <div class="friend-when">2 hours ago · Spanish Point, Middle Reef</div>
         </div>
         <div class="friend-react">
           <span class="react-count">3</span>
@@ -1000,11 +1000,11 @@ header{
                 <div class="spot-region">Clare</div>
               </div>
               <div class="session-rating">
-                <span class="star filled">â</span>
-                <span class="star filled">â</span>
-                <span class="star filled">â</span>
-                <span class="star filled">â</span>
-                <span class="star">â</span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
               </div>
             </div>
             <div class="conditions-row" style="padding:8px 0;">
@@ -1031,8 +1031,8 @@ header{
       <div class="friend-header">
         <div class="friend-avatar">SM</div>
         <div>
-          <div class="friend-name">SiobhÃ¡n Murphy</div>
-          <div class="friend-when">Yesterday Â· Strandhill</div>
+          <div class="friend-name">Siobhán Murphy</div>
+          <div class="friend-when">Yesterday · Strandhill</div>
         </div>
         <div class="friend-react">
           <span class="react-count">1</span>
@@ -1057,11 +1057,11 @@ header{
                 <div class="spot-region">Sligo</div>
               </div>
               <div class="session-rating">
-                <span class="star filled">â</span>
-                <span class="star filled">â</span>
-                <span class="star filled">â</span>
-                <span class="star">â</span>
-                <span class="star">â</span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star filled"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
+                <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="rgba(255,255,255,0.15)" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>
               </div>
             </div>
             <div class="conditions-row" style="padding:8px 0;">

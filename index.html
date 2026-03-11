@@ -109,6 +109,44 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
 .saved-spot-chip .chip-remove{color:rgba(255,255,255,0.25);font-size:11px;margin-left:4px;line-height:1;}
 .saved-spot-chip .chip-remove:hover{color:rgba(255,100,100,0.7);}
 .search-hint{display:none;}
+/* FAVOURITE SPOTS FORECAST STRIP */
+.fav-strip-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.fav-strip-label::before{content:'';width:12px;height:1px;background:rgba(245,200,0,0.4);}
+.fav-spot-row{
+  display:flex;align-items:center;gap:0;
+  border:1px solid rgba(255,255,255,0.08);
+  border-bottom:none;cursor:pointer;
+  transition:background 0.15s;
+  background:rgba(255,255,255,0.02);
+}
+.fav-spot-row:last-child{border-bottom:1px solid rgba(255,255,255,0.08);}
+.fav-spot-row:hover{background:rgba(255,255,255,0.05);}
+.fav-row-name{
+  flex:1;padding:11px 14px;
+}
+.fav-row-spot{font-size:13px;letter-spacing:-0.2px;line-height:1.1;}
+.fav-row-region{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px;}
+.fav-row-stats{
+  display:flex;align-items:center;gap:0;flex-shrink:0;
+}
+.fav-stat{
+  padding:11px 12px;text-align:center;border-left:1px solid rgba(255,255,255,0.06);
+  min-width:52px;
+}
+.fav-stat-val{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.5px;color:#fff;}
+.fav-stat-val.good{color:var(--good);}
+.fav-stat-val.mid{color:var(--mid);}
+.fav-stat-val.poor{color:var(--poor);}
+.fav-stat-lbl{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:2px;}
+.fav-row-badge{
+  padding:0 12px;flex-shrink:0;border-left:1px solid rgba(255,255,255,0.06);
+}
+.fav-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid;}
+.fav-badge.good,.fav-badge.great{color:var(--good);border-color:var(--good);}
+.fav-badge.fair{color:var(--fair,#f59e0b);border-color:var(--fair,#f59e0b);}
+.fav-badge.poor{color:var(--poor);border-color:var(--poor);}
+.fav-badge.flat{color:var(--muted);border-color:var(--muted);}
+
 /* Spot index toggle button */
 .spot-index-btn{
   width:100%;max-width:520px;margin-top:32px;align-self:center;
@@ -582,6 +620,12 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   </button>
   <div class="spot-index" id="spotIndex"></div>
 
+  <!-- EVENT BANNER on landing page -->
+  <div id="eventBannerLanding" class="event-banner" style="display:none;width:100%;max-width:520px;margin-top:28px;margin-bottom:0;"></div>
+
+  <!-- FAVOURITE SPOTS FORECAST STRIP -->
+  <div id="favSpotsStrip" style="display:none;width:100%;max-width:520px;margin-top:28px;"></div>
+
   <div class="saved-spots-section" id="savedSpotsSection" style="display:none;margin-top:20px;">
     <div class="saved-spots-label">Saved Spots</div>
     <div class="saved-spots-list" id="savedSpotsList"></div>
@@ -696,17 +740,88 @@ function renderSavedSpots(){
   const sec=document.getElementById('savedSpotsSection');
   const list=document.getElementById('savedSpotsList');
   if(!sec||!list)return;
-  if(saved.length===0){sec.style.display='none';return;}
+  if(saved.length===0){sec.style.display='none';renderFavStrip([]);renderLandingEventBanner([]);return;}
   sec.style.display='block';
   list.innerHTML=saved.map(id=>{
     const s=ALL_SPOTS.find(x=>x.id===id);
     if(!s)return'';
-    return'<div class="saved-spot-chip" onclick="selectSpot(\''+id+'\')">'
-      +'<span>â</span>'+s.groupName
-      +'<span class="chip-remove" onclick="event.stopPropagation();removeSaved(\''+id+'\')">Ã</span>'
-      +'</div>';
+    return'<div class="saved-spot-chip" onclick="selectSpot(\''+id+'\')">'      +'<svg width="10" height="10" viewBox="0 0 24 24" fill="#f5c800" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>'      +s.groupName      +'<span class="chip-remove" onclick="event.stopPropagation();removeSaved(\''+id+'\')">&#215;</span>'      +'</div>';
   }).join('');
+  renderFavStrip(saved);
+  renderLandingEventBanner(saved);
 }
+
+function renderLandingEventBanner(saved){
+  const banner=document.getElementById('eventBannerLanding');
+  if(!banner)return;
+  if(!saved||saved.length===0){banner.style.display='none';return;}
+  const countyMap={'beach':'Clare','inner':'Clare','middle':'Clare','doughmore':'Clare',
+    'lahinch':'Clare','cornish':'Clare','cregg':'Clare','crab':'Clare',
+    'bundoran':'Donegal','tullan':'Donegal','rossnowlagh':'Donegal','dunfanaghy':'Donegal',
+    'strandhill':'Sligo','whiterock':'Dublin','killiney':'Dublin','ragu':'Dublin'};
+  const county=countyMap[saved[0]]||'Clare';
+  if(typeof renderEventBanner==='function'){
+    renderEventBanner(county,'eventBannerLanding');
+    if(typeof getEventsForCounty==='function'){
+      const events=getEventsForCounty(county);
+      banner.style.display=events&&events.length?'block':'none';
+    } else {banner.style.display='block';}
+  }
+}
+
+function renderFavStrip(saved){
+  const strip=document.getElementById('favSpotsStrip');
+  if(!strip)return;
+  if(!saved||saved.length===0){strip.style.display='none';return;}
+  const spots=saved.map(id=>ALL_SPOTS.find(x=>x.id===id)).filter(Boolean);
+  if(!spots.length){strip.style.display='none';return;}
+  strip.style.display='block';
+  const unit=document.getElementById('btnFt')&&document.getElementById('btnFt').classList.contains('active')?'ft':'m';
+  strip.innerHTML='<div class="fav-strip-label">My Spots &mdash; Today</div>'    +spots.map(s=>{
+      const cached=window.__favCache&&window.__favCache[s.id];
+      let heightStr='&mdash;',periodStr='&mdash;',windStr='&mdash;',ratingClass='',ratingLabel='';
+      if(cached){
+        const h=unit==='ft'?(cached.h*3.28084).toFixed(1):cached.h.toFixed(1);
+        heightStr=h+'<span style="font-size:8px;opacity:0.5"> '+(unit==='ft'?'ft':'m')+'</span>';
+        periodStr=Math.round(cached.p)+'<span style="font-size:8px;opacity:0.5">s</span>';
+        windStr=Math.round(cached.ws)+'<span style="font-size:8px;opacity:0.5">kt</span>';
+        ratingClass=cached.r;
+        const rLabels={great:'Firing',good:'Good',fair:'Fair',poor:'Poor',flat:'Flat'};
+        ratingLabel=rLabels[cached.r]||cached.r;
+      }
+      const hClass=cached?(cached.r==='great'||cached.r==='good'?'good':cached.r==='fair'?'mid':'poor'):'';
+      return '<div class="fav-spot-row" onclick="selectSpot(\''+s.id+'\')">'        +'<div class="fav-row-name">'          +'<div class="fav-row-spot">'+s.groupName+'</div>'          +'<div class="fav-row-region">'+s.region+'</div>'        +'</div>'        +'<div class="fav-row-stats">'          +'<div class="fav-stat"><div class="fav-stat-val '+hClass+'">'+heightStr+'</div><div class="fav-stat-lbl">Height</div></div>'          +'<div class="fav-stat"><div class="fav-stat-val">'+periodStr+'</div><div class="fav-stat-lbl">Period</div></div>'          +'<div class="fav-stat"><div class="fav-stat-val">'+windStr+'</div><div class="fav-stat-lbl">Wind</div></div>'        +'</div>'        +(ratingLabel?'<div class="fav-row-badge"><span class="fav-badge '+ratingClass+'">'+ratingLabel+'</span></div>':'')
+        +'</div>';
+    }).join('');
+  if(!window.__favCache||!Object.keys(window.__favCache).length){fetchFavConditions(spots);}
+}
+
+async function fetchFavConditions(spots){
+  if(!window.__favCache)window.__favCache={};
+  const skill=(getProfile()&&getProfile().skill)||'intermediate';
+  for(const s of spots){
+    if(window.__favCache[s.id])continue;
+    try{
+      const url='https://api.open-meteo.com/v1/forecast?latitude='+s.lat+'&longitude='+s.lng
+        +'&hourly=wave_height,wave_period,wind_speed_10m&wind_speed_unit=kn&forecast_days=1&timezone=Europe%2FLondon';
+      const resp=await fetch(url);
+      const data=await resp.json();
+      if(data&&data.hourly){
+        const now=Date.now();
+        const times=data.hourly.time.map(t=>new Date(t).getTime());
+        const hi=times.findIndex(t=>t>=now);
+        const idx=hi>=0?hi:0;
+        const h=data.hourly.wave_height[idx]||0;
+        const p=data.hourly.wave_period[idx]||0;
+        const ws=data.hourly.wind_speed_10m[idx]||0;
+        const r=typeof rate==='function'?rate(h,ws,p,skill):'fair';
+        window.__favCache[s.id]={h,p,ws,r};
+      }
+    }catch(e){window.__favCache[s.id]={h:0,p:0,ws:0,r:'flat'};}
+  }
+  renderFavStrip(getSavedSpots());
+}
+
 function removeSaved(id){
   let saved=getSavedSpots().filter(s=>s!==id);
   try{localStorage.setItem('quiver_saved',JSON.stringify(saved));}catch(e){}

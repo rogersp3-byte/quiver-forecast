@@ -500,6 +500,96 @@ header{
 }
 .btn-save:hover{background:#ffd700;}
 
+
+/* ── ACTIVITY TYPE SELECTOR ── */
+.activity-selector{
+  display:flex;gap:0;margin-bottom:22px;
+}
+.activity-opt{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);background:none;
+  border:1px solid rgba(255,255,255,0.1);padding:12px 8px;cursor:pointer;
+  transition:all 0.15s;border-right:none;
+}
+.activity-opt:last-child{border-right:1px solid rgba(255,255,255,0.1);}
+.activity-opt .activity-icon{font-size:18px;line-height:1;}
+.activity-opt.active{
+  color:var(--white);background:rgba(255,255,255,0.05);
+  border-color:rgba(255,255,255,0.25);
+}
+.activity-opt.active.beach-clean-opt{
+  color:var(--good);border-color:rgba(34,197,94,0.4);
+  background:rgba(34,197,94,0.06);
+}
+/* Fields that only show for surf */
+.surf-only{transition:opacity 0.2s;}
+.surf-only.hidden{display:none;}
+/* Beach clean specific field */
+.beach-clean-only{display:none;}
+.beach-clean-only.show{display:block;}
+
+/* ── EVENT BANNER ── */
+.event-banner{
+  border:1px solid rgba(245,200,0,0.2);
+  background:rgba(245,200,0,0.04);
+  margin-bottom:28px;padding:18px 20px;
+}
+.event-banner-inner{
+  display:flex;align-items:flex-start;gap:20px;
+}
+.event-banner-left{flex:1;}
+.event-type-pill{
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--accent);margin-bottom:8px;
+}
+.event-title{
+  font-size:15px;letter-spacing:-0.3px;margin-bottom:4px;
+}
+.event-meta{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;
+  color:var(--muted);margin-bottom:6px;
+}
+.event-desc{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.5px;
+  color:rgba(255,255,255,0.5);line-height:1.5;
+}
+.event-banner-right{
+  display:flex;flex-direction:column;align-items:flex-end;
+  gap:10px;flex-shrink:0;
+}
+.event-soon{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--accent);
+}
+.event-cta{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--white);
+  border:1px solid rgba(255,255,255,0.2);padding:8px 14px;
+  text-decoration:none;transition:all 0.15s;white-space:nowrap;
+}
+.event-cta:hover{border-color:var(--accent);color:var(--accent);}
+.event-more{
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+  margin-top:10px;border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;
+}
+
+/* ── BEACH CLEAN CARD VARIANT ── */
+.session-card.beach-clean-card .stub-left{
+  background-image:repeating-linear-gradient(
+    to bottom,transparent 0px,transparent 6px,
+    rgba(34,197,94,0.25) 6px,rgba(34,197,94,0.25) 9px
+  );
+}
+.session-card.beach-clean-card{border-color:rgba(34,197,94,0.15);}
+.beach-clean-badge{
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--good);
+  border:1px solid rgba(34,197,94,0.3);padding:3px 7px;
+  background:rgba(34,197,94,0.06);
+}
+
 /* ── YEAR DIVIDER ── */
 .year-divider{
   display:flex;align-items:center;gap:14px;margin:28px 0 20px;
@@ -560,6 +650,9 @@ header{
       <div class="stat-label">Favourite spot</div>
     </div>
   </div>
+
+  <!-- EVENTS BANNER -->
+  <div class="event-banner" id="eventBanner"></div>
 
   <!-- Strava Connect -->
   <div class="strava-bar">
@@ -1025,7 +1118,24 @@ header{
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="auto-filled">✓ Conditions auto-filled from today's forecast</div>
+
+      <!-- Activity type -->
+      <div class="activity-selector" id="activitySelector">
+        <button class="activity-opt active" onclick="setActivity('surf',this)">
+          <span class="activity-icon">🏄</span>
+          Surf
+        </button>
+        <button class="activity-opt" onclick="setActivity('paddle',this)">
+          <span class="activity-icon">🚣</span>
+          Paddle
+        </button>
+        <button class="activity-opt beach-clean-opt" onclick="setActivity('beach-clean',this)">
+          <span class="activity-icon">🧹</span>
+          Beach Clean
+        </button>
+      </div>
+
+      <div class="auto-filled" id="autoFillNote">✓ Conditions auto-filled from today's forecast</div>
 
       <div class="field-row">
         <div class="field">
@@ -1056,7 +1166,7 @@ header{
         </select>
       </div>
 
-      <div class="field-row">
+      <div class="field-row surf-only" id="waveHeightRow">
         <div class="field">
           <label class="field-label">Wave Height</label>
           <input type="text" placeholder="e.g. 2.4m" value="2.4m">
@@ -1067,7 +1177,13 @@ header{
         </div>
       </div>
 
-      <div class="field">
+      <!-- Beach clean only -->
+      <div class="field beach-clean-only" id="rubbishField">
+        <label class="field-label">Rubbish collected</label>
+        <input type="text" placeholder="e.g. 3 bags, 2kg">
+      </div>
+
+      <div class="field surf-only" id="ratingRow">
         <label class="field-label">Session Rating</label>
         <div class="wave-rating-input">
           <button class="wave-rate-btn" onclick="setRating(1,this)">1</button>
@@ -1145,6 +1261,58 @@ document.querySelectorAll('.filter-chip').forEach(chip => {
   });
 });
 </script>
+<script src="events.js"></script>
 <script src="corelord-float.js"></script>
+<script>
+// ── ACTIVITY SELECTOR ──
+let currentActivity = 'surf';
+
+function setActivity(type, btn) {
+  currentActivity = type;
+  document.querySelectorAll('.activity-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const isSurf = type === 'surf' || type === 'paddle';
+  const isClean = type === 'beach-clean';
+
+  // Toggle surf-specific fields
+  document.querySelectorAll('.surf-only').forEach(el => el.classList.toggle('hidden', isClean));
+  document.querySelectorAll('.beach-clean-only').forEach(el => el.classList.toggle('show', isClean));
+
+  // Update modal title
+  const titles = { surf: 'Log Session', paddle: 'Log Paddle', 'beach-clean': 'Log Beach Clean' };
+  document.querySelector('.modal-title').textContent = titles[type] || 'Log Session';
+
+  // Hide auto-fill note for beach clean
+  document.getElementById('autoFillNote').style.display = isClean ? 'none' : '';
+}
+
+// ── EVENTS BANNER ──
+// Detect county from saved spots or default to Clare
+function getUserCounty() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('quiver_saved_spots') || '[]');
+    if (saved.length) {
+      // Map spot IDs to counties
+      const countyMap = {
+        'beach':'Clare','inner':'Clare','middle':'Clare','doughmore':'Clare',
+        'lahinch':'Clare','cornish':'Clare','cregg':'Clare','crab':'Clare',
+        'bundoran':'Donegal','tullan':'Donegal','rossnowlagh':'Donegal','dunfanaghy':'Donegal',
+        'strandhill':'Sligo',
+        'whiterock':'Dublin','killiney':'Dublin','ragu':'Dublin'
+      };
+      const county = countyMap[saved[0]];
+      if (county) return county;
+    }
+  } catch(e) {}
+  return 'Clare'; // default
+}
+
+// Render banner on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const county = getUserCounty();
+  renderEventBanner(county, 'eventBanner');
+});
+</script>
 </body>
 </html>

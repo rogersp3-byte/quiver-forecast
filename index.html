@@ -474,6 +474,52 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   .globe-canvas{width:150px;height:150px;}
   .seven-grid{grid-template-columns:repeat(4,1fr);gap:3px;}
 }
+
+/* ── EVENT BANNER ── */
+.event-banner{
+  border:1px solid rgba(245,200,0,0.2);
+  background:rgba(245,200,0,0.04);
+  padding:16px 20px;margin:0 auto 0;
+  max-width:900px;
+}
+.event-banner-inner{display:flex;align-items:flex-start;gap:20px;}
+.event-banner-left{flex:1;}
+.event-type-pill{
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:#f5c800;margin-bottom:6px;
+}
+.event-title{font-size:14px;letter-spacing:-0.3px;margin-bottom:3px;}
+.event-meta{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;
+  color:rgba(255,255,255,0.4);margin-bottom:4px;
+}
+.event-desc{
+  font-family:'DM Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,0.45);line-height:1.5;
+}
+.event-banner-right{
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;
+}
+.event-soon{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:#f5c800;
+}
+.event-cta{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:#fff;
+  border:1px solid rgba(255,255,255,0.2);padding:7px 12px;
+  text-decoration:none;transition:all 0.15s;white-space:nowrap;
+}
+.event-cta:hover{border-color:#f5c800;color:#f5c800;}
+.event-more{
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(255,255,255,0.3);
+  margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;
+}
+@media(max-width:640px){
+  .event-banner-inner{flex-direction:column;gap:12px;}
+  .event-banner-right{flex-direction:row;align-items:center;width:100%;justify-content:space-between;}
+}
 </style>
 </head>
 <body>
@@ -564,6 +610,7 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
       <div class="spot-selector" id="spotSelector"></div>
     </div>
   </div>
+  <div id="eventBannerIndex" class="event-banner" style="display:none;margin-bottom:0;border-top:none;border-left:none;border-right:none;"></div>
   <main class="main">
     <div id="app"><div class="status">Loading forecast...</div></div>
   </main>
@@ -2022,7 +2069,24 @@ async function load(){
     const r=rate(cH,cWS,cP,skill),energy=waveEnergy(cH,cP);
     const read=conditionsRead(cH,cWS,cWD,cSwP,spot);
     // Expose to Core Lord float widget
-    window.__clForecast={
+    // Render events banner for this spot's county
+  (function(){
+    const countyMap = {
+      'beach':'Clare','inner':'Clare','middle':'Clare','doughmore':'Clare',
+      'lahinch':'Clare','cornish':'Clare','cregg':'Clare','crab':'Clare',
+      'bundoran':'Donegal','tullan':'Donegal','rossnowlagh':'Donegal','dunfanaghy':'Donegal',
+      'strandhill':'Sligo',
+      'whiterock':'Dublin','killiney':'Dublin','ragu':'Dublin'
+    };
+    const county = countyMap[spot.id] || 'Clare';
+    const banner = document.getElementById('eventBannerIndex');
+    if(banner && typeof renderEventBanner === 'function'){
+      renderEventBanner(county, 'eventBannerIndex');
+      const events = getEventsForCounty(county);
+      banner.style.display = events.length ? 'block' : 'none';
+    }
+  })();
+  window.__clForecast={
       spot:spot.groupName,county:spot.county||'Ireland',type:spot.type||'surf break',
       waveHeight:cH,wavePeriod:cP,waveDir:windDir(cWD),swellDir:windDir(cSwD||cD),
       swellPeriod:cSwP,windSpeed:cWS,windDir:windDir(cWD),rating:r,
@@ -2394,6 +2458,10 @@ setTimeout(initGlobe, 200);
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/><circle cx="12" cy="12" r="5"/><path d="M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
     <span>Forecast</span>
   </a>
+  <a href="logbook.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    <span>Logbook</span>
+  </a>
   <a href="workshop.html" class="bottom-nav-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
     <span>Workshop</span>
@@ -2403,6 +2471,7 @@ setTimeout(initGlobe, 200);
     <span>Trip</span>
   </a>
 </nav>
+<script src="events.js"></script>
 <script src="corelord-float.js"></script>
 </body>
 </html>

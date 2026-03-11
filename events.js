@@ -8,27 +8,27 @@
 const QUIVER_EVENTS = [
 
   {
+    id: 'kennys-surf-open-2026',
+    title: "Kenny's Surf Open '26",
+    type: 'competition',
+    date: '2026-03-21',
+    location: 'Lahinch Beach, Clare',
+    counties: ['All'],
+    description: "West Coast Surf Club comp at Lahinch Beach. Open Mens, Open Womens and Mixed Expression Session. Entry €35 includes T-shirt, BBQ and after party. ISA membership required.",
+    link: 'https://irishsurfing.justgo.com',
+    cta: 'Register now'
+  },
+
+  {
     id: 'clean-coasts-lahinch-2026',
     title: 'Beach Clean — Lahinch',
-    type: 'beach-clean',          // beach-clean | competition | talk | shop | advocacy | paddle
+    type: 'beach-clean',
     date: '2026-03-22',
     location: 'Lahinch Beach, Clare',
     counties: ['Clare'],
     description: 'Community beach clean with Clean Coasts Ireland. Bags and gloves provided. Meet at the main car park at 10am.',
     link: 'https://cleancoasts.org',
     cta: 'Sign up'
-  },
-
-  {
-    id: 'lahinch-open-2026',
-    title: 'Lahinch Open 2026',
-    type: 'competition',
-    date: '2026-04-12',
-    location: 'Lahinch Beach, Clare',
-    counties: ['Clare'],
-    description: 'Annual surf competition at Lahinch. Longboard and shortboard divisions. All levels welcome.',
-    link: 'https://lahinchsurfclub.com',
-    cta: 'Find out more'
   },
 
   {
@@ -57,17 +57,6 @@ const QUIVER_EVENTS = [
 
 ];
 
-/* ── ICONS BY TYPE ── */
-const EVENT_ICONS = {
-  'beach-clean': '🧹',
-  'competition': '🏄',
-  'talk':        '🎙️',
-  'shop':        '🛍️',
-  'advocacy':    '🌊',
-  'paddle':      '🚣'
-};
-
-/* ── TYPE LABELS ── */
 const EVENT_TYPE_LABELS = {
   'beach-clean': 'Beach Clean',
   'competition': 'Competition',
@@ -77,53 +66,33 @@ const EVENT_TYPE_LABELS = {
   'paddle':      'Paddle Event'
 };
 
-/* ═══════════════════════════════════════════════════
-   getEventsForCounty(county)
-   Returns upcoming events for a given county,
-   sorted by date, excluding past events.
-   Pass 'All' to get everything.
-═══════════════════════════════════════════════════ */
 function getEventsForCounty(county) {
   const today = new Date();
   today.setHours(0,0,0,0);
   return QUIVER_EVENTS
     .filter(e => {
       const eventDate = new Date(e.date);
-      const notPast = eventDate >= today;
-      const inCounty = e.counties.includes('All') || e.counties.includes(county);
-      return notPast && inCounty;
+      return eventDate >= today && (e.counties.includes('All') || e.counties.includes(county));
     })
     .sort((a,b) => new Date(a.date) - new Date(b.date));
 }
 
-/* ═══════════════════════════════════════════════════
-   renderEventBanner(county, containerId)
-   Renders the next upcoming event for a county
-   into the element with containerId.
-═══════════════════════════════════════════════════ */
 function renderEventBanner(county, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-
   const events = getEventsForCounty(county);
   if (!events.length) { container.style.display = 'none'; return; }
-
   const e = events[0];
-  const icon = EVENT_ICONS[e.type] || '📌';
   const typeLabel = EVENT_TYPE_LABELS[e.type] || e.type;
-
   const dateObj = new Date(e.date);
   const dateStr = dateObj.toLocaleDateString('en-IE', { weekday:'short', day:'numeric', month:'short' });
-
-  // Days until
   const today = new Date(); today.setHours(0,0,0,0);
   const daysUntil = Math.round((dateObj - today) / (1000*60*60*24));
-  const daysLabel = daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days`;
-
+  const daysLabel = daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : daysUntil + ' days';
   container.innerHTML = `
     <div class="event-banner-inner">
       <div class="event-banner-left">
-        <div class="event-type-pill">${icon} ${typeLabel}</div>
+        <div class="event-type-pill">${typeLabel}</div>
         <div class="event-title">${e.title}</div>
         <div class="event-meta">${dateStr} · ${e.location}</div>
         <div class="event-desc">${e.description}</div>

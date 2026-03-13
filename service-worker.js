@@ -1,68 +1,43 @@
-const CACHE_NAME = 'quiver-v1';
-
-// Core app shell files to cache on install
-const PRECACHE_ASSETS = [
+const CACHE_NAME = 'quiver-v2';
+const ASSETS = [
+  '/',
   '/index.html',
-  '/trip.html',
+  '/logbook.html',
   '/workshop.html',
+  '/trip.html',
   '/manifest.json',
   '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400&display=swap'
+  '/icons/icon-512.png'
 ];
 
-// Install: pre-cache app shell
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(PRECACHE_ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
+  self.skipWaiting();
 });
 
-// Activate: clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
   );
+  self.clients.claim();
 });
 
-// Fetch: cache-first for app shell, network-first for API calls
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-
-  // Let API/external data calls (e.g. weather APIs) go network-first
-  if (
-    url.hostname.includes('api.') ||
-    url.hostname.includes('open-meteo') ||
-    url.hostname.includes('stormglass') ||
-    url.hostname.includes('surf-forecast')
-  ) {
-    event.respondWith(
-      fetch(event.request)
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Cache-first for everything else (app shell, fonts, icons)
+  if (event.request.method !== 'GET') return;
   event.respondWith(
     caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
-          return response;
+      const network = fetch(event.request).then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         return response;
       });
+      return cached || network;
     })
   );
 });

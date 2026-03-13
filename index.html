@@ -620,11 +620,11 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
   </button>
   <div class="spot-index" id="spotIndex"></div>
 
-  <!-- EVENT BANNER on landing page -->
-  <div id="eventBannerLanding" class="event-banner" style="display:none;width:100%;max-width:520px;margin-top:28px;margin-bottom:0;"></div>
-
   <!-- FAVOURITE SPOTS FORECAST STRIP -->
   <div id="favSpotsStrip" style="display:none;width:100%;max-width:520px;margin-top:28px;"></div>
+
+  <!-- EVENT BANNER on landing page — shown below fav strip -->
+  <div id="eventBannerLanding" class="event-banner" style="display:none;width:100%;max-width:520px;margin-top:12px;margin-bottom:0;"></div>
 
   <div class="saved-spots-section" id="savedSpotsSection" style="display:none;margin-top:20px;">
     <div class="saved-spots-label">Saved Spots</div>
@@ -802,18 +802,20 @@ async function fetchFavConditions(spots){
   for(const s of spots){
     if(window.__favCache[s.id])continue;
     try{
-      const url='https://api.open-meteo.com/v1/forecast?latitude='+s.lat+'&longitude='+s.lng
-        +'&hourly=wave_height,wave_period,wind_speed_10m&wind_speed_unit=kn&forecast_days=1&timezone=Europe%2FLondon';
-      const resp=await fetch(url);
-      const data=await resp.json();
-      if(data&&data.hourly){
+      const marineUrl='https://marine-api.open-meteo.com/v1/marine?latitude='+s.lat+'&longitude='+s.lng
+        +'&hourly=wave_height,wave_period&forecast_days=1&timezone=Europe%2FLondon';
+      const windUrl='https://api.open-meteo.com/v1/forecast?latitude='+s.lat+'&longitude='+s.lng
+        +'&hourly=wind_speed_10m&wind_speed_unit=kn&forecast_days=1&timezone=Europe%2FLondon';
+      const [marineResp,windResp]=await Promise.all([fetch(marineUrl),fetch(windUrl)]);
+      const [marine,wind]=await Promise.all([marineResp.json(),windResp.json()]);
+      if(marine&&marine.hourly&&wind&&wind.hourly){
         const now=Date.now();
-        const times=data.hourly.time.map(t=>new Date(t).getTime());
+        const times=marine.hourly.time.map(t=>new Date(t).getTime());
         const hi=times.findIndex(t=>t>=now);
         const idx=hi>=0?hi:0;
-        const h=data.hourly.wave_height[idx]||0;
-        const p=data.hourly.wave_period[idx]||0;
-        const ws=data.hourly.wind_speed_10m[idx]||0;
+        const h=marine.hourly.wave_height[idx]||0;
+        const p=marine.hourly.wave_period[idx]||0;
+        const ws=wind.hourly.wind_speed_10m[idx]||0;
         const r=typeof rate==='function'?rate(h,ws,p,skill):'fair';
         window.__favCache[s.id]={h,p,ws,r};
       }

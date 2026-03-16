@@ -654,7 +654,6 @@ header{padding:18px 28px;display:flex;align-items:center;justify-content:space-b
       <div class="spot-selector" id="spotSelector"></div>
     </div>
   </div>
-  <div id="eventBannerIndex" class="event-banner" style="display:none;margin-bottom:0;border-top:none;border-left:none;border-right:none;"></div>
   <main class="main">
     <div id="app"><div class="status">Loading forecast...</div></div>
   </main>
@@ -741,7 +740,7 @@ function renderSavedSpots(){
   const list=document.getElementById('savedSpotsList');
   if(!sec||!list)return;
   if(saved.length===0){sec.style.display='none';renderFavStrip([]);renderLandingEventBanner([]);return;}
-  sec.style.display='block';
+  sec.style.display='none';
   list.innerHTML=saved.map(id=>{
     const s=ALL_SPOTS.find(x=>x.id===id);
     if(!s)return'';
@@ -754,7 +753,6 @@ function renderSavedSpots(){
 function renderLandingEventBanner(saved){
   const banner=document.getElementById('eventBannerLanding');
   if(!banner)return;
-  if(!saved||saved.length===0){banner.style.display='none';return;}
   const countyMap={'beach':'Clare','inner':'Clare','middle':'Clare','doughmore':'Clare',
     'lahinch':'Clare','cornish':'Clare','cregg':'Clare','crab':'Clare',
     'bundoran':'Donegal','tullan':'Donegal','rossnowlagh':'Donegal','dunfanaghy':'Donegal',
@@ -784,7 +782,7 @@ function renderFavStrip(saved){
         const h=unit==='ft'?(cached.h*3.28084).toFixed(1):cached.h.toFixed(1);
         heightStr=h+'<span style="font-size:8px;opacity:0.5"> '+(unit==='ft'?'ft':'m')+'</span>';
         periodStr=Math.round(cached.p)+'<span style="font-size:8px;opacity:0.5">s</span>';
-        windStr=Math.round(cached.ws)+'<span style="font-size:8px;opacity:0.5">kt</span>';
+        windStr=Math.round(cached.ws)+'<span style="font-size:8px;opacity:0.5">mph</span>';
         ratingClass=cached.r;
         const rLabels={great:'Firing',good:'Good',fair:'Fair',poor:'Poor',flat:'Flat'};
         ratingLabel=rLabels[cached.r]||cached.r;
@@ -805,7 +803,7 @@ async function fetchFavConditions(spots){
       const marineUrl='https://marine-api.open-meteo.com/v1/marine?latitude='+s.lat+'&longitude='+s.lng
         +'&hourly=wave_height,wave_period&forecast_days=1&timezone=Europe%2FLondon';
       const windUrl='https://api.open-meteo.com/v1/forecast?latitude='+s.lat+'&longitude='+s.lng
-        +'&hourly=wind_speed_10m&wind_speed_unit=kn&forecast_days=1&timezone=Europe%2FLondon';
+        +'&hourly=wind_speed_10m&wind_speed_unit=mph&forecast_days=1&timezone=Europe%2FLondon';
       const [marineResp,windResp]=await Promise.all([fetch(marineUrl),fetch(windUrl)]);
       const [marine,wind]=await Promise.all([marineResp.json(),windResp.json()]);
       if(marine&&marine.hourly&&wind&&wind.hourly){
@@ -2196,12 +2194,7 @@ async function load(){
       'whiterock':'Dublin','killiney':'Dublin','ragu':'Dublin'
     };
     const county = countyMap[spot.id] || 'Clare';
-    const banner = document.getElementById('eventBannerIndex');
-    if(banner && typeof renderEventBanner === 'function'){
-      renderEventBanner(county, 'eventBannerIndex');
-      const events = getEventsForCounty(county);
-      banner.style.display = events.length ? 'block' : 'none';
-    }
+
   })();
   window.__clForecast={
       spot:spot.groupName,county:spot.county||'Ireland',type:spot.type||'surf break',
@@ -2589,6 +2582,12 @@ setTimeout(initGlobe, 200);
   </a>
 </nav>
 <script src="events.js"></script>
+<script>
+(function(){
+  const saved=getSavedSpots();
+  renderLandingEventBanner(saved);
+})();
+</script>
 <script src="corelord-float.js"></script>
 </body>
 </html>

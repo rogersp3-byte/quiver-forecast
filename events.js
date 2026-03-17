@@ -1,12 +1,10 @@
-/* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
-   QUIVER EVENTS  ÃÂ¢ÃÂÃÂ  events.js
-   Edit this file manually to add/remove events.
-   Events auto-expire after their date passes.
-   Counties: 'Clare' | 'Donegal' | 'Sligo' | 'Dublin' | 'All'
-ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */
+/* ═══════════════════════════════════════════════════
+ QUIVER EVENTS - events.js
+ Edit this file to add/remove events.
+ Counties: 'Clare' | 'Donegal' | 'Sligo' | 'Dublin' | 'All'
+═══════════════════════════════════════════════════ */
 
 const QUIVER_EVENTS = [
-
   {
     id: 'kennys-surf-open-2026',
     title: "Kenny's Surf Open '26",
@@ -14,14 +12,13 @@ const QUIVER_EVENTS = [
     date: '2026-03-21',
     location: 'Lahinch Beach, Clare',
     counties: ['All'],
-    description: "Open Mens, Womens and Mixed Expression. Entry €35 — T-shirt, BBQ and after party included.",
+    description: "Open Mens, Womens and Mixed Expression. Entry €35 - T-shirt, BBQ and after party included.",
     link: 'https://irishsurfing.justgo.com',
     cta: 'Register now'
   },
-
   {
     id: 'clean-coasts-lahinch-2026',
-    title: 'Beach Clean ÃÂ¢ÃÂÃÂ Lahinch',
+    title: 'Beach Clean - Lahinch',
     type: 'beach-clean',
     date: '2026-03-22',
     location: 'Lahinch Beach, Clare',
@@ -30,7 +27,6 @@ const QUIVER_EVENTS = [
     link: 'https://cleancoasts.org',
     cta: 'Sign up'
   },
-
   {
     id: 'bundoran-biodiversity-2026',
     title: 'Ocean Biodiversity Talk',
@@ -38,14 +34,13 @@ const QUIVER_EVENTS = [
     date: '2026-04-03',
     location: 'Bundoran Community Centre',
     counties: ['Donegal'],
-    description: 'Marine biologist Dr. Aoife NÃÂÃÂ­ FhaolÃÂÃÂ¡in on changing species patterns in Donegal Bay. Free entry.',
+    description: 'Marine biologist Dr. Aoife Ni Fhaoláin on changing species patterns in Donegal Bay. Free entry.',
     link: '#',
     cta: 'Find out more'
   },
-
   {
     id: 'strandhill-clean-2026',
-    title: 'Beach Clean ÃÂ¢ÃÂÃÂ Strandhill',
+    title: 'Beach Clean - Strandhill',
     type: 'beach-clean',
     date: '2026-04-05',
     location: 'Strandhill Beach, Sligo',
@@ -54,16 +49,15 @@ const QUIVER_EVENTS = [
     link: 'https://strandhillsurfclub.com',
     cta: 'Join in'
   }
-
 ];
 
 const EVENT_TYPE_LABELS = {
   'beach-clean': 'Beach Clean',
   'competition': 'Competition',
-  'talk':        'Event',
-  'shop':        'Local Business',
-  'advocacy':    'Advocacy',
-  'paddle':      'Paddle Event'
+  'talk': 'Event',
+  'shop': 'Local Business',
+  'advocacy': 'Advocacy',
+  'paddle': 'Paddle Event'
 };
 
 function getEventsForCounty(county) {
@@ -86,7 +80,8 @@ function renderEventBanner(county, containerId) {
   const typeLabel = EVENT_TYPE_LABELS[e.type] || e.type;
   const dateObj = new Date(e.date);
   const dateStr = dateObj.toLocaleDateString('en-IE', { weekday:'short', day:'numeric', month:'short' });
-  const today = new Date(); today.setHours(0,0,0,0);
+  const today = new Date();
+  today.setHours(0,0,0,0);
   const daysUntil = Math.round((dateObj - today) / (1000*60*60*24));
   const daysLabel = daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : daysUntil + ' days';
   container.innerHTML = `
@@ -94,12 +89,12 @@ function renderEventBanner(county, containerId) {
       <div class="event-banner-left">
         <div class="event-type-pill">${typeLabel}</div>
         <div class="event-title">${e.title}</div>
-        <div class="event-meta">${dateStr} ÃÂÃÂ· ${e.location}</div>
+        <div class="event-meta">${dateStr} &middot; ${e.location}</div>
         <div class="event-desc">${e.description}</div>
       </div>
       <div class="event-banner-right">
         <div class="event-soon">${daysLabel}</div>
-        <a href="${e.link}" target="_blank" rel="noopener" class="event-cta">${e.cta} ÃÂ¢ÃÂÃÂ</a>
+        <a href="${e.link}" target="_blank" rel="noopener" class="event-cta">${e.cta} &rarr;</a>
       </div>
     </div>
     ${events.length > 1 ? `<div class="event-more">+${events.length - 1} more event${events.length > 2 ? 's' : ''} in your area</div>` : ''}

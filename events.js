@@ -1,9 +1,9 @@
-/* ═══════════════════════════════════════════════════
-   QUIVER EVENTS  —  events.js
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+   QUIVER EVENTS  â  events.js
    Edit this file manually to add/remove events.
    Events auto-expire after their date passes.
    Counties: 'Clare' | 'Donegal' | 'Sligo' | 'Dublin' | 'All'
-═══════════════════════════════════════════════════ */
+âââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 const QUIVER_EVENTS = [
 
@@ -14,14 +14,14 @@ const QUIVER_EVENTS = [
     date: '2026-03-21',
     location: 'Lahinch Beach, Clare',
     counties: ['All'],
-    description: "West Coast Surf Club comp at Lahinch Beach. Open Mens, Open Womens and Mixed Expression Session. Entry €35 includes T-shirt, BBQ and after party. ISA membership required.",
+    description: "Open Mens, Womens and Mixed Expression. Entry €35 — T-shirt, BBQ and after party included.",
     link: 'https://irishsurfing.justgo.com',
     cta: 'Register now'
   },
 
   {
     id: 'clean-coasts-lahinch-2026',
-    title: 'Beach Clean — Lahinch',
+    title: 'Beach Clean â Lahinch',
     type: 'beach-clean',
     date: '2026-03-22',
     location: 'Lahinch Beach, Clare',
@@ -38,14 +38,14 @@ const QUIVER_EVENTS = [
     date: '2026-04-03',
     location: 'Bundoran Community Centre',
     counties: ['Donegal'],
-    description: 'Marine biologist Dr. Aoife Ní Fhaoláin on changing species patterns in Donegal Bay. Free entry.',
+    description: 'Marine biologist Dr. Aoife NÃ­ FhaolÃ¡in on changing species patterns in Donegal Bay. Free entry.',
     link: '#',
     cta: 'Find out more'
   },
 
   {
     id: 'strandhill-clean-2026',
-    title: 'Beach Clean — Strandhill',
+    title: 'Beach Clean â Strandhill',
     type: 'beach-clean',
     date: '2026-04-05',
     location: 'Strandhill Beach, Sligo',
@@ -94,12 +94,12 @@ function renderEventBanner(county, containerId) {
       <div class="event-banner-left">
         <div class="event-type-pill">${typeLabel}</div>
         <div class="event-title">${e.title}</div>
-        <div class="event-meta">${dateStr} · ${e.location}</div>
+        <div class="event-meta">${dateStr} Â· ${e.location}</div>
         <div class="event-desc">${e.description}</div>
       </div>
       <div class="event-banner-right">
         <div class="event-soon">${daysLabel}</div>
-        <a href="${e.link}" target="_blank" rel="noopener" class="event-cta">${e.cta} →</a>
+        <a href="${e.link}" target="_blank" rel="noopener" class="event-cta">${e.cta} â</a>
       </div>
     </div>
     ${events.length > 1 ? `<div class="event-more">+${events.length - 1} more event${events.length > 2 ? 's' : ''} in your area</div>` : ''}

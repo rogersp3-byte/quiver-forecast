@@ -1,6 +1,6 @@
-You are Core Lord — the surf intelligence built into the Quiver app. Think of yourself as a knowledgeable surf friend who has deep expertise across technique, conditions, gear, travel, tides, and everything in between.
+You are Core Lord â the surf intelligence built into the Quiver app. Think of yourself as a knowledgeable surf friend who has deep expertise across technique, conditions, gear, travel, tides, and everything in between.
 
-Be warm, conversational and genuinely helpful. Give real, thoughtful answers based on what you know about the surfer. Don't bark orders or deliver unsolicited life lessons — just be the knowledgeable friend they'd want to talk surf with. Use surf terminology naturally, and explain it if they're a beginner. Ask a follow-up when you genuinely need more context. Match your technical depth to their level.
+Be warm, conversational and genuinely helpful. Give real, thoughtful answers based on what you know about the surfer. Don't bark orders or deliver unsolicited life lessons â just be the knowledgeable friend they'd want to talk surf with. Use surf terminology naturally, and explain it if they're a beginner. Ask a follow-up when you genuinely need more context. Match your technical depth to their level.
 
 Surfer:
 - Name: ${ws.name}
@@ -9,7 +9,9 @@ Surfer:
 - Surfs: ${ws.freq}
 - Working on: ${ws.goal}
 
-You have their full profile and can give personalised advice. If asked about gear, spots, travel, or technique — share what you know freely. Keep responses focused but don't artificially cut them short if more detail is actually useful.`
+You have their full profile and can give personalised advice. If asked about gear, spots, travel, or technique â share what you know freely. Keep responses focused but don't artificially cut them short if more detail is actually useful.
+
+One critical rule: never invent specific local details you don't actually know. This includes coach names, surf school names, specific venues, local businesses, break names or people. If you don't know something specific, say so honestly and suggest how the user could find out (e.g. ask at the local surf shop, check Irish Surfing's website). A confident wrong answer is far worse than an honest "I don't know that specifically".`
 }
 
 function showLanding(){
@@ -107,7 +109,7 @@ function showLanding(){
         <textarea class="q-textarea" id="q-goal" placeholder="e.g. I can't generate speed on small waves..."></textarea>
       </div>
 
-      <button class="cl-cta" id="ctaBtn" onclick="startSession()" ">Talk to Core Lord â</button>
+      <button class="cl-cta" id="ctaBtn" onclick="startSession()" ">Talk to Core Lord Ã¢ÂÂ</button>
 
     </div>
   `;
@@ -155,10 +157,10 @@ function renderChat(ws){
         </div>
         <div class="chat-hdr-info">
           <div class="chat-hdr-name">CHAT WITH CORE LORD</div>
-          <div class="chat-hdr-sub">${ws.name} Â· ${ws.skill} Â· ${ws.board}</div>
+          <div class="chat-hdr-sub">${ws.name} ÃÂ· ${ws.skill} ÃÂ· ${ws.board}</div>
         </div>
         <div class="chat-hdr-live"><span class="live-dot"></span>Online</div>
-        <button class="new-sesh-btn" onclick="confirmReset()">âº New session</button>
+        <button class="new-sesh-btn" onclick="confirmReset()">Ã¢ÂÂº New session</button>
       </div>
 
       <div class="chat-msgs" id="chatMsgs"></div>
@@ -174,9 +176,9 @@ function renderChat(ws){
           <input class="chat-input" id="chatInput"
             placeholder="Ask Core Lord anything..."
             onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"/>
-          <button class="send-btn" id="sendBtn" onclick="sendMsg()">Send â</button>
+          <button class="send-btn" id="sendBtn" onclick="sendMsg()">Send Ã¢ÂÂ</button>
         </div>
-        <div class="input-hint">Enter to send Â· session saved in browser</div>
+        <div class="input-hint">Enter to send ÃÂ· session saved in browser</div>
       </div>
     </div>
   `;
@@ -239,7 +241,7 @@ async function fetchReply(){
       const errType = data.error?.type||'unknown';
       const errMsg  = data.error?.message||'No message';
       const userMsg = errType==='authentication_error'
-        ? 'Could not reach Core Lord â the proxy may be down.'
+        ? 'Could not reach Core Lord Ã¢ÂÂ the proxy may be down.'
         : `API error (${res.status}): ${errMsg}`;
       const tel=document.getElementById(tid);
       if(tel) tel.outerHTML=buildMsgHTML('assistant', userMsg);
@@ -262,7 +264,7 @@ async function fetchReply(){
     }
   }catch(e){
     const tel=document.getElementById(tid);
-    if(tel) tel.outerHTML=buildMsgHTML('assistant',"Network error â check your connection.");
+    if(tel) tel.outerHTML=buildMsgHTML('assistant',"Network error Ã¢ÂÂ check your connection.");
   }
 
   if(btn)btn.disabled=false;

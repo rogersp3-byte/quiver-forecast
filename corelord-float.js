@@ -1,19 +1,19 @@
-/* ═══════════════════════════════════════════════════
-   CORE LORD FLOATING WIDGET  —  corelord-float.js
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+   CORE LORD FLOATING WIDGET  â  corelord-float.js
    Drop this script tag into any Quiver page.
    It reads page context automatically and injects
    the floating Core Lord chat panel.
-═══════════════════════════════════════════════════ */
+âââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 (function(){
   'use strict';
 
-  // ── CONFIG ───────────────────────────────────────
+  // ââ CONFIG âââââââââââââââââââââââââââââââââââââââ
   const CL_IMG = 'https://quiver-forecast.vercel.app/images/Core%20Lord.png';
   const API_URL = 'https://quiver-proxy.quiver-ie.workers.dev/chat';
   const MODEL   = 'claude-haiku-4-5-20251001';
 
-  // ── HELPERS ──────────────────────────────────────
+  // ââ HELPERS ââââââââââââââââââââââââââââââââââââââ
   function getProfile(){
     try{const p=JSON.parse(localStorage.getItem('quiver_profile'));return p&&p.skill?p:null;}
     catch(e){return null;}
@@ -23,20 +23,20 @@
     catch(e){return[];}
   }
 
-  // ── PAGE CONTEXT READER ──────────────────────────
+  // ââ PAGE CONTEXT READER ââââââââââââââââââââââââââ
   // Reads whichever page we're on and returns a context string for the system prompt
   function readPageContext(){
     const path = window.location.pathname;
     const ctx = [];
 
-    // ── FORECAST PAGE ──
+    // ââ FORECAST PAGE ââ
     if(path.includes('index') || path === '/' || path.endsWith('/')){
       const fc = window.__clForecast;
       if(fc){
         ctx.push(`User is viewing the forecast for: ${fc.spot} (${fc.county}, ${fc.type})`);
         ctx.push(`Current conditions: ${fc.waveHeight}m waves, ${fc.wavePeriod}s period, wind ${fc.windSpeed}mph from ${fc.windDir}`);
         ctx.push(`Swell: ${fc.swellDir} at ${fc.swellPeriod}s`);
-        ctx.push(`Overall rating: ${fc.rating}. Wave energy: ${fc.energy} kJ/m²`);
+        ctx.push(`Overall rating: ${fc.rating}. Wave energy: ${fc.energy} kJ/mÂ²`);
         if(fc.read) ctx.push(`Conditions read: ${fc.read}`);
         const goodRows = document.querySelectorAll('.forecast-row.good, .forecast-row.great');
         if(goodRows.length) ctx.push(`${goodRows.length} good/great windows in today's forecast.`);
@@ -52,7 +52,7 @@
       ctx.push(`The user is on the forecast page.`);
     }
 
-    // ── LOGBOOK PAGE ──
+    // ââ LOGBOOK PAGE ââ
     if(path.includes('logbook')){
       const sessions = getLogbook();
       ctx.push(`The user is on their Logbook page.`);
@@ -60,7 +60,7 @@
         ctx.push(`Logbook has ${sessions.length} sessions logged.`);
         const recent = sessions.slice(-3).reverse();
         recent.forEach(s => {
-          ctx.push(`Recent session: ${s.spot} on ${s.date} — ${s.rating}/5 stars, ${s.duration || '?'}, notes: "${(s.notes||'').slice(0,80)}"`);
+          ctx.push(`Recent session: ${s.spot} on ${s.date} â ${s.rating}/5 stars, ${s.duration || '?'}, notes: "${(s.notes||'').slice(0,80)}"`);
         });
       } else {
         // Read from DOM static data if no localStorage sessions yet
@@ -73,12 +73,12 @@
       }
     }
 
-    // ── WORKSHOP PAGE ──
+    // ââ WORKSHOP PAGE ââ
     if(path.includes('workshop')){
       ctx.push(`The user is on the Workshop page (Core Lord's home page).`);
     }
 
-    // ── TRIP PAGE ──
+    // ââ TRIP PAGE ââ
     if(path.includes('trip')){
       ctx.push(`The user is on the Trip Planner page, browsing surf destinations.`);
       const destEls = document.querySelectorAll('.dest-name, .destination-name, [class*="dest"]');
@@ -88,7 +88,7 @@
     return ctx.length ? ctx.join('\n') : 'Unknown page context.';
   }
 
-  // ── SYSTEM PROMPT ────────────────────────────────
+  // ââ SYSTEM PROMPT ââââââââââââââââââââââââââââââââ
   function buildSystemPrompt(){
     const profile = getProfile();
     const sessions = getLogbook();
@@ -102,11 +102,11 @@
       ? `Logbook summary:\n- ${sessions.length} sessions logged\n- Recent spots: ${[...new Set(sessions.map(s=>s.spot))].slice(0,5).join(', ')}`
       : `No sessions in logbook yet.`;
 
-    return `You are Core Lord — the surf intelligence built into the Quiver app. Think of yourself as a knowledgeable surf friend who has full context of what the user is doing across the whole app.
+    return `You are Core Lord â the surf intelligence built into the Quiver app. Think of yourself as a knowledgeable surf friend who has full context of what the user is doing across the whole app.
 
-You can help with anything surf-related: reading forecasts, understanding conditions, reviewing sessions, technique, gear, surf travel advice, tide questions, trip planning — whatever comes up. You have real knowledge of surf destinations worldwide so share it freely when asked about travel.
+You can help with anything surf-related: reading forecasts, understanding conditions, reviewing sessions, technique, gear, surf travel advice, tide questions, trip planning â whatever comes up. You have real knowledge of surf destinations worldwide so share it freely when asked about travel.
 
-Be warm, conversational and genuinely helpful. Don't give orders or unsolicited advice. Let the user lead and follow their thread naturally. Ask a follow-up question if it would genuinely help. Match your response length to what's needed — sometimes a sentence is enough.
+Be warm, conversational and genuinely helpful. Don't give orders or unsolicited advice. Let the user lead and follow their thread naturally. Ask a follow-up question if it would genuinely help. Match your response length to what's needed â sometimes a sentence is enough.
 
 You have full context across the app:
 
@@ -117,21 +117,23 @@ ${logbookBlock}
 Current page context:
 ${pageCtx}
 
-You can speak to what's on screen. If someone asks about surf travel or destinations, draw on your knowledge freely — best seasons, spot recommendations, what suits different levels, travel tips.`;
+You can speak to what's on screen. If someone asks about surf travel or destinations, draw on your knowledge freely â best seasons, spot recommendations, what suits different levels, travel tips.
+
+One critical rule: never invent specific local details you don't actually know. This includes coach names, surf school names, specific venues, local businesses, break names or people. If you don't know something specific, say so honestly and suggest how the user could find out (e.g. ask at the local surf shop, check Irish Surfing's website). A confident wrong answer is far worse than an honest "I don't know that specifically".`;
   }
 
-  // ── CHAT STATE ───────────────────────────────────
+  // ââ CHAT STATE âââââââââââââââââââââââââââââââââââ
   let messages = [];
   let isOpen = false;
   let isThinking = false;
 
-  // ── INJECT STYLES ────────────────────────────────
+  // ââ INJECT STYLES ââââââââââââââââââââââââââââââââ
   function injectStyles(){
     if(document.getElementById('cl-float-styles')) return;
     const style = document.createElement('style');
     style.id = 'cl-float-styles';
     style.textContent = `
-      /* ── FLOATING BUTTON ── */
+      /* ââ FLOATING BUTTON ââ */
       #cl-fab{
         position:fixed;bottom:100px;right:20px;z-index:9000;
         width:52px;height:52px;border-radius:50%;
@@ -163,7 +165,7 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
         #cl-fab{bottom:98px;right:16px;}
       }
 
-      /* ── PANEL ── */
+      /* ââ PANEL ââ */
       #cl-panel{
         position:fixed;bottom:164px;right:20px;z-index:9001;
         width:340px;max-height:520px;
@@ -285,7 +287,7 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
     document.head.appendChild(style);
   }
 
-  // ── INJECT HTML ──────────────────────────────────
+  // ââ INJECT HTML ââââââââââââââââââââââââââââââââââ
   function injectHTML(){
     if(document.getElementById('cl-fab')) return;
 
@@ -308,13 +310,13 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
           <div id="cl-panel-sub">Your surf intelligence</div>
         </div>
         <div class="cl-live-dot"></div>
-        <button id="cl-panel-close" onclick="window.__clClose()">✕</button>
+        <button id="cl-panel-close" onclick="window.__clClose()">â</button>
       </div>
-      <div id="cl-ctx-pill">📍 <span id="cl-ctx-text">Reading page context...</span></div>
+      <div id="cl-ctx-pill">ð <span id="cl-ctx-text">Reading page context...</span></div>
       <div id="cl-msgs"></div>
       <div id="cl-input-row">
         <input id="cl-input" type="text" placeholder="Ask Core Lord..." autocomplete="off">
-        <button id="cl-send">↑</button>
+        <button id="cl-send">â</button>
       </div>
     `;
     document.body.appendChild(panel);
@@ -329,7 +331,7 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
     window.__clClose = () => { isOpen = false; panel.classList.remove('open'); };
   }
 
-  // ── CONTEXT PILL ────────────────────────────────
+  // ââ CONTEXT PILL ââââââââââââââââââââââââââââââââ
   function updateContextPill(){
     const pill = document.getElementById('cl-ctx-text');
     if(!pill) return;
@@ -340,7 +342,7 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
     else pill.textContent = 'Reading forecast';
   }
 
-  // ── TOGGLE ───────────────────────────────────────
+  // ââ TOGGLE âââââââââââââââââââââââââââââââââââââââ
   function togglePanel(){
     const panel = document.getElementById('cl-panel');
     isOpen = !isOpen;
@@ -352,29 +354,29 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
     }
   }
 
-  // ── GREETING ─────────────────────────────────────
+  // ââ GREETING âââââââââââââââââââââââââââââââââââââ
   function sendGreeting(){
     const profile = getProfile();
     const path = window.location.pathname;
     let greeting;
     if(path.includes('logbook')){
       greeting = profile?.name
-        ? `Hey ${profile.name}! I can see your logbook — happy to chat through sessions or anything you're working on.`
+        ? `Hey ${profile.name}! I can see your logbook â happy to chat through sessions or anything you're working on.`
         : `Hey! I can see your logbook. Happy to chat through your sessions or anything you're working on.`;
     } else if(path.includes('trip')){
-      greeting = `Hey! Thinking about a surf trip? Happy to help — where are you considering, or do you want some ideas based on time of year?`;
+      greeting = `Hey! Thinking about a surf trip? Happy to help â where are you considering, or do you want some ideas based on time of year?`;
     } else if(path.includes('workshop')){
       greeting = `Hey! What can I help you with today?`;
     } else {
       greeting = profile?.name
-        ? `Hey ${profile.name}! I can see the forecast — what are you trying to figure out?`
+        ? `Hey ${profile.name}! I can see the forecast â what are you trying to figure out?`
         : `Hey! I can see the forecast. What are you trying to work out?`;
     }
     appendMessage(greeting, 'bot');
     messages.push({ role: 'assistant', content: greeting });
   }
 
-  // ── APPEND MESSAGE ───────────────────────────────
+  // ââ APPEND MESSAGE âââââââââââââââââââââââââââââââ
   function appendMessage(text, role){
     const msgs = document.getElementById('cl-msgs');
     if(!msgs) return;
@@ -400,7 +402,7 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
     document.getElementById('cl-thinking')?.remove();
   }
 
-  // ── SEND ─────────────────────────────────────────
+  // ââ SEND âââââââââââââââââââââââââââââââââââââââââ
   async function sendMessage(){
     if(isThinking) return;
     const input = document.getElementById('cl-input');
@@ -443,9 +445,9 @@ You can speak to what's on screen. If someone asks about surf travel or destinat
     }
   }
 
-  // ── INIT ─────────────────────────────────────────
+  // ââ INIT âââââââââââââââââââââââââââââââââââââââââ
   function init(){
-    // On workshop page Core Lord IS the page — don't show float
+    // On workshop page Core Lord IS the page â don't show float
     const path = window.location.pathname;
     if(path.includes('workshop')) return;
     injectStyles();
